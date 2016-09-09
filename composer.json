@@ -1,0 +1,14 @@
+{
+    "name": "niku/cms",
+    "description": "A codeable CMS for Laravel with post types and custom fields. Extendable as you wish.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nick Kuijpers",
+            "email": "info@niku-solutions.nl"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
