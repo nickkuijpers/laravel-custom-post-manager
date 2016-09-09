@@ -12,27 +12,24 @@ class CmsServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot()
-    {
-        // Package name
-        $packageName = 'niku-cms';
-
+    {  
         // Register migrations
         // $this->loadMigrationsFrom(__DIR__.'/migrations');
 
         // Register translations
-        $this->loadTranslationsFrom(__DIR__.'/translations', $packageName);
+        $this->loadTranslationsFrom(__DIR__.'/translations', 'niku-cms');
 
         // Register config
         $this->publishes([
-            __DIR__.'/config/'. $packageName .'.php' => config_path($packageName .'.php'),
+            __DIR__.'/config/'. 'niku-cms.php' => config_path('niku-cms.php'),
         ]);
 
         // Register views
-        $this->loadViewsFrom(__DIR__.'/../resources/views', $packageName);
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'niku-cms');
 
         // Register copying views
         $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/vendor/'. $packageName),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/'. 'niku-cms'),
         ]);
     }
 
