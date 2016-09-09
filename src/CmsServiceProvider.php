@@ -28,11 +28,11 @@ class CmsServiceProvider extends ServiceProvider
         ]);
 
         // Register views
-        $this->loadViewsFrom(__DIR__.'/views', $packageName);
+        $this->loadViewsFrom(__DIR__.'/../resources/views', $packageName);
 
         // Register copying views
         $this->publishes([
-            __DIR__.'/views' => resource_path('views/vendor/'. $packageName),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/'. $packageName),
         ]);
     }
 
