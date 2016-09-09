@@ -4,7 +4,7 @@ namespace Niku\Cms;
 
 use Illuminate\Support\ServiceProvider;
 
-class ServiceProvider extends ServiceProvider
+class CmsServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -43,7 +43,6 @@ class ServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        include __DIR__.'/routes.php';
-        // $this->app->make('Niku\Cms\Controller');
+        include __DIR__.'/routes.php';        
     }
 }
