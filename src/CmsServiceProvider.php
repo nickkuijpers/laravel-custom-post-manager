@@ -21,8 +21,14 @@ class CmsServiceProvider extends ServiceProvider
 
         // Register config
         $this->publishes([
-            __DIR__.'/config/'. 'niku-cms.php' => config_path('niku-cms.php'),
-        ]);
+            __DIR__.'/../config/'. 'niku-cms.php' => config_path('niku-cms.php'),
+        ], 'niku-cms');
+
+        // Register Vue components
+        $this->publishes([
+            __DIR__.'/../resources/assets/js/components' => base_path('resources/assets/js/components/niku-cms'),
+        ], 'niku-cms');
+
 
         // Register views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'niku-cms');
@@ -30,7 +36,7 @@ class CmsServiceProvider extends ServiceProvider
         // Register copying views
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/'. 'niku-cms'),
-        ]);
+        ], 'niku-cms');
     }
 
     /**
