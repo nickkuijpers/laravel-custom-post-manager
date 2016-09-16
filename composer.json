@@ -1,5 +1,5 @@
 {
-    "name": "niku/cms",
+    "name": "niku-solutions/cms",
     "description": "A codeable CMS for Laravel with post types and custom fields. Extendable as you wish.",
     "type": "library",
     "license": "MIT",
