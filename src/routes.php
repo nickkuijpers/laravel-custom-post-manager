@@ -21,7 +21,7 @@ class RouteRegistrar
      * @return void
      */
     public function __construct(Router $router)
-    {    	    	
+    {
         $this->router = $router;
     }
 
@@ -43,15 +43,16 @@ class RouteRegistrar
     public function cmsRoutes()
     {
     	Route::group([
-            'as' => 'niku-cms.', 
+            'as' => 'niku-cms.',
             'middleware' => 'auth'
         ], function () {
 
+            Route::get('/niku-cmstest/{post_type}', '\Niku\Cms\Http\Controllers\cmsController@test')->name('post_type');
 	        Route::get('/niku-cms/{post_type}', '\Niku\Cms\Http\Controllers\cmsController@index')->name('post_type');
             Route::get('/niku-cms/show/{id}', '\Niku\Cms\Http\Controllers\cmsController@show')->name('post_type');
             Route::post('/niku-cms/{post_type}/{action}', '\Niku\Cms\Http\Controllers\cmsController@postManagement')->name('post_type');
             Route::delete('/niku-cms/delete/{id}', '\Niku\Cms\Http\Controllers\cmsController@delete')->name('post_type');
 
 	    });
-    } 
+    }
 }

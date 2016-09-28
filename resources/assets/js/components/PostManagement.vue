@@ -2,8 +2,8 @@
     .pointer,
     .pointer .fa,
     .niku-cms-table th {
-        cursor: pointer;    
-    }    
+        cursor: pointer;
+    }
     .fa-remove {
         color:red;
     }
@@ -103,11 +103,15 @@
         /* IE 9 */
         -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
-        /* Firefox 16+, IE 10+, Opera */ } 
+        /* Firefox 16+, IE 10+, Opera */ }
     }
 
     .niku-cms .btn {
         margin-bottom:15px;
+    }
+
+    .niku-cms #niku-cms-sidebar {
+        width:260.5px;
     }
 </style>
 
@@ -120,21 +124,24 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-8 col-md-8">                
+            <div class="col-sm-8 col-md-8">
             </div>
             <div class="col-sm-4 col-md-4">
                 <a @click="newPost()" v-show="displayNewButton" class="btn btn-default pull-right">Nieuwe pagina</a>
             </div>
         </div>
-        <div class="row" v-show="displayForm">            
-            <div class="col-md-12">
-                <a @click="backToList()" class="btn btn-default" style="margin-bottom:20px;">Terug naar lijstweergave</a> 
-                
-                <h2>{{ pageTitle }} {{ post_title }}</h2>               
+        <div class="row" v-show="displayForm">
 
-                <form method="post" action="/niku-cms/{{ post_type }}/{{ postAction }}" class="form-horizontal" @submit.prevent="validateForm" id="newPost" data-stay="true">                        
-                    <input type="hidden" name="_token" value="{{ token }}">                       
-                    <input type="hidden" name="_id" value="{{ postId }}">       
+            <form method="post" action="/niku-cms/{{ post_type }}/{{ postAction }}" class="form-horizontal" @submit.prevent="validateForm" id="newPost" data-stay="true">
+                <input type="hidden" name="_token" value="{{ token }}">
+                <input type="hidden" name="_id" value="{{ postId }}">
+
+                <div class="col-md-12">
+                    <a @click="backToList()" class="btn btn-default" style="margin-bottom:20px;">Terug naar lijstweergave</a>
+                </div>
+                <div class="col-md-9">
+
+                    <h2>{{ pageTitle }} {{ post_title }}</h2>
 
                     <div class="form-group">
                         <label for="post_title" class="col-sm-2 control-label">Titel:</label>
@@ -151,34 +158,57 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="status" class="col-sm-2 control-label">Status:</label>
-                        <div class="col-sm-6">
-                            <select name="status" v-model="status" id="status" class="form-control" required="required">
-                                <option value="1">Gepubliceerd</option>
-                                <option value="0">Concept</option>                                
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="post_content" class="col-sm-2 control-label">Inhoud:</label>
                         <div class="col-sm-10">
                             <textarea name="post_content" v-model="post_content" id="post_content" class="form-control" rows="6"></textarea>
                         </div>
-                    </div>                    
-
-                    <div class="col-md-12">
-                        <button type="submit" class="btn btn-default pull-right">{{ buttonLabel }}</button>
                     </div>
 
-                </form>
-                
-            </div>
-        </div>        
+                    custom fields<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                    custom fields<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                    custom fields<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                    custom fields<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+                </div>
+                <div class="col-md-3">
+
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div id="niku-cms-sidebar">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                                <label for="status" class="control-label">Status:</label>
+                                                <select name="status" v-model="status" id="status" class="form-control">
+                                                    <option></option>
+                                                    <option value="1">Gepubliceerd</option>
+                                                    <option value="0">Concept</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-default pull-right">{{ buttonLabel }}</button>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                </div>
+
+            </form>
+
+        </div>
 
         <div class="listing" v-show="displayList">
             <div class="row">
-                <div class="col-md-8">                
+                <div class="col-md-8">
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
@@ -198,18 +228,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="object in objects |  filterBy filterInput | orderBy orderName order">                
+                        <tr v-for="object in objects |  filterBy filterInput | orderBy orderName order">
                             <td>{{ object.post_title }}</td>
                             <td>{{ object.post_name }}</td>
                             <td>{{ object.post_type }}</td>
-                            <td>{{ object.status }}</td>                
+                            <td>{{ object.status }}</td>
                             <td>
                                 <table>
                                     <tr>
                                         <td><a @click="editPost(object, object.id)" class="pointer"><i class="fa fa-fw fa-edit"></i></a></td>
-                                        <td><a @click="deletePost(object, object.id)" class="pointer"><i class="fa fa-fw fa-remove"></i></a></td>                                
+                                        <td><a @click="deletePost(object, object.id)" class="pointer"><i class="fa fa-fw fa-remove"></i></a></td>
                                     </tr>
-                                </table>                              
+                                </table>
                             </td>
                         </tr>
                         <tr v-show="!objects.length">
@@ -232,9 +262,17 @@
 <script>
 export default {
     ready () {
+
+        $('#niku-cms-sidebar').affix({
+              offset: {
+                top: 0
+              }
+        });
+
+
         this.receiveJson();
-        this.token = $('meta[name=_token]').attr('content');        
-    },        
+        this.token = $('meta[name=_token]').attr('content');
+    },
     data () {
         return {
             'token': '',
@@ -242,9 +280,14 @@ export default {
             'orderName': 'post_title',
             'order': 1,
             'filterInput': '',
-            'displayForm': 0,
-            'displayList': 1,
-            'displayNewButton': 1,
+            // 'displayForm': 0,
+            // 'displayList': 1,
+            // 'displayNewButton': 1,
+            'buttonLabel': 'Opslaan',
+            // 'buttonLabel': '',
+            'displayNewButton': 0,
+            'displayForm': 1,
+            'displayList': 0,
             'notificationMessage': '',
             'notificationShow': 0,
             'notificationType': 'danger',
@@ -253,47 +296,46 @@ export default {
             'post_content': '',
             'status': '',
             'pageTitle': '',
-            'buttonLabel': '',
             'postId': '',
             'postAction': 'create'
         }
     },
-    props: {        
+    props: {
         'post_type': {
           default: 'page'
-        },        
+        },
     },
-    methods: {                
+    methods: {
 
         /**
          * Receiving all posts
          */
-        receiveJson() {                  
-            showPreloader();                  
+        receiveJson() {
+            showPreloader();
             this.$http.get('/niku-cms/' + this.post_type)
                 .then(response => {
-                    this.objects = response.data;                    
+                    this.objects = response.data;
                     hidePreloader();
                 }
-            );     
+            );
         },
 
         /**
          * Ordering the posts
          */
-        orderingBy(name) {                        
+        orderingBy(name) {
             if( name == this.orderName ){
-                this.order = this.order * -1;                
+                this.order = this.order * -1;
             } else {
-                this.order = 1;                                
-            }            
+                this.order = 1;
+            }
             this.orderName = name;
         },
 
         /**
          * Showing the form for post creation
          */
-        newPost() {            
+        newPost() {
             this.postAction = 'create';
             this.buttonLabel = 'Toevoegen';
             this.pageTitle = 'Nieuw object:';
@@ -304,14 +346,14 @@ export default {
          * Showing the form with the post to edit it
          */
         editPost(object, id) {
-            showPreloader();                           
+            showPreloader();
             this.postAction = 'edit';
             this.$http.get('/niku-cms/show/' + id)
                 .then(response => {
 
-                    this.postId = id;   
+                    this.postId = id;
                     this.pageTitle = 'Object bewerken:';
-                    this.buttonLabel = 'Wijzigen';                    
+                    this.buttonLabel = 'Wijzigen';
 
                     console.log(response.data);
 
@@ -323,22 +365,22 @@ export default {
 
                     this.displayNewObject();
                     hidePreloader();
-                }                
-            );               
+                }
+            );
         },
 
         /**
          * Deleting the post with validation
          */
-        deletePost(object, id) {            
+        deletePost(object, id) {
             if(confirm("Weet je het zeker?")) {
                 showPreloader();
                 this.$http.delete('/niku-cms/delete/' + id)
-                    .then(response => {                              
-                        this.objects.$remove(object);                      
+                    .then(response => {
+                        this.objects.$remove(object);
                         hidePreloader();
                     }
-                );     
+                );
             }
         },
 
@@ -346,7 +388,7 @@ export default {
          * Validating and submitting the form
          */
         validateForm(e) {
-            showPreloader();            
+            showPreloader();
             var form = e.target;
 
             var body = {}
@@ -355,8 +397,8 @@ export default {
             });
 
             // Making the post request
-            this.$http.post(form.action, body).then((response) => {                                
-                
+            this.$http.post(form.action, body).then((response) => {
+
                 // Displaying the notification
                 this.notificationMessage = 'Actie succesvol';
                 this.notificationShow = 1;
@@ -367,7 +409,7 @@ export default {
 
                 // Go back to the list
                 this.backToList();
-                this.resetForm('newPost');                
+                this.resetForm('newPost');
                 hidePreloader();
 
             }, response => {
@@ -383,9 +425,9 @@ export default {
          * Displaying validation errors
          */
         displayErrorMessages(form, jsonResponse) {
-            _.forIn(jsonResponse, (error, name) => {                            
+            _.forIn(jsonResponse, (error, name) => {
                 let helpBlock = '<span class="validateError help-block" style="color:red;">' + '<strong>' + error + '</strong>' + '</span>';
-                $('#' + form.id + ' #' + name).after(helpBlock);                
+                $('#' + form.id + ' #' + name).after(helpBlock);
             });
         },
 
@@ -399,7 +441,7 @@ export default {
             this.post_title = '';
             this.post_content = '';
             this.status = '';
-            $('.validateError').remove();
+            $('.validateError').hide();
             document.getElementById(form).reset();
         },
 
@@ -476,4 +518,3 @@ function hidePreloader () {
     $('.spinner').fadeOut(500);
 }
 </script>
- 
