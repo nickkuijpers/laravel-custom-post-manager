@@ -20,8 +20,6 @@ but you can extend is very easily as you read the 'Extending the custom fields' 
 | ------------- | ------------- | ------------- |
 | ![Impression 5](https://niku-solutions.nl/laravel-niku-cms/image4.png)  | ![Impression 6](https://niku-solutions.nl/laravel-niku-cms/image5.png)  | ![Impression 7](https://niku-solutions.nl/laravel-niku-cms/image6.png)  | ![Impression 8](https://niku-solutions.nl/laravel-niku-cms/image3.png)  |
 
-*For now you are required to be authenticated to use the CMS api's. In future releases i will be adding rules for authentication like viewable in the config/niku-cms.php*
-
 ## Installation
 
 Install the package via composer:
