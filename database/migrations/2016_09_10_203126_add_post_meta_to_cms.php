@@ -17,7 +17,6 @@ class AddPostMetaToCms extends Migration
             $table->bigInteger('post_id', false, true);
             $table->string('meta_key');
             $table->longText('meta_value');
-            $table->string('type');
             $table->timestamps();
 
             $table->index(['post_id']);
@@ -25,10 +24,6 @@ class AddPostMetaToCms extends Migration
             $table->foreign('post_id')->references('id')->on('cms_posts')->onDelete('cascade');
 
         });
-
-        // Schema::table('cms_postmeta', function (Blueprint $table) {
-        //     $table->foreign('post_id')->references('id')->on('cms_posts');
-        // });
     }
 
     /**

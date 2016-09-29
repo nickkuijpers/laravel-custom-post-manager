@@ -24,6 +24,7 @@ class AddPostsForCms extends Migration
             $table->string('post_type');
             $table->integer('menu_order');
             $table->string('status');
+            $table->string('template');
             $table->timestamps();
 
             $table->index(['post_name', 'id']);
