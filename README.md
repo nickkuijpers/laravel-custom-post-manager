@@ -14,7 +14,10 @@ This package gives you the possibility to easily add a user interface to manage 
 selected page template and authentication. This package includes default custom fields
 but you can extend is very easily as you read the 'Extending the custom fields' section.
 
-![Impression 1](https://niku-solutions.nl/laravel-niku-cms/image1.png)
+| First Header  | Second Header |
+| ------------- | ------------- |
+| ![Impression 1](https://niku-solutions.nl/laravel-niku-cms/image1.png)  | ![Impression 1](https://niku-solutions.nl/laravel-niku-cms/image1.png)  |
+| ![Impression 1](https://niku-solutions.nl/laravel-niku-cms/image1.png)  | ![Impression 1](https://niku-solutions.nl/laravel-niku-cms/image1.png)  |
 
 *For now you are required to be authenticated to use the CMS api's. In future releases i will be adding rules for authentication like viewable in the config/niku-cms.php*
 
