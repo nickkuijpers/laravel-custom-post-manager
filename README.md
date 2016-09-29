@@ -30,7 +30,7 @@ Register the following class into the 'providers' array in your config app.php
 Niku\Cms\CmsServiceProvider::class,
 ```
 
-Enable the API where the frontend is communicating with by adding the following into your routes.php.
+Enable the API where the frontend is communicating with by adding the following into your web.php.
 
 ```
 Niku\Cms\Cms::routes();
