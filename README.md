@@ -159,6 +159,28 @@ Before you are able to use the post types, you need to whitelist and setup the r
 
 `# TO DO explaining how to customize the HTML and styling of the pages`
 
+## Future custom fields
+* ~~Text~~
+* Textarea
+* Editor
+* Select
+* Multiple select
+* File upload
+* Image upload
+* Gallery
+* Colorpicker
+* Icon
+* Checkbox
+* Radio
+* Repeater
+* Google Maps
+* Datepicker
+* Range slider
+* HTML
+* Hidden
+* Password
+* Switch
+
 ## Future features
 * Taxonomies like categories
 * ~~Add user authentication rules because now you are required to be authenticated to use the CMS.~~
