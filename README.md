@@ -9,6 +9,11 @@
 
 A codeable CMS for Laravel with post types and custom fields. Extendable as you wish.
 
+This package will easily add a user interface to manage post types with custom fields based on the selected page template.
+You can easliy define the post types with authentication and fill in the required custom fields.
+
+It's very easy to add custom fields like Maps, repeaters etc. Comes with a preset of custom fields.
+
 ## Installation # TO DO
 
 Install the package via composer:
@@ -17,13 +22,13 @@ Install the package via composer:
 composer require niku-solutions/cms
 ```
 
-Register the following class
+Register the following class:
 
 ```
 Niku\Cms\CmsServiceProvider::class,
 ```
 
-Publish the vendor files
+Publish the vendor files:
 
 ```
 php artisan vendor:publish --tag=niku-cms
