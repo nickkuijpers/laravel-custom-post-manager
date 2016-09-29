@@ -1,8 +1,8 @@
 /**
  * Fixed sidebar
  */
-$('#niku-cms-sidebar').affix({
-      offset: {
-        top: 0
-      }
-});
+// $('#niku-cms-sidebar').affix({
+//       offset: {
+//         top: 0
+//       }
+// });

@@ -55,7 +55,7 @@ php artisan migrate
 As i advice you, for default websites, to keep the frontend and the backand decoupled, you have to define the following into your gulpfile.js.
 You don't have to do anything in there, but it gives you the possibility to add new custom fields like editors and datepickers.
 
-*In the niku-cms.js you will see a Bootstrap 3 function, you can disable this if you are not using Bootstrap but this will make sure the
+*In the niku-cms.js you will see a Bootstrap 3 function, you can enable this if you are using Bootstrap but this will make sure the
 sidebar of the single post view is fixed for usability.*
 
 ```
