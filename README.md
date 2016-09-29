@@ -86,10 +86,6 @@ const app = new Vue({
 
 Run gulp and the installation is done!
 
-```
-gulp
-```
-
 ### Demo and testing
 
 In the config/niku-cms.php you will see a demo variable. If you enable this, you can open up the cms by requesting the following url. The variable will be dynamically added
