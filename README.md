@@ -14,7 +14,7 @@ This package gives you the possibility to easily add a user interface to manage 
 selected page template and authentication. This package includes default custom fields
 but you can extend is very easily as you read the 'Extending the custom fields' section.
 
-## Installation # TO DO
+## Installation
 
 Install the package via composer:
 
