@@ -159,7 +159,7 @@ Before you are able to use the post types, you need to whitelist and setup the r
 
 `# TO DO explaining how to customize the HTML and styling of the pages`
 
-## Future custom fields
+## Existing custom fields *strikethrough*
 * ~~Text~~
 * Textarea
 * Editor
