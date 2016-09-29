@@ -18,6 +18,7 @@
             "Niku\\Cms\\": "src/"
         }
     },
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.6.4",
         "illuminate/http": ">=5.2",
