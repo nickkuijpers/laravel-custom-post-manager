@@ -57,10 +57,11 @@ mix.sass([
 ```
 
 After doing this, you will see the combined assets into your public/*/vendor directory. Those files will be required to be included into the pages where you include the CMS, like
-you see in the dummy view we've attached in views/vendor/niku-cms.php.
+you see in the dummy view we've attached in views/vendor/niku-cms.php. In the dummy view, the component name is dynamically created. I advice you to hardcode this value when
+you are using this in a certain page like http://yourdomain.com/cms/page where the component name is page or the type of post type you require.
 
-To include the CMS into a existing page, front-end or back-end, make sure you do it like this:
-
+If you are going to use more than one CMS component in different pages, you can the spinner, notification, css and javascript into a partial in
+like the footer and header of your code structure. But make sure you add those only once.
 ```
 <head>
 	<link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/vendor/niku-cms/niku-cms.css') }}">
