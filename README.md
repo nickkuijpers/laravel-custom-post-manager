@@ -24,10 +24,9 @@ composer require niku-solutions/cms
 
 ## Extending the framework
 
-#### TO DO
-// custom fields
-// adding custom fields with custom styling and javascript
-// changing the html of the pages
+#### TO DO; write documation
+* Adding custom fields with custom javascript and css
+* changing the html of the pages
 
 ## Future features
 * Taxonomies like categories
