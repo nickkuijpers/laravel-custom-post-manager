@@ -3,9 +3,7 @@
     "description": "A codeable and flexible custom post type manager for Laravel with custom fields. Extendable and as dynamic as you wish.",
     "keywords": [
         "laravel cms",
-        "laravel postmanager",
         "laravel post manager",
-        "laravel pagemanager",
         "laravel page manager"
     ],
     "license": "MIT",
