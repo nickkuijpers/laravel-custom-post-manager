@@ -9,7 +9,7 @@
 
 A codeable CMS for Laravel with post types and custom fields. Extendable as you wish.
 
-## Installation
+## Installation # TO DO
 
 Install the package via composer:
 
@@ -22,12 +22,12 @@ composer require niku-solutions/cms
 * include components
 * vendor publish
 
-## TO DOCU - Extending the framework
+## Extending the framework # TO DO
 
 * Adding custom fields with custom javascript and css
 * changing the html of the pages
 
-## Future features
+## Future features # TO DO
 * Taxonomies like categories
 * User authorization
 
