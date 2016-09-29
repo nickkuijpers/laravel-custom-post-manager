@@ -59,12 +59,17 @@ You don't have to do anything in there, but it gives you the possibility to add 
 sidebar of the single post view is fixed for usability.*
 
 ```
-mix.webpack([
-    'vendor/niku-cms/niku-cms.js',
-], 'public/js/vendor/niku-cms/niku-cms.js');
-mix.sass([
-    'vendor/niku-cms/niku-cms.scss',
-], 'public/css/vendor/niku-cms/niku-cms.css');
+
+elixir(mix => {
+	...
+	mix.webpack([
+	    'vendor/niku-cms/niku-cms.js',
+	], 'public/js/vendor/niku-cms/niku-cms.js');
+	mix.sass([
+	    'vendor/niku-cms/niku-cms.scss',
+	], 'public/css/vendor/niku-cms/niku-cms.css');
+	...
+});
 ```
 
 #### app.js
