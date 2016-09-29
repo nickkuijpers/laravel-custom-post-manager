@@ -96,8 +96,10 @@ In the config/niku-cms.php you will see a demo variable. If you enable this, you
 to the Vue component and will be used as the post type for saving the post. To see the power of the post types, try changing the {post_type} variable into something like
 'post' and you will be adding and listing posts to the 'post' post type in the database.
 
-In the dummy view, the component name is dynamically created. I advice you to hardcode this value when you are using this in a
-certain page like http://yourdomain.com/cms/page where the component name is page or the type of post type you require.
+*In the demo view, the component name is dynamically created. I advice you to hardcode this value when you are using this in a
+certain page like http://yourdomain.com/cms/page where the component name is page or the type of post type you require.*
+
+The `page` post type is whitelisted in the config/niku-cms.php so you will be able to use this demo setup.
 
 ```
 http://domain.com/niku-cms/demo/{post_type}
@@ -125,6 +127,10 @@ You can change the `post_type` variable in the <compontent> to change the post t
 	<script src="{{ asset('js/vendor/niku-cms/niku-cms.js') }}"></script>
 </body>
 ```
+
+Before you are able to use the post types, you need to whitelist and setup the required custom fields and templates in the config/niku-cms.php file.
+
+`# write documation about structure in config/niku-cms.php file`
 
 ## Extending the custom fields # TO DO
 
