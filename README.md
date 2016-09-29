@@ -124,7 +124,7 @@ The `page` post type is whitelisted in the config/niku-cms.php so you will be ab
 http://domain.com/niku-cms/demo/{post_type}
 ```
 
-## Usage # TO DO
+## Usage
 
 After testing the demo url and the CMS is working, you can implement it into your application. Make sure you add
 the required assets in each page you use the CMS component. As this CMS is based on Vue, you must ofcourse include
@@ -149,12 +149,13 @@ You can change the `post_type` variable in the <compontent> to change the post t
 
 Before you are able to use the post types, you need to whitelist and setup the required custom fields and templates in the config/niku-cms.php file.
 
+`# TO DO write in more detail about usage and possibilities`
 `# TO DO write documation about structure in config/niku-cms.php file`
 
-## Extending the custom fields # TO DO
+## Extending the custom fields
 
-* Adding custom fields with custom javascript and css
-* changing the html of the pages
+`# TO DO explaining how to add custom fields with custom javascript and css`
+`# TO DO explaining how to customize the HTML and styling of the pages`
 
 ## Future features
 * Taxonomies like categories
