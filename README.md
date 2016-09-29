@@ -14,6 +14,8 @@ This package gives you the possibility to easily add a user interface to manage 
 selected page template and authentication. This package includes default custom fields
 but you can extend is very easily as you read the 'Extending the custom fields' section.
 
+* For now you are required to be authenticated to use the CMS api's. In future releases i will be adding rules for authentication *
+
 ## Installation
 
 Install the package via composer:
@@ -139,7 +141,7 @@ Before you are able to use the post types, you need to whitelist and setup the r
 
 ## Future features # TO DO
 * Taxonomies like categories
-* User authorization
+* Add user authentication rules because now you are required to be authenticated to use the CMS.
 
 ## Changelog
 

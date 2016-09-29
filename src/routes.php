@@ -7,66 +7,66 @@ use Illuminate\Support\Facades\Route;
 
 class RouteRegistrar
 {
-    /**
-     * The router implementation.
-     *
-     * @var Router
-     */
-    protected $router;
+	/**
+	 * The router implementation.
+	 *
+	 * @var Router
+	 */
+	protected $router;
 
-    /**
-     * Create a new route registrar instance.
-     *
-     * @param  Router  $router
-     * @return void
-     */
-    public function __construct(Router $router)
-    {
-        $this->router = $router;
-    }
+	/**
+	 * Create a new route registrar instance.
+	 *
+	 * @param  Router  $router
+	 * @return void
+	 */
+	public function __construct(Router $router)
+	{
+		$this->router = $router;
+	}
 
-    /**
-     * Register routes for transient tokens, clients, and personal access tokens.
-     *
-     * @return void
-     */
-    public function all()
-    {
-        $this->cmsRoutes();
-    }
+	/**
+	 * Register routes for transient tokens, clients, and personal access tokens.
+	 *
+	 * @return void
+	 */
+	public function all()
+	{
+		$this->cmsRoutes();
+	}
 
-    /**
-     * Register the routes needed for authorization.
-     *
-     * @return void
-     */
-    public function cmsRoutes()
-    {
-    	Route::group([
-            'as' => 'niku-cms.',
-            // 'middleware' => 'auth'
-        ], function () {
+	/**
+	 * Register the routes needed for authorization.
+	 *
+	 * @return void
+	 */
+	public function cmsRoutes()
+	{
+		Route::group([
+			'as' => 'niku-cms.',
+			'middleware' => 'auth'
+		], function () {
 
-            // Testing and demo
-            if(config('niku-cms.demo') == 1){
-                Route::get('/niku-cms/demo/{post_type}', '\Niku\Cms\Http\Controllers\cmsController@test')->name('demo');
-            }
+			// Testing and demo
+			if(config('niku-cms.demo') == 1){
+				Route::get('/niku-cms/demo/{post_type}', '\Niku\Cms\Http\Controllers\cmsController@test')->name('demo');
+			}
 
-            // Listing all posts by post type
-	        Route::get('/niku-cms/{post_type}', '\Niku\Cms\Http\Controllers\cmsController@index')->name('list');
+			// Listing all posts by post type
+			Route::get('/niku-cms/{post_type}', '\Niku\Cms\Http\Controllers\cmsController@index')->name('list');
 
-            // Returning the single post result
-            Route::get('/niku-cms/show/{id}', '\Niku\Cms\Http\Controllers\cmsController@show')->name('show');
+			// Returning the single post result
+			Route::get('/niku-cms/show/{id}', '\Niku\Cms\Http\Controllers\cmsController@show')->name('show');
 
-            // Creating and updating posts
-            Route::post('/niku-cms/{post_type}/{action}', '\Niku\Cms\Http\Controllers\cmsController@postManagement')->name('createedit');
+			// Creating and updating posts
+			Route::post('/niku-cms/{post_type}/{action}', '\Niku\Cms\Http\Controllers\cmsController@postManagement')->name('createedit');
 
-            // Deleting a post
-            Route::delete('/niku-cms/delete/{id}', '\Niku\Cms\Http\Controllers\cmsController@delete')->name('post_type');
+			// Deleting a post
+			Route::delete('/niku-cms/delete/{id}', '\Niku\Cms\Http\Controllers\cmsController@delete')->name('post_type');
 
-            // Recieving custom fields based on post type and template
-            Route::post('/niku-cms/receiveview', '\Niku\Cms\Http\Controllers\cmsController@receiveView')->name('custom_fields');
+			// Recieving custom fields based on post type and template
+			Route::post('/niku-cms/receiveview', '\Niku\Cms\Http\Controllers\cmsController@receiveView')->name('custom_fields');
 
-	    });
-    }
+		});
+	}
 }
