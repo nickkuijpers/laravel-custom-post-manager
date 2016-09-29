@@ -27,6 +27,12 @@ Register the following class:
 Niku\Cms\CmsServiceProvider::class,
 ```
 
+Enable the API where the frontend is communicating with by adding the following into your routes.php.
+
+```
+Niku\Cms\Cms::routes();
+```
+
 Publish the vendor files:
 
 ```
