@@ -14,10 +14,10 @@ class CmsServiceProvider extends ServiceProvider
     public function boot()
     {
         // Register migrations
-        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         // Register translations
-        $this->loadTranslationsFrom(__DIR__.'/translations', 'niku-cms');
+        $this->loadTranslationsFrom(__DIR__.'/../translations', 'niku-cms');
 
         // Register config
         $this->publishes([
