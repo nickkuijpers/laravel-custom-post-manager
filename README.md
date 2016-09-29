@@ -150,11 +150,13 @@ You can change the `post_type` variable in the <compontent> to change the post t
 Before you are able to use the post types, you need to whitelist and setup the required custom fields and templates in the config/niku-cms.php file.
 
 `# TO DO write in more detail about usage and possibilities`
+
 `# TO DO write documation about structure in config/niku-cms.php file`
 
 ## Extending the custom fields
 
 `# TO DO explaining how to add custom fields with custom javascript and css`
+
 `# TO DO explaining how to customize the HTML and styling of the pages`
 
 ## Future features
