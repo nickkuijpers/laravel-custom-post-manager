@@ -54,7 +54,9 @@ mix.sass([
 ], 'public/css/vendor/niku-cms/niku-cms.css');
 ```
 
-In the config/niku-cms.php you will see a demo variable. If you enable this, you can open up the cms by requesting the following url:
+In the config/niku-cms.php you will see a demo variable. If you enable this, you can open up the cms by requesting the following url. The variable will be dynamically added
+to the Vue component and will be used as the post type for saving the post. To see the power of the post types, try changing the {post_type} variable into something like
+'post' and you will be adding and listing posts to the 'post' post type in the database.
 ```
 http://domain.com/niku-cms/demo/{post_type}
 ```
