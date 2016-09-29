@@ -165,6 +165,7 @@ Before you are able to use the post types, you need to whitelist and setup the r
 * Translations, now you need to hardcode the language
 * Dynamically manipulate the table headers of the list overview by the config file
 * Adding post meta fields into the overview list page
+* Possibility to add validation rules into the config for custom fields
 * Pagination
 * New package for Media management with interface so custom fields can keep that as default
 
