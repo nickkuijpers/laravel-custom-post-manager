@@ -152,9 +152,10 @@ Before you are able to use the post types, you need to whitelist and setup the r
 * Adding custom fields with custom javascript and css
 * changing the html of the pages
 
-## Future features # TO DO
+## Future features
 * Taxonomies like categories
-* Add user authentication rules because now you are required to be authenticated to use the CMS.
+* ~~Add user authentication rules because now you are required to be authenticated to use the CMS.~~
+* Translations, now you need to hardcode the language
 
 ## Changelog
 
