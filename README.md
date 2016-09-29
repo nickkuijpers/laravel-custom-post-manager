@@ -9,6 +9,9 @@
 
 A codeable CMS for Laravel with post types and custom fields. Extendable as you wish.
 
+This package requires you to use Vue.js. Laravel 5.3 comes with this as default which gives you the possibility to install this
+package and have a fully working post type manager in minutes.
+
 This package will easily add a user interface to manage post types with custom fields based on the selected page template.
 You can easliy define the post types with authentication and fill in the required custom fields.
 
@@ -35,10 +38,11 @@ php artisan vendor:publish --tag=niku-cms
 ```
 
 
+
+
 * include javascript
 * include css
 * include components
-* vendor publish
 
 ## Extending the framework # TO DO
 
