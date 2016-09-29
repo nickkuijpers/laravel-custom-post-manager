@@ -172,10 +172,10 @@ To solve this you can add the following code in the header.
 
 ```
 <script>
-    window.Laravel = <?php echo json_encode([
-        'csrfToken' => csrf_token(),
-    ]); ?>
-    </script>
+window.Laravel = <?php echo json_encode([
+    'csrfToken' => csrf_token(),
+]); ?>
+</script>
 ```
 
 ## Security Vulnerabilities
