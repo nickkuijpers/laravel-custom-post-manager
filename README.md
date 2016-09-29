@@ -69,24 +69,26 @@ mix.sass([
 
 #### app.js
 
-Include the required components and default data into your app.js which is run by webpack.
+Include the following require function above the starting of the Vue instance in your app.js.
 
 ```
 require('./vendor/niku-cms/init-niku-cms.js');
+```
 
+Now, in the Vue instance already added by Laravel, you need to add the following data object. If its already existing,
+you only need to add the nikuCms section. If its not existing, you also need to add the data object.
+
+```
 const app = new Vue({
 	el: 'body',
 	data: {
-		...
 	    'nikuCms': {
 	        view: 'niku-cms-list-posts',
 	        data: {},
 	        postType: 'page',
 	        notification: {'display': 0, 'type': '', 'message': ''}
 	    },
-    	...
     }
-    ...
 },
 ```
 
