@@ -164,6 +164,7 @@ Before you are able to use the post types, you need to whitelist and setup the r
 * ~~Add user authentication rules because now you are required to be authenticated to use the CMS.~~
 * Translations, now you need to hardcode the language
 * Dynamically manipulate the table headers of the list overview by the config file
+* Adding post meta fields into the overview list page
 * Pagination
 * New package for Media management with interface so custom fields can keep that as default
 
