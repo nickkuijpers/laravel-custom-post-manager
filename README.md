@@ -160,26 +160,26 @@ Before you are able to use the post types, you need to whitelist and setup the r
 `# TO DO explaining how to customize the HTML and styling of the pages`
 
 ## Existing custom fields
-* ![Impression 5](https://niku-solutions.nl/laravel-niku-cms/checkmark.png) Text
-* Textarea
-* Editor
-* Select
-* Multiple select
-* File upload
-* Image upload
-* Gallery
-* Colorpicker
-* Icon
-* Checkbox
-* Radio
-* Repeater
-* Google Maps
-* Datepicker
-* Range slider
-* HTML
-* Hidden
-* Password
-* Switch
+![Impression 5](https://niku-solutions.nl/laravel-niku-cms/check.png) Text
+Textarea
+Editor
+Select
+Multiple select
+File upload
+Image upload
+Gallery
+Colorpicker
+Icon
+Checkbox
+Radio
+Repeater
+Google Maps
+Datepicker
+Range slider
+HTML
+Hidden
+Password
+Switch
 
 ## Future features
 * Taxonomies like categories
