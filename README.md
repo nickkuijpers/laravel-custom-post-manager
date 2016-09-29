@@ -39,7 +39,7 @@ You need to run the following artisan command to publish the required assets and
 php artisan vendor:publish --tag=niku-cms
 ```
 
-### Assets
+### Asset installation
 
 As i advice you, for default websites, to keep the frontend and the backand decoupled, you have to define the following into your gulpfile.js.
 You don't have to do anything in there, but it gives you the possibility to add new custom fields like editors and datepickers.
@@ -55,6 +55,8 @@ mix.sass([
     'vendor/niku-cms/niku-cms.scss',
 ], 'public/css/vendor/niku-cms/niku-cms.css');
 ```
+
+### Demo and testing
 
 In the config/niku-cms.php you will see a demo variable. If you enable this, you can open up the cms by requesting the following url. The variable will be dynamically added
 to the Vue component and will be used as the post type for saving the post. To see the power of the post types, try changing the {post_type} variable into something like
