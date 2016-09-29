@@ -17,6 +17,19 @@ Install the package via composer:
 composer require niku-solutions/cms
 ```
 
+Register the following class
+
+```
+Niku\Cms\CmsServiceProvider::class,
+```
+
+Publish the vendor files
+
+```
+php artisan vendor:publish --tag=niku-cms
+```
+
+
 * include javascript
 * include css
 * include components
