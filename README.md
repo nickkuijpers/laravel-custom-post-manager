@@ -88,8 +88,6 @@ const app = new Vue({
 },
 ```
 
-#### gulp
-
 Run gulp and the installation is done!
 
 ### Demo and testing
