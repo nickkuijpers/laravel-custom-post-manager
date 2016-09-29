@@ -11,7 +11,8 @@ A codeable CMS for Laravel with post types and custom fields. Extendable as you 
 
 Vue.js and Vue Resource is required. But as Laravel 5.3 ships this with default you will be able to install this easily.
 This package gives you the possibility to easily add a user interface to manage post types with custom fields based on the
-selected page template and authentication. You can extend this framework by adding new custom fields as described below. Ships with default custom fields.
+selected page template and authentication. This package includes default custom fields
+but you can extend is very easily as you read the 'Extending custom fields' section.
 
 ## Installation # TO DO
 
@@ -90,7 +91,7 @@ your default assets.
 </body>
 ```
 
-## Extending the framework # TO DO
+## Extending the custom fields # TO DO
 
 * Adding custom fields with custom javascript and css
 * changing the html of the pages
