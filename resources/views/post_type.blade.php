@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="_token" content="{{ csrf_token() }}">
     <link media="all" type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800,300">
-    <link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/all.css') }}">
+    <link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     {{-- NIKU CMS --}}
     <link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/vendor/niku-cms/niku-cms.css') }}">
@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/all.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
     {{-- NIKU CMS --}}
     <script src="{{ asset('js/vendor/niku-cms/niku-cms.js') }}"></script>
     {{-- END NIKU CMS --}}
