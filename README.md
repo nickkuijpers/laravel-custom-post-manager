@@ -92,7 +92,13 @@ const app = new Vue({
 },
 ```
 
-Run gulp and the installation is done!
+#### Final step
+
+Run gulp in the terminal and the installation is done!
+
+```
+gulp
+```
 
 ### Demo and testing
 
