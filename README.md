@@ -22,13 +22,6 @@ composer require niku-solutions/cms
 * include components
 * vendor publish
 
-### Vendor files
-
-Run the following comment:
-php artisan vendor:publish
-
-### Import the required vue compenents into the vue instance and js
-
 ## Extending the framework
 
 #### TO DO
@@ -37,7 +30,7 @@ php artisan vendor:publish
 // changing the html of the pages
 
 ## Future features
-* Taxonomies
+* Taxonomies like categories
 * User authorization
 
 ## Changelog
