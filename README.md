@@ -64,17 +64,17 @@ mix.sass([
 The final step is to include the required components and default data into your app.js which is run by webpack.
 
 ```
-<b>require('./vendor/niku-cms/init-niku-cms.js');</b>
+require('./vendor/niku-cms/init-niku-cms.js');
 
 const app = new Vue({
 	el: 'body',
 	data: {
-	    <b>'nikuCms': {
+	    'nikuCms': {
 	        view: 'niku-cms-list-posts',
 	        data: {},
 	        postType: 'page',
 	        notification: {'display': 0, 'type': '', 'message': ''}
-	    },</b>
+	    },
     	...
     }
     ...
