@@ -1,72 +1,111 @@
 <?php
 
+/**
+ * Adding custom post types
+ */
+
 return [
 
-	/**
-	 * Defining all custom fields
-	 */
-	'customFields' => [		
-		'text' => 'Niku\Cms\Customfields\Text',
-		'textarea' => 'Niku\Cms\Customfields\Textarea',
-		'editor' => 'Niku\Cms\Customfields\Editor',		
-		'file' => 'Niku\Cms\Customfields\File',		
-		'image' => 'Niku\Cms\Customfields\Image',
-		'gallery' => 'Niku\Cms\Customfields\Gallery',
-		'datepicker' => 'Niku\Cms\Customfields\Datepicker',
-		'timepicker' => 'Niku\Cms\Customfields\Timepicker',
-		'colorpicker' => 'Niku\Cms\Customfields\Colorpicker',
-		'checkbox' => 'Niku\Cms\Customfields\Checkbox',
-		'radio' => 'Niku\Cms\Customfields\Radio',
-		'map' => 'Niku\Cms\Customfields\Map',
-	],
+    'demo' => 1,
 
-	/**
-	 * Adding custom post types
-	 */
+    // Define the required 'whitelisted' post types
     'post_types' => [
-    	'page' => [
-    		'label' => 'Pagina\'s',    		
-    		'authenticate' => [
-    			'auth',
-    			'isAdmin',
-    		],
-    		'template' => [
-    			'layouts/default' => [
-    				'label' => 'Standaard pagina',
-    				'customFields' => [
-    					'headerImage' => [
-    						'label' => 'Header afbeelding',
-    						'type' => 'image',
-    						'value' => '',
-    					],
-    				],
-    			],
-    			'layouts/sidebar-left' => [
-    				'label' => 'Sidebar rechts pagina',
-    				'customFields' => [
-    					
-    				],
-    			],
-    			'layouts/sidebar-right' => [
-    				'label' => 'Sidebar rechts pagina',
-    				'customFields' => [
-    					
-    				],
-    			],
-    			'layouts/contact' => [
-    				'label' => 'Contact pagina',
-    				'customFields' => [
-    					
-    				],
-    			],
-    		], 
-    	],
-    	'post' => [
 
-    	],
-    	'faq' => [
+        // The custom post type
+        'page' => [
 
-    	]
+            // Authentication middlewares
+            'authenticate' => [
+                'auth',
+                'isAdmin',
+            ],
+            'view' => [
+
+                // The page title
+                'label' => 'Pagina\'s',
+
+                // If there is more than one template defined, a select
+                // box will appear so you can switch between them.
+                'templates' => [
+
+                    'default' => [
+                        'label' => 'Standaard pagina',
+                        'template' => 'default',
+
+                        // Defining custom fields for the current page template
+                        'customFields' => [
+
+                            'header_afbeelding' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Header afbeelding',
+                                'type' => 'image',
+                                'value' => ''
+                            ],
+
+                            'header_afbeel123ding' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Header afbeelding',
+                                'type' => 'image',
+                                'value' => ''
+                            ],
+
+                            'header_afbeeld33ing' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Header afbeelding',
+                                'type' => 'image',
+                                'value' => ''
+                            ],
+
+                            'header_afbeeldi44ng' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Header afbeelding',
+                                'type' => 'image',
+                                'value' => ''
+                            ],
+
+                            'header_afbeeld55ing' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Header afbeelding',
+                                'type' => 'image',
+                                'value' => ''
+                            ],
+
+                        ],
+                    ],
+
+                    'sidebar-left' => [
+                        'label' => 'Sidebar rechts pagina',
+                        'template' => 'sidebar-left',
+                        'customFields' => [
+
+                            'header_afbeeld55ing' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Header afbeelding',
+                                'type' => 'image',
+                                'value' => ''
+                            ],
+
+                            'header_afbeeld55ing' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Header afbeelding',
+                                'type' => 'image',
+                                'value' => ''
+                            ],
+
+
+                        ],
+                    ],
+
+                    'contact' => [
+                        'label' => 'Contact pagina',
+                        'template' => 'contact',
+                        'customFields' => [
+
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ],
 
 ];
