@@ -1,28 +1,41 @@
+.niku-cms {
+
     .pointer,
-    .pointer .fa,
     .niku-cms-table th {
         cursor: pointer;
     }
-    .fa-remove {
-        color:red;
-    }
-    .niku-cms .row {
-        margin-bottom:10px;
-    }
-    .niku-cms h2 {
-        margin-bottom:25px;
+
+    .row {
+        margin-bottom: 10px;
     }
 
-    .niku-cms tbody tr td {
-        font-size:13px;
+    h2 {
+        margin-bottom: 25px;
     }
 
-
-
-    .niku-cms .btn {
-        margin-bottom:15px;
+    tbody tr td {
+        font-size: 13px;
     }
 
-    .niku-cms #niku-cms-sidebar {
-        width:260.5px;
+    .btn {
+        margin-bottom: 15px;
     }
+
+    #niku-cms-sidebar {
+        width: 260.5px;
+    }
+
+    .niku-cms-list-actions {
+        width:100%;
+    }
+
+    .row > form > .col-md-9 > h2 {
+        margin-top:0px;
+        padding-top:0px;
+    }
+
+    .noresults {
+        padding:0px;
+        margin:0px;
+    }
+}

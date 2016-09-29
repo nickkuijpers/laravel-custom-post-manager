@@ -55,7 +55,7 @@ php artisan migrate
 As i advice you, for default websites, to keep the frontend and the backand decoupled, you have to define the following into your gulpfile.js.
 You don't have to do anything in there, but it gives you the possibility to add new custom fields like editors and datepickers.
 
-*In the niku-cms.js you will see a Bootstrap 3 function, you can enable this if you are using Bootstrap but this will make sure the
+*In the niku-cms.js you will see a Bootstrap 3 function, you can disable this if you are not using Bootstrap but this will make sure the
 sidebar of the single post view is fixed for usability.*
 
 ```
@@ -159,6 +159,23 @@ Before you are able to use the post types, you need to whitelist and setup the r
 ## Changelog
 
 For changes and updates, please see our [CHANGELOG](CHANGELOG.md).
+
+## Help
+
+Here are the solutions for some common issues.
+
+### Laravel is not Defined
+
+This issue means you have not set the csrfToken which Laravel and Vue Resource requires to prevent man in the middle attacks.
+To solve this you can add the following code in the header.
+
+```
+<script>
+    window.Laravel = <?php echo json_encode([
+        'csrfToken' => csrf_token(),
+    ]); ?>
+    </script>
+```
 
 ## Security Vulnerabilities
 

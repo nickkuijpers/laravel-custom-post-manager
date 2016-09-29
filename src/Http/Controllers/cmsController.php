@@ -4,6 +4,7 @@ namespace Niku\Cms\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Niku\Cms\Http\Posts;
@@ -15,32 +16,90 @@ class cmsController extends Controller
      */
     public function index($post_type)
     {
-    	$objects = Posts::where('post_type', $post_type)->select([
+    	// Validate if the user is logged in
+    	$authorizeUser = $this->userIsLoggedIn($post_type);
+    	if(!$authorizeUser){
+    		return collect([
+                'code' => 'error',
+                'status' => 'User not authorized.'
+            ]);
+    	}
+
+    	// Where sql to get all posts by post_Type
+    	$where[] = ['post_type', '=', $post_type];
+
+    	// If the user can only see his own posts
+		if(config('niku-cms')['post_types'][$post_type]['authorization']['userCanOnlySeeHisOwnPosts']){
+	    	$where[] = ['post_author', '=', Auth::user()->id];
+		}
+
+		// Returning the view data like the page label
+		// $objects['view'] = config('niku-cms')['post_types'][$post_type]['view'];
+		$objects['label'] = config('niku-cms')['post_types'][$post_type]['view']['label'];
+
+		// Returning the objects
+    	$objects['objects'] = Posts::where($where)->select([
     		'id',
     		'post_title',
     		'post_name',
     		'status',
     		'post_type',
     	])->get();
+
     	return response()->json($objects);
     }
 
     /**
      * Delete a single post
      */
-    public function delete($id)
+    public function delete($post_type, $id)
     {
-    	$post = Posts::where('id', $id);
+    	// Validate if the user is logged in
+    	$authorizeUser = $this->userIsLoggedIn($post_type);
+    	if(!$authorizeUser){
+    		return collect([
+                'code' => 'error',
+                'status' => 'User not authorized.'
+            ]);
+    	}
+
+    	// Where sql to get all posts by post_Type
+    	$where[] = ['id', '=', $id];
+
+    	// If the user can only see his own posts
+		if(config('niku-cms')['post_types'][$post_type]['authorization']['userCanOnlySeeHisOwnPosts']){
+	    	$where[] = ['post_author', '=', Auth::user()->id];
+		}
+
+    	$post = Posts::where($where);
     	$post->delete();
+
     	return response()->json('success');
     }
 
     /**
      * Display a single post
      */
-    public function show($id)
+    public function show($post_type, $id)
     {
-        $post = Posts::find($id);
+    	// Validate if the user is logged in
+    	$authorizeUser = $this->userIsLoggedIn($post_type);
+    	if(!$authorizeUser){
+    		return collect([
+                'code' => 'error',
+                'status' => 'User not authorized.'
+            ]);
+    	}
+
+    	// Where sql to get all posts by post_Type
+    	$where[] = ['id', '=', $id];
+
+    	// If the user can only see his own posts
+		if(config('niku-cms')['post_types'][$post_type]['authorization']['userCanOnlySeeHisOwnPosts']){
+	    	$where[] = ['post_author', '=', Auth::user()->id];
+		}
+
+        $post = Posts::where($where)->first();
     	$postmeta = $post->postmeta()->select(['meta_key', 'meta_value'])->get();
         $postmeta = $postmeta->keyBy('meta_key');
         $postmeta = $postmeta->toArray();
@@ -59,12 +118,30 @@ class cmsController extends Controller
      */
     public function postManagement(Request $request, $post_type, $action)
     {
+    	// Validate if the user is logged in
+    	$authorizeUser = $this->userIsLoggedIn($post_type);
+    	if(!$authorizeUser){
+    		return collect([
+                'code' => 'error',
+                'status' => 'User not authorized.'
+            ]);
+    	}
+
+    	// Validate the post
     	$this->validatePost($request, $action);
 
     	if($action == 'create'){
     		$post = new Posts;
     	} else if($action == 'edit') {
-    		$post = Posts::find($request->get('_id'));
+
+    		$where[] = ['id', '=', $request->get('_id')];
+
+    		if(config('niku-cms')['post_types'][$post_type]['authorization']['userCanOnlySeeHisOwnPosts']){
+		    	$where[] = ['post_author', '=', Auth::user()->id];
+			}
+
+    		$post = Posts::where($where)->first();
+
     	}
 
         // Saving the post data
@@ -73,12 +150,14 @@ class cmsController extends Controller
     	$post->post_content = $request->get('post_content');
     	$post->status = $request->get('status');
     	$post->post_type = $post_type;
-        // Check if user is logged in
+
+        // Check if user is logged in to set the author id
         if(Auth::check()){
             $post->post_author = Auth::user()->id;
         } else {
             $post->post_author = 0;
         }
+
         $post->template = $request->get('template');
     	$post->save();
 
@@ -112,6 +191,7 @@ class cmsController extends Controller
  		$validationRules = [
 	        'post_title' => 'required',
             'status' => 'required',
+            'post_name' => 'required',
 	    ];
 
 	    // Validate if we are creating a new post or that we are editting one
@@ -176,6 +256,15 @@ class cmsController extends Controller
      */
     public function receiveView(Request $request)
     {
+    	// Validate if the user is logged in
+    	$authorizeUser = $this->userIsLoggedIn($request->get('_post_type'));
+    	if(!$authorizeUser){
+    		return collect([
+                'code' => 'error',
+                'status' => 'User not authorized.'
+            ]);
+    	}
+
         $postType = $request->get('_post_type');
         $id = $request->get('_id');
 
@@ -204,12 +293,29 @@ class cmsController extends Controller
             foreach($template['customFields'] as $ckey => $customField){
                 $view['templates'][$key]['customFields'][$ckey]['id'] = $ckey;
                 if(!empty($post)){
-                    $view['templates'][$key]['customFields'][$ckey]['value'] = $postmeta[$ckey]['meta_value'];
+                	if(!empty($postmeta[$ckey])){
+                		$view['templates'][$key]['customFields'][$ckey]['value'] = $postmeta[$ckey]['meta_value'];
+                	}
                 }
             }
         }
 
         return $view;
+    }
+
+    public function userIsLoggedIn($post_type)
+    {
+    	$authorization = config('niku-cms')['post_types'][$post_type]['authorization'];
+    	if($authorization['userMustBeLoggedIn']){
+    		if(Auth::check()){
+	    		return 1;
+    		} else {
+    			return 0;
+    		}
+    	} else {
+    		return 1;
+    	}
+
     }
 
 }

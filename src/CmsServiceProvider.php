@@ -13,8 +13,12 @@ class CmsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Register migrations
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        // Register migrations only if its laravel 5.3 or heigher
+        $laravel = app();
+		$version = $laravel::VERSION;
+		if($version > 5.3){
+			$this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+		}
 
         // Register translations
         $this->loadTranslationsFrom(__DIR__.'/../translations', 'niku-cms');

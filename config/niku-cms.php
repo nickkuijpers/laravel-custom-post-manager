@@ -6,106 +6,100 @@
 
 return [
 
-	'demo' => 0,
+    'demo' => 0,
 
-	// Define the required 'whitelisted' post types
-	'post_types' => [
+    // Define the required 'whitelisted' post types
+    'post_types' => [
 
-		// The custom post type
-		'page' => [
+        // The custom post type
+        'page' => [
 
-			// Authentication middlewares
-			'authenticate' => [
-				'auth',
-				'isAdmin',
-			],
-			'view' => [
+            // Authorization
+            'authorization' => [
+                'userMustBeLoggedIn' => 0,
+                'userCanOnlySeeHisOwnPosts' => 0,
+            ],
 
-				// The page title
-				'label' => 'Pagina\'s',
+            'view' => [
 
-				// If there is more than one template defined, a select
-				// box will appear so you can switch between them.
-				'templates' => [
+                // The page title
+                'label' => 'Pagina\'s',
 
-					'default' => [
-						'label' => 'Standaard pagina',
-						'template' => 'default',
+                // If there is more than one template defined, a select
+                // box will appear so you can switch between them.
+                'templates' => [
 
-						// Defining custom fields for the current page template
-						'customFields' => [
+                    'default' => [
+                        'label' => 'Standaard pagina',
+                        'template' => 'default',
 
-							'header_afbeelding' => [
-								'component' => 'niku-cms-text-customfield',
-								'label' => 'Header afbeelding',
-								'type' => 'image',
-								'value' => ''
-							],
+                        // Defining custom fields for the current page template
+                        'customFields' => [
 
-							'header_afbeel123ding' => [
-								'component' => 'niku-cms-text-customfield',
-								'label' => 'Header afbeelding',
-								'type' => 'image',
-								'value' => ''
-							],
+                            'sidebar_title' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Sidebar titel',
+                                'type' => 'image',
+                                'value' => ''
+                            ],
 
-							'header_afbeeld33ing' => [
-								'component' => 'niku-cms-text-customfield',
-								'label' => 'Header afbeelding',
-								'type' => 'image',
-								'value' => ''
-							],
+                            'sidebar_content' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Sidebar tekst',
+                                'type' => 'image',
+                                'value' => ''
+                            ],
 
-							'header_afbeeldi44ng' => [
-								'component' => 'niku-cms-text-customfield',
-								'label' => 'Header afbeelding',
-								'type' => 'image',
-								'value' => ''
-							],
+                            'bottom_left_text' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Links onder tekst',
+                                'type' => 'image',
+                                'value' => ''
+                            ],
 
-							'header_afbeeld55ing' => [
-								'component' => 'niku-cms-text-customfield',
-								'label' => 'Header afbeelding',
-								'type' => 'image',
-								'value' => ''
-							],
+                            'bottom_right_text' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Rechts onder tekst',
+                                'type' => 'image',
+                                'value' => ''
+                            ]
 
-						],
-					],
+                        ],
+                    ],
 
-					'sidebar-left' => [
-						'label' => 'Sidebar rechts pagina',
-						'template' => 'sidebar-left',
-						'customFields' => [
+                    'sidebar-left' => [
+                        'label' => 'Sidebar rechts pagina',
+                        'template' => 'sidebar-left',
+                        'customFields' => [
 
-							'header_afbeeld55ing' => [
-								'component' => 'niku-cms-text-customfield',
-								'label' => 'Header afbeelding',
-								'type' => 'image',
-								'value' => ''
-							],
+                            'heade12312355ing' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Header afbeelding',
+                                'type' => 'image',
+                                'value' => ''
+                            ],
 
-							'header_afbeeld55ing' => [
-								'component' => 'niku-cms-text-customfield',
-								'label' => 'Header afbeelding',
-								'type' => 'image',
-								'value' => ''
-							],
+                            'header123ld55ing' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Header afbeelding',
+                                'type' => 'image',
+                                'value' => ''
+                            ],
 
 
-						],
-					],
+                        ],
+                    ],
 
-					'contact' => [
-						'label' => 'Contact pagina',
-						'template' => 'contact',
-						'customFields' => [
+                    'contact' => [
+                        'label' => 'Contact pagina',
+                        'template' => 'contact',
+                        'customFields' => [
 
-						],
-					],
-				],
-			],
-		],
-	],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
 
 ];

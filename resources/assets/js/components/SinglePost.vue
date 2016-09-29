@@ -9,16 +9,17 @@
         <div class="row">
 
             <form method="post" action="/niku-cms/{{ postType }}/{{ postAction }}" class="form-horizontal" @submit.prevent="validateForm" id="newPost" data-stay="true">
-                <input type="hidden" name="_token" value="{{ token }}">
                 <input type="hidden" name="_posttype" value="{{ postType }}">
                 <input type="hidden" name="_id" value="{{ post.id }}">
 
                 <div class="col-md-9">
-                    <h2>{{ pageTitle }} {{ post.post_title }}</h2>
+                    <h3>{{ pageTitle }} {{ post.post_title }}</h3>
+
+                    <hr>
 
                     <!-- post_title -->
                     <div class="form-group">
-                        <label for="post_title" class="col-sm-2 control-label">Titel:</label>
+                        <label for="post_title" class="col-sm-3 control-label">Titel:</label>
                         <div class="col-sm-6">
                             <input type="text" v-model="post.post_title" name="post_title" id="post_title" class="form-control" value="">
                         </div>
@@ -26,7 +27,7 @@
 
                     <!-- post_name -->
                     <div class="form-group">
-                        <label for="post_name" class="col-sm-2 control-label">Slug:</label>
+                        <label for="post_name" class="col-sm-3 control-label">Slug:</label>
                         <div class="col-sm-6">
                             <input type="text" name="post_name" v-model="post.post_name" id="post_name" class="form-control" v-url="post.post_name" value="{{ post.post_title | url }}">
                         </div>
@@ -34,8 +35,8 @@
 
                     <!-- post_content -->
                     <div class="form-group">
-                        <label for="post_content" class="col-sm-2 control-label">Inhoud:</label>
-                        <div class="col-sm-10">
+                        <label for="post_content" class="col-sm-3 control-label">Inhoud:</label>
+                        <div class="col-sm-9">
                             <textarea name="post_content" v-model="post.post_content" id="post_content" class="form-control" rows="6"></textarea>
                         </div>
                     </div>
@@ -58,7 +59,6 @@
                                             <div class="col-md-12">
                                                 <label for="status" class="control-label">Status:</label>
                                                 <select name="status" v-model="post.status" id="status" class="form-control">
-                                                    <option></option>
                                                     <option value="1">Gepubliceerd</option>
                                                     <option value="0">Concept</option>
                                                 </select>
@@ -155,7 +155,7 @@ export default {
         editPost() {
             this.postAction = 'edit';
 
-            this.$http.get('/niku-cms/show/' + this.post.postId)
+            this.$http.get('/niku-cms/' + this.postType + '/show/' + this.post.postId)
                 .then(response => {
 
                     this.pageTitle = 'Object bewerken:';
@@ -180,7 +180,7 @@ export default {
          */
         receiveView() {
 
-            this.$http.post('/niku-cms/receiveview/', {
+            this.$http.post('/niku-cms/' + this.postType + '/receiveview/', {
                 '_post_type': this.postType,
                 '_id': this.post.id,
             }).then(response => {

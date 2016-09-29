@@ -3,7 +3,9 @@
 namespace Niku\Cms;
 
 use Illuminate\Contracts\Routing\Registrar as Router;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
 
 class RouteRegistrar
 {
@@ -43,8 +45,7 @@ class RouteRegistrar
 	public function cmsRoutes()
 	{
 		Route::group([
-			'as' => 'niku-cms.',
-			'middleware' => 'auth'
+			'as' => 'niku-cms.'
 		], function () {
 
 			// Testing and demo
@@ -56,16 +57,16 @@ class RouteRegistrar
 			Route::get('/niku-cms/{post_type}', '\Niku\Cms\Http\Controllers\cmsController@index')->name('list');
 
 			// Returning the single post result
-			Route::get('/niku-cms/show/{id}', '\Niku\Cms\Http\Controllers\cmsController@show')->name('show');
+			Route::get('/niku-cms/{post_type}/show/{id}', '\Niku\Cms\Http\Controllers\cmsController@show')->name('show');
+
+			// Deleting a post
+			Route::delete('/niku-cms/{post_type}/delete/{id}', '\Niku\Cms\Http\Controllers\cmsController@delete')->name('post_type');
+
+			// Recieving custom fields based on post type and template
+			Route::post('/niku-cms/{post_type}/receiveview', '\Niku\Cms\Http\Controllers\cmsController@receiveView')->name('custom_fields');
 
 			// Creating and updating posts
 			Route::post('/niku-cms/{post_type}/{action}', '\Niku\Cms\Http\Controllers\cmsController@postManagement')->name('createedit');
-
-			// Deleting a post
-			Route::delete('/niku-cms/delete/{id}', '\Niku\Cms\Http\Controllers\cmsController@delete')->name('post_type');
-
-			// Recieving custom fields based on post type and template
-			Route::post('/niku-cms/receiveview', '\Niku\Cms\Http\Controllers\cmsController@receiveView')->name('custom_fields');
 
 		});
 	}

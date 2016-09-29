@@ -17,12 +17,12 @@ class AddPostsForCms extends Migration
             $table->text('post_title');
             $table->bigInteger('post_author');
             $table->longText('post_content');
-            $table->text('post_excerpt');
-            $table->string('post_password');
+            $table->text('post_excerpt')->nullable();
+            $table->string('post_password')->nullable();
             $table->string('post_name');
-            $table->bigInteger('post_parent');
+            $table->bigInteger('post_parent')->nullable();
             $table->string('post_type');
-            $table->integer('menu_order');
+            $table->integer('menu_order')->nullable();
             $table->string('status');
             $table->string('template');
             $table->timestamps();
