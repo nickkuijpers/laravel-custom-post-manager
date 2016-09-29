@@ -54,11 +54,10 @@ mix.sass([
 ], 'public/css/vendor/niku-cms/niku-cms.css');
 ```
 
-
-
-* include javascript
-* include css
-* include components
+In the config/niku-cms.php you will see a demo variable. If you enable this, you can open up the cms by requesting the following url:
+```
+http://domain.com/niku-cms/demo/{post_type}
+```
 
 ## Extending the framework # TO DO
 
