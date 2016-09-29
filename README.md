@@ -16,9 +16,9 @@ but you can extend is very easily as you read the 'Extending the custom fields' 
 
 ## Impression
 
-| ![Impression 1](https://niku-solutions.nl/laravel-niku-cms/image1.png)  | ![Impression 2](https://niku-solutions.nl/laravel-niku-cms/image2.png)  | ![Impression 3](https://niku-solutions.nl/laravel-niku-cms/image3.png)  |
+| ![Impression 1](https://niku-solutions.nl/laravel-niku-cms/image1.png)  | ![Impression 2](https://niku-solutions.nl/laravel-niku-cms/image2.png)  | ![Impression 3](https://niku-solutions.nl/laravel-niku-cms/image3.png)  | ![Impression 4](https://niku-solutions.nl/laravel-niku-cms/image3.png)  |
 | ------------- | ------------- | ------------- |
-| ![Impression 4](https://niku-solutions.nl/laravel-niku-cms/image4.png)  | ![Impression 5](https://niku-solutions.nl/laravel-niku-cms/image5.png)  | ![Impression 6](https://niku-solutions.nl/laravel-niku-cms/image6.png)  |
+| ![Impression 5](https://niku-solutions.nl/laravel-niku-cms/image4.png)  | ![Impression 6](https://niku-solutions.nl/laravel-niku-cms/image5.png)  | ![Impression 7](https://niku-solutions.nl/laravel-niku-cms/image6.png)  | ![Impression 8](https://niku-solutions.nl/laravel-niku-cms/image3.png)  |
 
 *For now you are required to be authenticated to use the CMS api's. In future releases i will be adding rules for authentication like viewable in the config/niku-cms.php*
 
