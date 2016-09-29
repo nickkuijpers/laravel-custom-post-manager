@@ -56,6 +56,25 @@ mix.sass([
 ], 'public/css/vendor/niku-cms/niku-cms.css');
 ```
 
+After doing this, you will see the combined assets into your public/*/vendor directory. Those files will be required to be included into the pages where you include the CMS, like
+you see in the dummy view we've attached in views/vendor/niku-cms.php.
+
+To include the CMS into a existing page, front-end or back-end, make sure you do it like this:
+
+```
+<head>
+	<link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/vendor/niku-cms/niku-cms.css') }}">
+</head>
+
+<body>
+	<niku-cms-spinner></niku-cms-spinner>
+	<niku-cms-notification v-bind:notification="nikuCms.notification"></niku-cms-notification>
+    <component :is="nikuCms.view" post_type="{{ $post_type }}"></component>
+
+    <script src="{{ asset('js/vendor/niku-cms/niku-cms.js') }}"></script>
+</body>
+```
+
 ### Demo and testing
 
 In the config/niku-cms.php you will see a demo variable. If you enable this, you can open up the cms by requesting the following url. The variable will be dynamically added
