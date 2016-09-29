@@ -76,6 +76,8 @@ After testing the demo url and the CMS is working, you can implement it into you
 the required assets in each page you use the CMS component. As this CMS is based on Vue, you must ofcourse include
 your default assets.
 
+You can change the `post_type` variable in the <compontent> to change the post type of the CMS.
+
 ```
 <head>
 	...
