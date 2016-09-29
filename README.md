@@ -42,6 +42,8 @@ php artisan vendor:publish --tag=niku-cms
 
 ### Asset installation
 
+#### gulpfile.js
+
 As i advice you, for default websites, to keep the frontend and the backand decoupled, you have to define the following into your gulpfile.js.
 You don't have to do anything in there, but it gives you the possibility to add new custom fields like editors and datepickers.
 
@@ -55,6 +57,28 @@ mix.webpack([
 mix.sass([
     'vendor/niku-cms/niku-cms.scss',
 ], 'public/css/vendor/niku-cms/niku-cms.css');
+```
+
+#### app.js
+
+The final step is to include the required components and default data into your app.js which is run by webpack.
+
+```
+*require('./vendor/niku-cms/init-niku-cms.js');*
+
+const app = new Vue({
+	el: 'body',
+	data: {
+	    *'nikuCms': {
+	        view: 'niku-cms-list-posts',
+	        data: {},
+	        postType: 'page',
+	        notification: {'display': 0, 'type': '', 'message': ''}
+	    },*
+    	...
+    }
+    ...
+},
 ```
 
 ### Demo and testing
