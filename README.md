@@ -160,6 +160,7 @@ Before you are able to use the post types, you need to whitelist and setup the r
 * Taxonomies like categories
 * ~~Add user authentication rules because now you are required to be authenticated to use the CMS.~~
 * Translations, now you need to hardcode the language
+* Dynamically manipulate the table headers of the list overview by the config file
 
 ## Changelog
 
