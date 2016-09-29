@@ -190,6 +190,7 @@ Before you are able to use the post types, you need to whitelist and setup the r
 * Possibility to add validation rules into the config for custom fields
 * Pagination
 * New package for Media management with interface so custom fields can keep that as default
+* Creation of a global option page where website wide data is stored
 
 ## Changelog
 
