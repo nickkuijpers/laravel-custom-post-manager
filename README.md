@@ -61,7 +61,7 @@ mix.sass([
 
 #### app.js
 
-The final step is to include the required components and default data into your app.js which is run by webpack.
+Include the required components and default data into your app.js which is run by webpack.
 
 ```
 require('./vendor/niku-cms/init-niku-cms.js');
@@ -80,6 +80,14 @@ const app = new Vue({
     }
     ...
 },
+```
+
+#### gulp
+
+Run gulp and the installation is done!
+
+```
+gulp
 ```
 
 ### Demo and testing
