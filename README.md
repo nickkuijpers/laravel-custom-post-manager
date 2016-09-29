@@ -56,37 +56,39 @@ mix.sass([
 ], 'public/css/vendor/niku-cms/niku-cms.css');
 ```
 
-After doing this, you will see the combined assets into your public/*/vendor directory. Those files will be required to be included into the pages where you include the CMS, like
-you see in the dummy view we've attached in views/vendor/niku-cms.php. In the dummy view, the component name is dynamically created. I advice you to hardcode this value when
-you are using this in a certain page like http://yourdomain.com/cms/page where the component name is page or the type of post type you require.
-
-If you are going to use more than one CMS component in different pages, you can the spinner, notification, css and javascript into a partial in
-like the footer and header of your code structure. But make sure you add those only once.
-```
-<head>
-	<link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/vendor/niku-cms/niku-cms.css') }}">
-</head>
-
-<body>
-	<niku-cms-spinner></niku-cms-spinner>
-	<niku-cms-notification v-bind:notification="nikuCms.notification"></niku-cms-notification>
-    <component :is="nikuCms.view" post_type="{{ $post_type }}"></component>
-
-    <script src="{{ asset('js/vendor/niku-cms/niku-cms.js') }}"></script>
-</body>
-```
-
 ### Demo and testing
 
 In the config/niku-cms.php you will see a demo variable. If you enable this, you can open up the cms by requesting the following url. The variable will be dynamically added
 to the Vue component and will be used as the post type for saving the post. To see the power of the post types, try changing the {post_type} variable into something like
 'post' and you will be adding and listing posts to the 'post' post type in the database.
+
+In the dummy view, the component name is dynamically created. I advice you to hardcode this value when you are using this in a
+certain page like http://yourdomain.com/cms/page where the component name is page or the type of post type you require.
+
 ```
 http://domain.com/niku-cms/demo/{post_type}
 ```
 
 ## Usage # TO DO
-* Write usage description
+
+After testing the demo url and the CMS is working, you can implement it into your application. Make sure you add
+the required assets in each page you use the CMS component. As this CMS is based on Vue, you must ofcourse include
+your default assets.
+
+```
+<head>
+	...
+	<link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/vendor/niku-cms/niku-cms.css') }}">
+</head>
+<body>
+	<niku-cms-spinner></niku-cms-spinner>
+	<niku-cms-notification v-bind:notification="nikuCms.notification"></niku-cms-notification>
+	...
+	<component :is="nikuCms.view" post_type="page"></component>
+	...
+	<script src="{{ asset('js/vendor/niku-cms/niku-cms.js') }}"></script>
+</body>
+```
 
 ## Extending the framework # TO DO
 
