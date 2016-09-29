@@ -69,6 +69,7 @@ require('./vendor/niku-cms/init-niku-cms.js');
 const app = new Vue({
 	el: 'body',
 	data: {
+		...
 	    'nikuCms': {
 	        view: 'niku-cms-list-posts',
 	        data: {},
