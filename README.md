@@ -65,6 +65,9 @@ to the Vue component and will be used as the post type for saving the post. To s
 http://domain.com/niku-cms/demo/{post_type}
 ```
 
+## Usage # TO DO
+* Write usage description
+
 ## Extending the framework # TO DO
 
 * Adding custom fields with custom javascript and css
