@@ -17,18 +17,32 @@ Install the package via composer:
 composer require niku-solutions/cms
 ```
 
-
+* include javascript
+* include css
+* include components
+* vendor publish
 
 ### Vendor files
+
 Run the following comment:
 php artisan vendor:publish
 
 ### Import the required vue compenents into the vue instance and js
 
+## Extending the framework
+
+#### TO DO
+// custom fields
+// adding custom fields with custom styling and javascript
+// changing the html of the pages
+
+## Future features
+* Taxonomies
+* User authorization
 
 ## Changelog
 
-For changes and updates, please see [CHANGELOG](CHANGELOG.md).
+For changes and updates, please see our [CHANGELOG](CHANGELOG.md).
 
 ## Security Vulnerabilities
 
