@@ -22,9 +22,8 @@ composer require niku-solutions/cms
 * include components
 * vendor publish
 
-## Extending the framework
+## TO DOCU - Extending the framework
 
-#### TO DO; write documation
 * Adding custom fields with custom javascript and css
 * changing the html of the pages
 
