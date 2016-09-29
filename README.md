@@ -40,7 +40,7 @@ You need to run the following artisan command to publish the required assets and
 php artisan vendor:publish --tag=niku-cms
 ```
 
-Migrate the database tablets by running:
+Migrate the database tables by running:
 
 ```
 php artisan migrate
