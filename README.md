@@ -1,4 +1,4 @@
-# Laravel NIKU CMS
+# Laravel Post Manager
 
 [![Latest Stable Version](https://poser.pugx.org/niku-solutions/cms/v/stable)](https://packagist.org/packages/niku-solutions/cms)
 [![Total Downloads](https://poser.pugx.org/niku-solutions/cms/downloads)](https://packagist.org/packages/niku-solutions/cms)
@@ -7,12 +7,14 @@
 [![Monthly Downloads](https://poser.pugx.org/niku-solutions/cms/d/monthly)](https://packagist.org/packages/niku-solutions/cms)
 [![Daily Downloads](https://poser.pugx.org/niku-solutions/cms/d/daily)](https://packagist.org/packages/niku-solutions/cms)
 
-A codeable CMS for Laravel with post types and custom fields. Extendable as you wish.
+A codeable post manager for Laravel with custom fields. Extendable as you wish.
 
 Vue.js and Vue Resource is required. But as Laravel 5.3 ships this with default you will be able to install this easily.
 This package gives you the possibility to easily add a user interface to manage post types with custom fields based on the
-selected page template and authentication. This package includes default custom fields
-but you can extend it very easily as you read the 'Extending the custom fields' section.
+selected page template and authentication. This package includes default custom fields but you can extend it very
+easily as you read the 'Extending the custom fields' section.
+
+You will be able to create a user interface for content management in minutes.
 
 ## Impression
 
