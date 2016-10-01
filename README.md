@@ -192,9 +192,9 @@ Before you are able to use the post types, you need to whitelist and setup the r
 * New package for Media management with interface so custom fields can keep that as default
 * Creation of a global option page where website wide data is stored
 
-## Changelog
+<!-- ## Changelog
 
-For changes and updates, please see our [CHANGELOG](CHANGELOG.md).
+For changes and updates, please see our [CHANGELOG](CHANGELOG.md). -->
 
 ## Help
 
