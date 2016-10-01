@@ -21,7 +21,7 @@ class cmsController extends Controller
     	if(!$authorizeUser){
     		return collect([
                 'code' => 'error',
-                'status' => 'User not authorized.'
+                'status' => 'User not authorized or post type is not registered.'
             ]);
     	}
 
@@ -305,16 +305,21 @@ class cmsController extends Controller
 
     public function userIsLoggedIn($post_type)
     {
-    	$authorization = config('niku-cms')['post_types'][$post_type]['authorization'];
-    	if($authorization['userMustBeLoggedIn']){
-    		if(Auth::check()){
+    	if( !empty(config('niku-cms')['post_types'][$post_type] )){
+	    	$authorization = config('niku-cms')['post_types'][$post_type]['authorization'];
+	    	if($authorization['userMustBeLoggedIn']){
+	    		if(Auth::check()){
+		    		return 1;
+	    		} else {
+	    			return 0;
+	    		}
+	    	} else {
 	    		return 1;
-    		} else {
-    			return 0;
-    		}
-    	} else {
-    		return 1;
-    	}
+	    	}
+
+	    } else {
+	    	return 0;
+	    }
 
     }
 
