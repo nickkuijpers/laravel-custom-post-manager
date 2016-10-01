@@ -66,6 +66,9 @@
                                         </div>
 
                                          <!-- post_status -->
+                                        <template v-if="templateCount = 1">
+                                            <input type="hidden" name="template" value="default">
+                                        </template>
                                         <div class="form-group" v-if="templatesCount > 1">
                                             <div class="col-md-12">
                                                 <label for="template" class="control-label">Template:</label>
