@@ -109,6 +109,7 @@ const app = new Vue({
 	        view: 'niku-cms-list-posts',
 	        data: {},
 	        postType: 'page',
+	        mediaManager: {'display': 0},
 	        notification: {'display': 0, 'type': '', 'message': ''}
 	    },
     }
