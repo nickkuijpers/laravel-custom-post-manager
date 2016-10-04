@@ -69,7 +69,7 @@ export default {
          */
         this.nikuCms = this.$parent.nikuCms;
         this.$parent.nikuCms.postType = this.post_type;
-        this.token = $('meta[name=_token]').attr('content');
+        // this.token = $('meta[name=_token]').attr('content');
         this.displayNotification = this.nikuCms.notification.display;
 
         // // Beginning of CMS
