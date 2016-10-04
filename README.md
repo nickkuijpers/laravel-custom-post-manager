@@ -47,8 +47,8 @@ Niku\Cms\Cms::routes();
 You need to run the following artisan command to publish the required assets and views.
 
 ```
-php artisan vendor:publish --tag=niku-cms
-php artisan vendor:publish --tag=niku-cms-config
+php artisan vendor:publish --tag=niku-assets
+php artisan vendor:publish --tag=niku-config
 ```
 
 Migrate the database tables by running:
@@ -68,9 +68,7 @@ You don't have to do anything in there, but it gives you the possibility to add 
 sidebar of the single post view is fixed for usability.*
 
 ```
-
 elixir(mix => {
-	...
     mix.scripts([ // Vendor scripts like tinymce and datepickers
         'vendor/niku-cms/vendor/tinymce.min.js',
         // 'vendor/niku-cms/vendor/jquery-3.1.1.min.js',
@@ -87,7 +85,6 @@ elixir(mix => {
         'vendor/niku-cms/dropzone.scss',
         'vendor/niku-cms/niku-cms.scss',
     ], 'public/css/vendor/niku-cms/niku-cms.css');
-	...
 });
 ```
 

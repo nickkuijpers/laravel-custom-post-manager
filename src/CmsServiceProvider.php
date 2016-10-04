@@ -21,19 +21,19 @@ class CmsServiceProvider extends ServiceProvider
 		}
 
         // Register translations
-        $this->loadTranslationsFrom(__DIR__.'/../translations', 'niku-cms');
+        $this->loadTranslationsFrom(__DIR__.'/../translations', 'niku-assets');
 
         // Register config
         $this->publishes([
             __DIR__.'/../config/'. 'niku-cms.php' => config_path('niku-cms.php'),
-        ], 'niku-cms-config');
+        ], 'niku-config');
 
         // Register Vue components
         $this->publishes([
             __DIR__.'/../resources/assets/js/' => base_path('resources/assets/js/vendor/niku-cms'),
             __DIR__.'/../resources/assets/sass/' => base_path('resources/assets/sass/vendor/niku-cms'),
             __DIR__.'/../resources/assets/css/' => base_path('resources/assets/css/vendor/niku-cms'),
-        ], 'niku-cms');
+        ], 'niku-assets');
 
         // Register views
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'niku-cms');
@@ -41,7 +41,7 @@ class CmsServiceProvider extends ServiceProvider
         // Register copying views
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/niku-cms'),
-        ], 'niku-cms');
+        ], 'niku-assets');
     }
 
     /**
