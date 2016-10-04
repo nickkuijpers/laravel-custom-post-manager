@@ -183,7 +183,7 @@ export default {
          */
         receiveView() {
 
-            this.$http.post('/niku-cms/' + this.postType + '/receiveview/', {
+            this.$http.post('/niku-cms/' + this.postType + '/receiveview', {
                 '_post_type': this.postType,
                 '_id': this.post.id,
             }).then(response => {

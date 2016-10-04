@@ -6,7 +6,7 @@
 
 return [
 
-    'demo' => 0,
+    'demo' => 1,
 
     // Define the required 'whitelisted' post types
     'post_types' => [
@@ -16,7 +16,7 @@ return [
 
             // Authorization
             'authorization' => [
-                'userMustBeLoggedIn' => 0,
+                'userMustBeLoggedIn' => 1,
                 'userCanOnlySeeHisOwnPosts' => 0,
             ],
 
@@ -36,70 +36,105 @@ return [
                         // Defining custom fields for the current page template
                         'customFields' => [
 
-                            'sidebar_title' => [
+                            'text' => [
+                                'component' => 'niku-cms-text-customfield',
+                                'label' => 'Text',
+                                'value' => ''
+                            ],
+
+                            'image' => [
+                                'component' => 'niku-cms-image-customfield',
+                                'label' => 'Image',
+                                'value' => ''
+                            ],
+
+                            'textarea' => [
+                                'component' => 'niku-cms-textarea-customfield',
+                                'label' => 'Textarea',
+                                'value' => '123'
+                            ],
+
+                            'select' => [
+                                'component' => 'niku-cms-select-customfield',
+                                'label' => 'Select',
+                                'options' => [
+                                    '' => '',
+                                    'value' => 'Label'
+                                ]
+                            ],
+
+                        ],
+                    ],
+
+
+                ],
+            ],
+        ],
+
+        // The custom post type
+        'post' => [
+            'authorization' => [
+                'userMustBeLoggedIn' => 1,
+                'userCanOnlySeeHisOwnPosts' => 0,
+            ],
+            'view' => [
+                'label' => 'Standaard bericht',
+                'templates' => [
+                    'default' => [
+                        'label' => 'Berichten pagina',
+                        'template' => 'default',
+                        'customFields' => [
+                            'text' => [
                                 'component' => 'niku-cms-text-customfield',
                                 'label' => 'Sidebar titel',
-                                'type' => 'image',
+                                'type' => 'text',
                                 'value' => ''
                             ],
-
-                            'sidebar_content' => [
-                                'component' => 'niku-cms-text-customfield',
-                                'label' => 'Sidebar tekst',
-                                'type' => 'image',
+                            'image' => [
+                                'component' => 'niku-cms-image-customfield',
+                                'label' => 'Image',
+                                'type' => 'upload',
                                 'value' => ''
                             ],
-
-                            'bottom_left_text' => [
-                                'component' => 'niku-cms-text-customfield',
-                                'label' => 'Links onder tekst',
-                                'type' => 'image',
+                            'textarea' => [
+                                'component' => 'niku-cms-textarea-customfield',
+                                'label' => 'Textarea',
+                                'value' => '123'
+                            ],
+                            'select' => [
+                                'component' => 'niku-cms-select-customfield',
+                                'label' => 'Select',
+                                'options' => [
+                                    '' => '',
+                                    'test' => 'test'
+                                ],
                                 'value' => ''
                             ],
-
-                            'bottom_right_text' => [
-                                'component' => 'niku-cms-text-customfield',
-                                'label' => 'Rechts onder tekst',
-                                'type' => 'image',
-                                'value' => ''
-                            ]
-
-                        ],
-                    ],
-
-                    'sidebar-left' => [
-                        'label' => 'Sidebar rechts pagina',
-                        'template' => 'sidebar-left',
-                        'customFields' => [
-
-                            'heade12312355ing' => [
-                                'component' => 'niku-cms-text-customfield',
-                                'label' => 'Header afbeelding',
-                                'type' => 'image',
-                                'value' => ''
-                            ],
-
-                            'header123ld55ing' => [
-                                'component' => 'niku-cms-text-customfield',
-                                'label' => 'Header afbeelding',
-                                'type' => 'image',
-                                'value' => ''
-                            ],
-
-
-                        ],
-                    ],
-
-                    'contact' => [
-                        'label' => 'Contact pagina',
-                        'template' => 'contact',
-                        'customFields' => [
-
                         ],
                     ],
                 ],
             ],
         ],
+
+        // The custom post type
+        'attachment' => [
+            'authorization' => [
+                'userMustBeLoggedIn' => 1,
+                'userCanOnlySeeHisOwnPosts' => 0,
+            ],
+            'view' => [
+                'label' => 'Media manager',
+                'templates' => [
+                    'default' => [
+                        'label' => 'Media manager',
+                        'template' => 'default',
+                        'customFields' => [
+                        ],
+                    ],
+                ],
+            ],
+        ],
+
     ],
 
 ];

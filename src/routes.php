@@ -68,6 +68,9 @@ class RouteRegistrar
 			// Creating and updating posts
 			Route::post('/niku-cms/{post_type}/{action}', '\Niku\Cms\Http\Controllers\cmsController@postManagement')->name('createedit');
 
+			// Creating and updating posts
+			Route::post('/niku-cms/media', '\Niku\Cms\Http\Controllers\mediaController@post')->name('mediamanagerpost');
+
 		});
 	}
 }

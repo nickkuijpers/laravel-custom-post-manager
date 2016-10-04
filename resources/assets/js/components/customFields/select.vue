@@ -1,10 +1,16 @@
 <template>
 
 	<div class="form-group">
-		<label for="post_name" class="col-sm-2 control-label">{{ data.label }}:</label>
-		<div class="col-sm-6">
-			<input type="text" name="{{ data.id }}" v-model="input" name="{{ data.id }}" class="form-control" value="{{ data.value }}">
-		</div>
+        <div class="col-md-3">
+            <label for="status" class="control-label">{{ data.label }}:</label>
+        </div>
+        <div class="col-md-9">
+            <select name="{{ data.id }}" v-model="data.value" id="status" class="form-control">
+                <option v-for="(value, key) in data.options" value="{{ key }}">
+                    {{ value }}
+                </option>
+            </select>
+        </div>
 	</div>
 
 </template>

@@ -60,6 +60,10 @@ export default {
             });
         },
 
+        mediamanager() {
+            this.$parent.nikuCms.mediaManager.display = 1;
+        },
+
         /**
          * Resetting notification on each view
          */

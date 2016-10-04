@@ -11,7 +11,7 @@ class Postmeta extends Model
 
     public function post()
     {
-    	return $this->hasOne('Niku\Cms\Http\Posts', 'post_id');
+    	return $this->hasOne('Niku\Cms\Http\Posts', 'id', 'post_id');
     }
 
 }

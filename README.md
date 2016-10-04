@@ -70,12 +70,22 @@ sidebar of the single post view is fixed for usability.*
 
 elixir(mix => {
 	...
-	mix.webpack([
-	    'vendor/niku-cms/niku-cms.js',
-	], 'public/js/vendor/niku-cms/niku-cms.js');
-	mix.sass([
-	    'vendor/niku-cms/niku-cms.scss',
-	], 'public/css/vendor/niku-cms/niku-cms.css');
+    mix.scripts([ // Vendor scripts like tinymce and datepickers
+        'vendor/niku-cms/vendor/tinymce.min.js',
+        // 'vendor/niku-cms/vendor/jquery-3.1.1.min.js',
+        'vendor/niku-cms/vendor/jquery-ui.js',
+    ], 'public/js/vendor/niku-cms/vendor.js')
+    .webpack([ // Custom scripting
+        'vendor/niku-cms/niku-cms.js',
+    ], 'public/js/vendor/niku-cms/niku-cms.js')
+    .styles([ // Vendor styling like tinymce and datepickers
+        'vendor/niku-cms/vendor/jquery-ui.css',
+    ], 'public/css/vendor/niku-cms/vendor.css')
+    .sass([ // Custom styling
+        'vendor/niku-cms/mediamanager.scss',
+        'vendor/niku-cms/dropzone.scss',
+        'vendor/niku-cms/niku-cms.scss',
+    ], 'public/css/vendor/niku-cms/niku-cms.css');
 	...
 });
 ```
@@ -139,15 +149,17 @@ You can change the `post_type` variable in the <compontent> to change the post t
 ```
 <head>
 	...
-	<link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/vendor/niku-cms/niku-cms.css') }}">
+	<link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/vendor/niku-cms/vendor.css') }}">
+    <link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/vendor/niku-cms/niku-cms.css') }}">
 </head>
 <body>
 	<niku-cms-spinner></niku-cms-spinner>
 	<niku-cms-notification v-bind:notification="nikuCms.notification"></niku-cms-notification>
 	...
-	<component :is="nikuCms.view" post_type="page"></component>
+    <component :is="nikuCms.view" post_type="{{ $post_type }}"></component>
 	...
-	<script src="{{ asset('js/vendor/niku-cms/niku-cms.js') }}"></script>
+	<script src="{{ asset('js/vendor/niku-cms/vendor.js') }}"></script>
+    <script src="{{ asset('js/vendor/niku-cms/niku-cms.js') }}"></script>
 </body>
 ```
 

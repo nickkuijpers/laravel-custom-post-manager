@@ -1,9 +1,9 @@
 <template>
 
     <div class="form-group">
-        <label for="post_name" class="col-sm-2 control-label">{{ data.label }}:</label>
-        <div class="col-sm-6">
-            <input type="text" name="{{ data.id }}" v-model="input" name="{{ data.id }}" class="form-control" value="{{ data.value }}">
+        <label for="post_name" class="col-sm-3 control-label">{{ data.label }}:</label>
+        <div class="col-sm-9">
+            <input type="text" name="{{ data.id }}" v-model="input" class="form-control" value="{{ data.value }}">
         </div>
     </div>
 

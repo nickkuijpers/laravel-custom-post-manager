@@ -14,6 +14,7 @@
     <link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     {{-- NIKU CMS --}}
+    <link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/vendor/niku-cms/vendor.css') }}">
     <link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/vendor/niku-cms/niku-cms.css') }}">
     {{-- END NIKU CMS --}}
     <style>
@@ -45,6 +46,7 @@
 
     <script src="{{ asset('js/app.js') }}"></script>
     {{-- NIKU CMS --}}
+    <script src="{{ asset('js/vendor/niku-cms/vendor.js') }}"></script>
     <script src="{{ asset('js/vendor/niku-cms/niku-cms.js') }}"></script>
     {{-- END NIKU CMS --}}
 </body>

@@ -4,6 +4,7 @@ namespace Niku\Cms\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -34,17 +35,18 @@ class cmsController extends Controller
 		}
 
 		// Returning the view data like the page label
-		// $objects['view'] = config('niku-cms')['post_types'][$post_type]['view'];
 		$objects['label'] = config('niku-cms')['post_types'][$post_type]['view']['label'];
 
-		// Returning the objects
-    	$objects['objects'] = Posts::where($where)->select([
-    		'id',
+		$posts = Posts::where($where)->select([
+			'id',
     		'post_title',
     		'post_name',
     		'status',
     		'post_type',
-    	])->get();
+		])->with('postmeta')->get();
+
+		// Returning the objects
+    	$objects['objects'] = $posts;
 
     	return response()->json($objects);
     }
