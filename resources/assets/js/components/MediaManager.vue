@@ -112,7 +112,7 @@ export default {
             this.displayMediaManager = 0;
         },
         test() {
-          this.input = 'test';
+          this.input = '';
         },
         changeViewUpload() {
             this.view = 'upload';
