@@ -48,6 +48,7 @@ You need to run the following artisan command to publish the required assets and
 
 ```
 php artisan vendor:publish --tag=niku-cms
+php artisan vendor:publish --tag=niku-cms-config
 ```
 
 Migrate the database tables by running:
