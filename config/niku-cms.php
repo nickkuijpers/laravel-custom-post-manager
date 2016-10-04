@@ -18,6 +18,7 @@ return [
             'authorization' => [
                 'userMustBeLoggedIn' => 1,
                 'userCanOnlySeeHisOwnPosts' => 0,
+                'allowedUserEmailAddresses' => [],
             ],
 
             'view' => [
@@ -39,7 +40,8 @@ return [
                             'text' => [
                                 'component' => 'niku-cms-text-customfield',
                                 'label' => 'Text',
-                                'value' => ''
+                                'value' => '',
+                                'validation' => 'required',
                             ],
 
                             'image' => [
