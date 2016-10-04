@@ -14,18 +14,18 @@ class AddPostsForCms extends Migration
     {
         Schema::create('cms_posts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('post_title');
-            $table->bigInteger('post_author');
-            $table->longText('post_content');
+            $table->text('post_title')->nullable();
+            $table->bigInteger('post_author')->nullable();
+            $table->longText('post_content')->nullable();
             $table->text('post_excerpt')->nullable();
             $table->string('post_password')->nullable();
-            $table->string('post_name');
+            $table->string('post_name')->nullable();
             $table->bigInteger('post_parent')->nullable();
-            $table->string('post_type');
-            $table->string('post_mime_type')->nullable;
+            $table->string('post_type')->nullable();
+            $table->string('post_mime_type')->nullable();
             $table->integer('menu_order')->nullable();
-            $table->string('status');
-            $table->string('template');
+            $table->string('status')->nullable();
+            $table->string('template')->nullable();
             $table->timestamps();
 
             $table->index(['post_name', 'id']);

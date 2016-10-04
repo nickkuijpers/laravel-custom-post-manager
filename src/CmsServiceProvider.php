@@ -31,6 +31,7 @@ class CmsServiceProvider extends ServiceProvider
 
         // Register Vue components
         $this->publishes([
+        	__DIR__.'/../resources/assets/js/vendor/skins' => public_path('js/vendor/niku-cms/skins'),
             __DIR__.'/../resources/assets/js/' => base_path('resources/assets/js/vendor/niku-cms'),
             __DIR__.'/../resources/assets/sass/' => base_path('resources/assets/sass/vendor/niku-cms'),
             __DIR__.'/../resources/assets/css/' => base_path('resources/assets/css/vendor/niku-cms'),
