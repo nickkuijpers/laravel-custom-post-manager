@@ -248,6 +248,12 @@ niku-config.php
 ],
 ```
 
+Your init-niku-js or Vue instance
+
+```
+Vue.component('niku-cms-text-customfield', require('./components/customFields/text.vue'));
+```
+
 Your component
 ```
 <template>
