@@ -67,8 +67,11 @@ You don't have to do anything in there, but it gives you the possibility to add 
 *In the niku-cms.js you will see a Bootstrap 3 function, you can disable this if you are not using Bootstrap but this will make sure the
 sidebar of the single post view is fixed for usability.*
 
+Make sure you add it to the same elixir function as where your vue instance is created.
+
 ```
 elixir(mix => {
+	...
     mix.scripts([ // Vendor scripts like tinymce and datepickers
         'vendor/niku-cms/vendor/tinymce.min.js',
         // 'vendor/niku-cms/vendor/jquery-3.1.1.min.js',
@@ -85,6 +88,7 @@ elixir(mix => {
         'vendor/niku-cms/dropzone.scss',
         'vendor/niku-cms/niku-cms.scss',
     ], 'public/css/vendor/niku-cms/niku-cms.css');
+    ...
 });
 ```
 
