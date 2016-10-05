@@ -294,14 +294,16 @@ mix.scripts([ // Vendor scripts like tinymce and datepickers
 
 If you want you can change the HTML and styling of the post manager but i advice you not to so you can update the package easily and enjoy the future releases.
 
-## Existing custom fields
+## Custom fields
+
+### Existing
 * Text
 * Textarea
 * WYSIWYG editor
 * Select
 * Image upload
 
-## Future custom fields
+### Future milestones
 * Gallery
 * Colorpicker
 * Icon
@@ -319,6 +321,8 @@ If you want you can change the HTML and styling of the post manager but i advice
 * File upload
 
 ## Features
+
+### Existing
 * Custom post types
 * Media manager
 * Custom fields
@@ -329,7 +333,7 @@ If you want you can change the HTML and styling of the post manager but i advice
 * Possibility to add validation rules into the config for custom fields
 * Media management with interface so custom fields can keep that as default
 
-## Future features
+### Future milestones
 * Taxonomies like categories
 * Translations, now you need to hardcode the language
 * Dynamically manipulate the table headers of the list overview by the config file
