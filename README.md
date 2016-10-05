@@ -235,7 +235,16 @@ Do you want to change the custom fields displayed based on the template? You can
 ## Extending the custom fields and defining your own
 
 You can define your own custom fields by registering them in the resources/assets/js/vendor/niku-cms/components/customFields directory. After creating a Vue component, you
-need to register it in the init-niku-cms.js or above your existing Vue instance.
+need to register it in the init-niku-cms.js or above your existing Vue instance. After registering the component, you can define the component name in the custom field like this.
+
+```
+'text' => [
+    'component' => 'niku-cms-text-customfield',
+    'label' => 'Text',
+    'value' => '',
+    'validation' => 'required',
+],
+```
 
 ```
 <template>
