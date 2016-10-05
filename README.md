@@ -282,14 +282,12 @@ export default {
 
 In our main single page Vue component, we will receive all the custom fields enabled in the niku-cms.php and foreach include the component. This means you have got full access
 to the variables defined in your custom field array in the niku-cms.php config. You are required to return the name and value of the object to make sure we can automaticly display
-old user input when the post is editted.
+old user input when the post is editted like this.
 
-```
-<input type="text" name="{{ data.id }}" v-model="input" class="form-control" value="{{ data.value }}">
-```
+The `name="{{ data.id }}` will be used as custom field name, the `v-model="input"` as a method to manipulate the input of the value and the value `value="{{ data.value }}"` to insert the data
+received out of the database when editting it.
 
-If you need to add custom libraries to your component, you can register them into the following section in the gulpfile.js and those will be included in the vendor.js you have included in
-your view.
+You can register your own components like this.
 
 ```
 mix.scripts([ // Vendor scripts like tinymce and datepickers
