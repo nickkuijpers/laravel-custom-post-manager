@@ -24,14 +24,6 @@ You will be able to create a user interface for content management in minutes.
 | ------------- | ------------- | ------------- | ------------- |
 | ![Impression 5](https://niku-solutions.nl/laravel-niku-cms/impression5.png)  | ![Impression 6](https://niku-solutions.nl/laravel-niku-cms/impression6.png)  | ![Impression 7](https://niku-solutions.nl/laravel-niku-cms/impression7.png)  | ![Impression 8](https://niku-solutions.nl/laravel-niku-cms/impression8.png)  |
 
-## Features
-* Custom post types
-* Media manager
-* Custom fields
-* Custom validation rules for custom fields
-* Include the component in your own template
-* Conditionial custom fields based on template selection
-
 ## Installation
 
 Install the package via composer:
@@ -326,24 +318,34 @@ If you want you can change the HTML and styling of the post manager but i advice
 * Multiple select
 * File upload
 
+## Features
+* Custom post types
+* Media manager
+* Custom fields
+* Custom validation rules for custom fields
+* Include the component in your own template
+* Conditionial custom fields based on template selection
+* Add user authentication rules because now you are required to be authenticated to use the CMS.
+* Possibility to add validation rules into the config for custom fields
+* Media management with interface so custom fields can keep that as default
+
 ## Future features
 * Taxonomies like categories
-* ~~Add user authentication rules because now you are required to be authenticated to use the CMS.~~
 * Translations, now you need to hardcode the language
 * Dynamically manipulate the table headers of the list overview by the config file
 * Adding post meta fields into the overview list page
-* Possibility to add validation rules into the config for custom fields
 * Pagination
-* New package for Media management with interface so custom fields can keep that as default
 * Creation of a global option page where website wide data is stored
-
-<!-- ## Changelog
-
-For changes and updates, please see our [CHANGELOG](CHANGELOG.md). -->
+* Vue 2.0
 
 ## Help
 
 Here are the solutions for some common issues.
+
+### Console error with a message about fragment component
+
+If you receive a message like this, make sure you check you gulpfile.js and validate if you have included the components in the same
+elixir function as where you have included your main vue instance.
 
 ### Laravel is not Defined
 
