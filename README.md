@@ -296,14 +296,14 @@ If you want you can change the HTML and styling of the post manager but i advice
 
 ## Custom fields
 
-### Existing
+#### Existing
 * Text
 * Textarea
 * WYSIWYG editor
 * Select
 * Image upload
 
-### Future milestones
+#### Future milestones
 * Gallery
 * Colorpicker
 * Icon
@@ -322,7 +322,7 @@ If you want you can change the HTML and styling of the post manager but i advice
 
 ## Features
 
-### Existing
+#### Existing
 * Custom post types
 * Media manager
 * Custom fields
@@ -333,7 +333,7 @@ If you want you can change the HTML and styling of the post manager but i advice
 * Possibility to add validation rules into the config for custom fields
 * Media management with interface so custom fields can keep that as default
 
-### Future milestones
+#### Future milestones
 * Taxonomies like categories
 * Translations, now you need to hardcode the language
 * Dynamically manipulate the table headers of the list overview by the config file
