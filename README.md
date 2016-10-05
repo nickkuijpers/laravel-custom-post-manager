@@ -28,6 +28,7 @@ You will be able to create a user interface for content management in minutes.
 * Custom post types
 * Media manager
 * Custom fields
+* Custom validation rules for custom fields
 * Include the component in your own template
 * Conditionial custom fields based on template selection
 
@@ -175,15 +176,115 @@ You can change the `post_type` variable in the <compontent> to change the post t
 
 Before you are able to use the post types, you need to whitelist and setup the required custom fields and templates in the config/niku-cms.php file.
 
-`# TO DO write in more detail about usage and possibilities`
+For each custom post type defined, you can set authorization rules in the config to define the permissions of a post type.
 
-`# TO DO write documation about structure in config/niku-cms.php file`
+```
+'authorization' => [
+    'userMustBeLoggedIn' => 1,
+    'userCanOnlySeeHisOwnPosts' => 0,
+    'allowedUserEmailAddresses' => [],
+],
+```
 
-## Extending the custom fields
+You can view the config/niku-cms.php to view all options, we've set one demo post type which you can read and reuse for multiple post types.
 
-`# TO DO explaining how to add custom fields with custom javascript and css`
+It is possible to set validation rules for each post type as you add the following array key to the custom field like this:
 
-`# TO DO explaining how to customize the HTML and styling of the pages`
+```
+'customFields' => [
+    'telephone' => [
+        'component' => 'niku-cms-text-customfield',
+        'label' => 'Telephone number',
+        'value' => '',
+        'validation' => 'required|number',
+    ],
+]
+```
+
+Do you want to change the custom fields displayed based on the template? You can add multiple views which are selectable in the frontend for the end user.
+
+```
+'templates' => [
+    'default' => [
+        'label' => 'Default page',
+        'template' => 'default',
+        'customFields' => [
+            'text' => [
+                'component' => 'niku-cms-text-customfield',
+                'label' => 'Text',
+                'value' => '',
+                'validation' => 'required',
+            ]
+		]
+	],
+	'sidebar-layout' => [
+        'label' => 'Sidebar layout',
+        'template' => 'sidebar-layout',
+        'customFields' => [
+            'text' => [
+                'component' => 'niku-cms-text-customfield',
+                'label' => 'Text',
+                'value' => '',
+                'validation' => 'required',
+            ]
+		]
+	],
+]
+```
+
+## Extending the custom fields and defining your own
+
+You can define your own custom fields by registering them in the resources/assets/js/vendor/niku-cms/components/customFields directory. After creating a Vue component, you
+need to register it in the init-niku-cms.js or above your existing Vue instance.
+
+```
+<template>
+    <div class="form-group">
+        <label for="post_name" class="col-sm-3 control-label">{{ data.label }}:</label>
+        <div class="col-sm-9">
+            <input type="text" name="{{ data.id }}" v-model="input" class="form-control" value="{{ data.value }}">
+        </div>
+    </div>
+</template>
+<script>
+export default {
+    data () {
+        return {
+            'input': '',
+        }
+    },
+    props: {
+        'data': ''
+    },
+    ready () {
+    }
+}
+</script>
+```
+
+In our main single page Vue component, we will receive all the custom fields enabled in the niku-cms.php and foreach include the component. This means you have got full access
+to the variables defined in your custom field array in the niku-cms.php config. You are required to return the name and value of the object to make sure we can automaticly display
+old user input when the post is editted.
+
+```
+<input type="text" name="{{ data.id }}" v-model="input" class="form-control" value="{{ data.value }}">
+```
+
+If you need to add custom libraries to your component, you can register them into the following section in the gulpfile.js and those will be included in the vendor.js you have included in
+your view.
+
+```
+mix.scripts([ // Vendor scripts like tinymce and datepickers
+        'vendor/niku-cms/vendor/tinymce.min.js',
+        'vendor/niku-cms/vendor/jquery-3.1.1.min.js',
+        ...
+		// Your custom libraries
+        ...
+        'vendor/niku-cms/vendor/jquery-ui.js',
+    ], 'public/js/vendor/niku-cms/vendor.js')
+```
+
+If you want you can change the HTML and styling of the post manager but i advice you not to so you can update the package easily and enjoy the future releases.
 
 ## Existing custom fields
 * Text
