@@ -24,6 +24,11 @@ You will be able to create a user interface for content management in minutes.
 | ------------- | ------------- | ------------- | ------------- |
 | ![Impression 5](https://niku-solutions.nl/laravel-niku-cms/impression5.png)  | ![Impression 6](https://niku-solutions.nl/laravel-niku-cms/impression6.png)  | ![Impression 7](https://niku-solutions.nl/laravel-niku-cms/impression7.png)  | ![Impression 8](https://niku-solutions.nl/laravel-niku-cms/impression8.png)  |
 
+## Features
+* Media manager
+* Custom fields
+* Conditionial custom fields based on template selection
+
 ## Installation
 
 Install the package via composer:
@@ -179,13 +184,13 @@ Before you are able to use the post types, you need to whitelist and setup the r
 `# TO DO explaining how to customize the HTML and styling of the pages`
 
 ## Existing custom fields
-* ![Impression 5](https://niku-solutions.nl/laravel-niku-cms/checkmark.png) Text
+* Text
 * Textarea
-* Editor
+* WYSIWYG editor
 * Select
-* Multiple select
-* File upload
 * Image upload
+
+## Future custom fields
 * Gallery
 * Colorpicker
 * Icon
@@ -199,6 +204,8 @@ Before you are able to use the post types, you need to whitelist and setup the r
 * Hidden
 * Password
 * Switch
+* Multiple select
+* File upload
 
 ## Future features
 * Taxonomies like categories
