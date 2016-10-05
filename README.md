@@ -346,12 +346,12 @@ If you want you can change the HTML and styling of the post manager but i advice
 
 Here are the solutions for some common issues.
 
-##### Console error with a message about fragment component
+#### Console error with a message about fragment component
 
 If you receive a message like this, make sure you check you gulpfile.js and validate if you have included the components in the same
 elixir function as where you have included your main vue instance.
 
-##### Laravel is not Defined
+#### Laravel is not Defined
 
 This issue means you have not set the csrfToken which Laravel and Vue Resource requires to prevent man in the middle attacks.
 To solve this you can add the following code in the header.
