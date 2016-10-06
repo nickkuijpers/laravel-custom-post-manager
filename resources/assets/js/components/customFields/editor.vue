@@ -42,13 +42,19 @@ export default {
 
         }
 
+        function myCustomURLConverter (url, node, on_save, name) {
+            return url;
+        }
+
         tinymce.init({
             selector:'.niku-editor',
             theme: "modern",
             skin: 'light',
             plugins: "image imagetools",
-            relative_urls : true,
+            urlconverter_callback : myCustomURLConverter,
+            // relative_urls : true,
             document_base_url : '/',
+            convert_urls: false,
             file_browser_callback : nikuFileManager,
             setup: function (editor) {
                 editor.on('change', function () {
