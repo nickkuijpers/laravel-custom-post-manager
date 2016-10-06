@@ -23,17 +23,6 @@ export default {
 
     },
 	ready () {
-        tinymce.init({
-            selector:'.niku-editor',
-            theme: "modern",
-            skin: 'light',
-            plugins: "image imagetools",
-            setup: function (editor) {
-                editor.on('change', function () {
-                    editor.save();
-                });
-            }
-        });
 
 	}
 }

@@ -3,7 +3,6 @@
  *
  */
 window.nikuCms = new Vue();
-// var Dropzone = require('./vendor/dropzone')
 
 // Default required vue comonents
 Vue.component('niku-cms-notification', require('./components/Notification.vue'));
@@ -16,6 +15,7 @@ Vue.component('niku-cms-select-customfield', require('./components/customFields/
 Vue.component('niku-cms-image-customfield', require('./components/customFields/image.vue'));
 Vue.component('niku-cms-text-customfield', require('./components/customFields/text.vue'));
 Vue.component('niku-cms-textarea-customfield', require('./components/customFields/textarea.vue'));
+Vue.component('niku-cms-editor-customfield', require('./components/customFields/editor.vue'));
 
 Vue.component('niku-cms-dropzone-mediamanager', require('./components/mediaManager/dropzone.vue'));
 
