@@ -43,6 +43,7 @@ export default {
                     'id': this.imageSelected.id,
                     'url': this.imageSelected.postmeta[0].meta_value
                 }
+                this.imageUrl = this.imageSelected.postmeta[0].meta_value;
                 this.input = JSON.stringify(this.input);
 
                 // Change view
