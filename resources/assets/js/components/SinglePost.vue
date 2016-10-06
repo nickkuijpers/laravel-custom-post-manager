@@ -33,14 +33,6 @@
                         </div>
                     </div>
 
-                    <!-- post_content -->
-                    <div class="form-group">
-                        <label for="post_content" class="col-sm-3 control-label">Inhoud:</label>
-                        <div class="col-sm-9">
-                            <textarea name="post_content" v-model="post.post_content" id="post_content" class="form-control" rows="6"></textarea>
-                        </div>
-                    </div>
-
                     <!-- Dynamicly including all required components for the custom fields -->
                     <template v-for="customField in customFields">
                         <component :is="customField.component" :data="customField"></component>
