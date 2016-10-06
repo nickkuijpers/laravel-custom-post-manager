@@ -175,6 +175,8 @@ export default {
          * Rerendering the custom fields when the template changes
          */
         rerender() {
+            alert('test');
+            alert(this.post.template);
             this.customFields = this.templates[this.post.template].customFields;
         },
 

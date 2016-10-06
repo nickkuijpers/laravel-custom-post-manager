@@ -1,3 +1,10 @@
+/**
+ * Event bus
+ *
+ */
+window.nikuCms = new Vue();
+// var Dropzone = require('./vendor/dropzone')
+
 // Default required vue comonents
 Vue.component('niku-cms-notification', require('./components/Notification.vue'));
 Vue.component('niku-cms-spinner', require('./components/Spinner.vue'));

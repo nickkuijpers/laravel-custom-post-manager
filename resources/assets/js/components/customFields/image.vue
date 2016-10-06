@@ -6,9 +6,8 @@
             <img v-bind:src="imageUrl" class="img-responsive">
         </div>
         <div class="col-sm-5">
-            <a v-on:click="mediamanager()" v-show="uploadButtonShow" data-toggle="modal" style="float:left;" data-target="#media-modal" class="btn btn-default">Selecteer of upload afbeelding</a>
-            <a v-on:click="deleteImage()" v-show="deleteButtonShow" style="float:left;" data-target="#media-modal" class="btn btn-danger">Verwijder afbeelding</a>
-            <niku-cms-media-manager></niku-cms-media-manager>
+            <a v-on:click="mediamanager()" v-show="uploadButtonShow" style="float:left;"  class="btn btn-default">Selecteer of upload afbeelding</a>
+            <a v-on:click="deleteImage()" v-show="deleteButtonShow" style="float:left;" class="btn btn-danger">Verwijder afbeelding</a>
         </div>
     </div>
 
@@ -34,6 +33,25 @@ export default {
             this.input = JSON.stringify(this.input);
         }
 
+        nikuCms.$on('mediamanager-' + this.data.id, function(object){
+
+                // Receive object
+                this.imageSelected = object;
+
+                // Prepare data for database and jsonfy it
+                this.input = {
+                    'id': this.imageSelected.id,
+                    'url': this.imageSelected.postmeta[0].meta_value
+                }
+                this.input = JSON.stringify(this.input);
+
+                // Change view
+                this.uploadButtonShow = 0;
+                this.deleteButtonShow = 1;
+                this.showImage = 1;
+
+        }.bind(this));
+
     },
     data () {
         return {
@@ -52,7 +70,9 @@ export default {
     },
     methods: {
         mediamanager() {
-            this.displayMediaManager = 1;
+            nikuCms.$emit('mediamanager', {
+                'id': this.data.id
+            });
         },
         deleteImage() {
             this.imageUrl = '';
@@ -60,20 +80,6 @@ export default {
             this.uploadButtonShow = 1;
             this.deleteButtonShow = 0;
             this.showImage = 0;
-        }
-    },
-    events: {
-        'imageSelected': function (image) {
-            this.imageSelected = image;
-            this.imageUrl = this.imageSelected.postmeta[0].meta_value;
-            this.input = {
-                'id': this.imageSelected.id,
-                'url': this.imageSelected.postmeta[0].meta_value
-            }
-            this.input = JSON.stringify(this.input);
-            this.uploadButtonShow = 0;
-            this.deleteButtonShow = 1;
-            this.showImage = 1;
         }
     }
 }

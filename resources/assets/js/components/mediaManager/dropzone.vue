@@ -1,11 +1,10 @@
 <template>
-  <form action="{{url}}" class="dropzone" id="{{id}}"></form>
+  <form action="{{url}}" class="niku-dropzone" id="{{id}}"></form>
 </template>
 
 <script>
-  var Dropzone = require('../../vendor/dropzone')
-  Dropzone.autoDiscover = false
-  export default {
+var Dropzone = require('../../vendor/dropzone')
+export default {
     props: {
       id: {
         type: String,
@@ -103,5 +102,5 @@
         vm.$parent.$emit('vdropzone-error', file)
       })
     }
-  }
+}
 </script>

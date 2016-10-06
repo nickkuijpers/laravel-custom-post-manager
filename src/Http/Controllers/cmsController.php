@@ -38,7 +38,7 @@ class cmsController extends Controller
 
 
 		// Returning the view data like the page label
-		$objects['label'] = config('niku-cms')['post_types'][$post_type]['view']['label'];
+		$objects['label'] = config("niku-cms.post_types.{$post_type}.view.label");
 
 		$posts = Posts::where($where)->select([
 			'id',
@@ -291,10 +291,9 @@ class cmsController extends Controller
             return $this->abort('User email is not whitelisted.');
         }
 
-        $nikuConfig = config('niku-cms');
-
+        $nikuConfig = config("niku-cms.post_types.{$postType}");
         // Validate if the post type exists
-        if(empty($nikuConfig['post_types'][$postType])){
+        if(empty($nikuConfig)){
             return collect([
                 'code' => 'doesnotexist',
                 'status' => 'Post type does not exist'
@@ -302,7 +301,7 @@ class cmsController extends Controller
         }
 
         // Returning the view
-        $view = $nikuConfig['post_types'][$postType]['view'];
+        $view = $nikuConfig['view'];
 
         // Lets now fill the custom fields with data out of database
         $post = Posts::find($id);
@@ -313,14 +312,16 @@ class cmsController extends Controller
         // Appending the key added in the config to the array
         // so we can use it very easliy in the component.
         foreach($view['templates'] as $key => $template){
-            foreach($template['customFields'] as $ckey => $customField){
-                $view['templates'][$key]['customFields'][$ckey]['id'] = $ckey;
-                if(!empty($post)){
-                	if(!empty($postmeta[$ckey])){
-                		$view['templates'][$key]['customFields'][$ckey]['value'] = $postmeta[$ckey]['meta_value'];
-                	}
-                }
-            }
+        	if(!empty($template['customFields'])){
+	            foreach($template['customFields'] as $ckey => $customField){
+	                $view['templates'][$key]['customFields'][$ckey]['id'] = $ckey;
+	                if(!empty($post)){
+	                	if(!empty($postmeta[$ckey])){
+	                		$view['templates'][$key]['customFields'][$ckey]['value'] = $postmeta[$ckey]['meta_value'];
+	                	}
+	                }
+	            }
+	        }
         }
 
         return $view;
