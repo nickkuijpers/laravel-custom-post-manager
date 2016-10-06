@@ -18,6 +18,8 @@ easily as you read the 'Extending the custom fields' section.
 
 You will be able to create a user interface for content management in minutes.
 
+> :warning: This is still a work in progress, and breaking changes may be introduced.
+
 ## Impression
 
 | ![Impression 1](https://niku-solutions.nl/laravel-niku-cms/impression1.png)  | ![Impression 2](https://niku-solutions.nl/laravel-niku-cms/impression2.png)  | ![Impression 3](https://niku-solutions.nl/laravel-niku-cms/impression3.png)  | ![Impression 4](https://niku-solutions.nl/laravel-niku-cms/impression4.png)  |
