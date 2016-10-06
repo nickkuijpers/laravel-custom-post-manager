@@ -37,6 +37,7 @@
                     {{-- NIKU CMS --}}
                     <niku-cms-notification v-bind:notification="nikuCms.notification"></niku-cms-notification>
                     <component :is="nikuCms.view" post_type="{{ $post_type }}"></component>
+                    <niku-cms-media-manager></niku-cms-media-manager>
                     {{-- END NIKU CMS --}}
 
                 </div>

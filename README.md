@@ -160,6 +160,7 @@ You can change the `post_type` variable in the <compontent> to change the post t
 	<niku-cms-notification v-bind:notification="nikuCms.notification"></niku-cms-notification>
 	...
     <component :is="nikuCms.view" post_type="{{ $post_type }}"></component>
+    <niku-cms-media-manager></niku-cms-media-manager>
 	...
 	<script src="{{ asset('js/vendor/niku-cms/vendor.js') }}"></script>
     <script src="{{ asset('js/vendor/niku-cms/niku-cms.js') }}"></script>
