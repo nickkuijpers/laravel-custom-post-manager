@@ -4,7 +4,6 @@
 [![Latest Unstable Version](https://poser.pugx.org/niku-solutions/cms/v/unstable)](https://packagist.org/packages/niku-solutions/cms)
 [![License](https://poser.pugx.org/niku-solutions/cms/license)](https://packagist.org/packages/niku-solutions/cms)
 [![Monthly Downloads](https://poser.pugx.org/niku-solutions/cms/d/monthly)](https://packagist.org/packages/niku-solutions/cms)
-[![Daily Downloads](https://poser.pugx.org/niku-solutions/cms/d/daily)](https://packagist.org/packages/niku-solutions/cms)
 
 A codeable post manager for Laravel with custom fields. Extendable as you wish. Define your required fields in the config
 and see the magic. It will automatically display the custom fields added in the niku-cms.php config file and will
