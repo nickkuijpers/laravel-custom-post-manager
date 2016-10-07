@@ -353,6 +353,10 @@ If you want you can change the HTML and styling of the post manager but I advice
 * Pagination
 * Creation of a global option page where website wide data is stored
 * Vue 2.0
+* Menu manager
+* Enable media manager video and file uploads
+* Beautify media manager
+* Advanced search for post types
 
 ## Help
 
