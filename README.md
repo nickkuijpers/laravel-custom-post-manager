@@ -359,6 +359,7 @@ If you want you can change the HTML and styling of the post manager but I advice
 * Advanced search for post types
 * Backup your CMS content
 * Custom posts type revision
+* Media gallery inside WYSIWYG editor
 
 ## Help
 
