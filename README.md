@@ -148,6 +148,8 @@ certain page like http://yourdomain.com/cms/page where the component name is pag
 
 The `page` post type is whitelisted in the config/niku-cms.php so you will be able to use this demo setup.
 
+If you are not authorized and you want to test the demo, make sure you disable the userMustBeLoggedIn in the config/niku-cms.php for post types you wish to test and the the attachment post type.
+
 ```
 http://domain.com/niku-cms/demo/{post_type}
 ```
