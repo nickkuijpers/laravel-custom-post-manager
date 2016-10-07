@@ -16,7 +16,7 @@ easily as you read the 'Extending the custom fields' section.
 
 You will be able to create a user interface for content management in minutes.
 
-> :warning: This is still a work in progress, and breaking changes may be introduced. It does work now :)
+> :warning: This is still a work in progress, and breaking changes may be introduced. It does work though.
 
 ## Impression
 
