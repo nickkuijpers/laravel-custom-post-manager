@@ -195,7 +195,9 @@ export default {
                         this.customFields = this.templates[this.post.template].customFields;
                         this.templatesCount = Object.keys(this.templates).length;
 
-                        this.customFields.post_content.value = this.post.post_content;
+                        if(this.customFields.post_content){
+                            this.customFields.post_content.value = this.post.post_content;
+                        }
 
                     }
 

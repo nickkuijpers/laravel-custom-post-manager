@@ -37,6 +37,13 @@ return [
                         // Defining custom fields for the current page template
                         'customFields' => [
 
+                        	'post_content' => [
+                                'component' => 'niku-cms-editor-customfield',
+                                'label' => 'Text',
+                                'value' => '',
+                                'validation' => 'required',
+                            ],
+
                             'text' => [
                                 'component' => 'niku-cms-text-customfield',
                                 'label' => 'Text',
@@ -86,6 +93,12 @@ return [
                         'label' => 'Berichten pagina',
                         'template' => 'default',
                         'customFields' => [
+                        	'post_content' => [
+                                'component' => 'niku-cms-editor-customfield',
+                                'label' => 'Text',
+                                'value' => '',
+                                'validation' => 'required',
+                            ],
                             'text' => [
                                 'component' => 'niku-cms-text-customfield',
                                 'label' => 'Sidebar titel',
