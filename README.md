@@ -215,7 +215,7 @@ It is possible to set validation rules for each post type as you add the followi
 ]
 ```
 
-Do you want to change the custom fields displayed based on the template? You can add multiple views which are selectable in the frontend for the end user.
+Do you want to change the custom fields displayed based on the template? You can add multiple views which are selectable in the frontend for the end user and change the visible custom fields.
 
 ```php
 'templates' => [
