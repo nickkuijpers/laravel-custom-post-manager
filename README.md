@@ -357,6 +357,8 @@ If you want you can change the HTML and styling of the post manager but I advice
 * Enable media manager video and file uploads
 * Beautify media manager
 * Advanced search for post types
+* Backup your CMS content
+* Custom posts type revision
 
 ## Help
 
