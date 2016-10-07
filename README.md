@@ -115,7 +115,7 @@ const app = new Vue({
 	        notification: {'display': 0, 'type': '', 'message': ''}
 	    },
     }
-},
+});
 ```
 
 #### Final step
