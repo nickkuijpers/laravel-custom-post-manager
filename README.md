@@ -248,9 +248,9 @@ Do you want to change the custom fields displayed based on the template? You can
 
 ### Frontend usage
 
-If you want to display the posts by post type, you can use the following methods.
-
 #### Single pages
+
+If you want to display your custom post type 'page' to the frontend, you can do the following.
 
 Enable the following type in your routes/web.php.
 
@@ -334,6 +334,15 @@ And then in your view, you do the following. This syntax will be recreated in th
         </div>
     </div>
 @endforeach
+```
+
+#### Switching templates
+
+If you have enabled more than 1 post type template in the config/niku-cms.php, you will see a option appear in the backend to switch between templates. When you have
+selected one template, you can switch views in the frontend like this.
+
+```blade
+@extends('static.layouts.' . $posts->template)
 ```
 
 ## Extending the custom fields and defining your own
