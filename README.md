@@ -62,6 +62,12 @@ php artisan vendor:publish --tag=niku-assets
 php artisan vendor:publish --tag=niku-config
 ```
 
+If you have previously installed this package and you want to update the assets, use the following command. This will override your previous files.
+
+```
+php artisan vendor:publish --tag=niku-assets --force
+```
+
 Migrate the database tables by running:
 
 ```
