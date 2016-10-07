@@ -162,6 +162,8 @@ http://domain.com/niku-cms/demo/{post_type}
 
 ## Usage
 
+### Backend usage
+
 After testing the demo URL and the CMS is working, you can implement it into your application. Make sure you add
 the required assets in each page you use the CMS component. As this CMS is based on Vue, you must of course include
 your default assets.
@@ -242,6 +244,98 @@ Do you want to change the custom fields displayed based on the template? You can
         ]
     ],
 ]
+```
+
+### Frontend usage
+
+If you want to display the posts by post type, you can use the following methods.
+
+#### Single pages
+
+If you want a blog like method, you can do the following.
+
+Enable the following type in your routes/web.php.
+
+```php
+Route::get({post_name}, 'PageController@singlePage');
+```
+
+Next in your PageController, you do the following:
+
+```php
+public function single($post_name)
+{
+    $page = Posts::where([
+        ['status', '=', '1'],
+        ['post_type', '=', 'page'],
+        ['post_name', '=', $post_name]
+    ])->with('postmeta')->firstOrFail();
+    return view('static.singlepage', compact('page'));
+}
+```
+
+You can display it in blade like this.
+
+```blade
+@extends('static.layouts.default')
+
+@section('metatitle', $page->post_title)
+@section('metacontent', $page->getMeta('excerpt'))
+
+@section('title', $page->post_title)
+@section('content')
+    <div class="main-post-content">
+        {{ $page->post_content }}
+    </div>
+@endsection
+```
+
+#### Blog
+
+If you want a blog like method, you can do the following.
+
+Enable the following type in your routes/web.php.
+
+```php
+Route::get('blog', 'BlogController@blog');
+Route::get('blog/{slug}', 'BlogController@singleBlog');
+```
+
+Next you enable the required methods in the controller.
+
+```php
+public function blog()
+{
+    $posts = Posts::where([
+        ['status', '=', '1'],
+        ['post_type', '=', 'post']
+    ])->with('postmeta')->get();
+    return view('static.blog', compact('posts'));
+}
+```
+
+And then in your view, you do the following. This syntax will be recreated in the future to make it more fluent but for now it works.
+
+```blade
+@foreach($posts as $post)
+    <div class="row">
+        @if(!empty($post->getMeta('image')))
+            <?php
+            $image = json_decode($post->getMeta('image'));
+            $image = $image->url;
+            ?>
+            <div class="col-md-3">
+                <img src="{{ $image }}" class="img-responsive">
+            </div>
+        @endif
+        <div class="col-md-8">
+            <h2>{{ $post->post_title }}</h2>
+            <p>{!! $post->getMeta('excerpt') !!}</p>
+            <br/>
+            <a class="btn btn-default" href="/blog/{{ $post->post_name }}">Read more</a>
+        </div>
+    </div>
+@endforeach
 ```
 
 ## Extending the custom fields and defining your own
