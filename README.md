@@ -360,6 +360,7 @@ If you want you can change the HTML and styling of the post manager but I advice
 * Backup your CMS content
 * Custom posts type revision
 * Media gallery inside WYSIWYG editor
+* Media resize on upload and optimize it for web
 
 ## Help
 
