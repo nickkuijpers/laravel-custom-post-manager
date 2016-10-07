@@ -252,8 +252,6 @@ If you want to display the posts by post type, you can use the following methods
 
 #### Single pages
 
-If you want a blog like method, you can do the following.
-
 Enable the following type in your routes/web.php.
 
 ```php
