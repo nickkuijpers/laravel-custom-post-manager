@@ -54,7 +54,7 @@ class RouteRegistrar
 			}
 
 			// Listing all posts by post type
-			Route::get('/niku-cms/{post_type}', '\Niku\Cms\Http\Controllers\cmsController@index')->name('list');
+			Route::get('/niku-cms/{post_type}/{sort_name}/{sort_order}/{take}/{offset}', '\Niku\Cms\Http\Controllers\cmsController@index')->name('list');
 
 			// Returning the single post result
 			Route::get('/niku-cms/{post_type}/show/{id}', '\Niku\Cms\Http\Controllers\cmsController@show')->name('show');

@@ -15,7 +15,7 @@ class cmsController extends Controller
     /**
      * Display a list based on the post type
      */
-    public function index($post_type)
+    public function index($post_type, $orderName, $orderType, $take, $skip)
     {
         // Validate if the user is logged in
         if(! $this->userIsLoggedIn($post_type)){
@@ -25,6 +25,11 @@ class cmsController extends Controller
         // User email validation
         if ($this->userHasWhitelistedEmail($post_type)) {
             return $this->abort('User email is not whitelisted.');
+        }
+
+        // Check if the post type is whitelisted
+        if( !array_key_exists($post_type, config('niku-cms.post_types') ) ) {
+        	return $this->abort('Post type ' . $post_type . ' is not whitelisted.');
         }
 
         // If the user can only see his own posts
@@ -40,13 +45,33 @@ class cmsController extends Controller
 		// Returning the view data like the page label
 		$objects['label'] = config("niku-cms.post_types.{$post_type}.view.label");
 
+		// Type of sort
+		if($orderType == 'desc'){
+			$orderValue = 'desc';
+		} elseif ($orderType == 'asc'){
+			$orderValue = 'asc';
+		}
+
+		if($take == '-1'){
+			$take = 9999999999;
+		}
+
+		if($skip == '-1'){
+			$skip = 0;
+		}
+
 		$posts = Posts::where($where)->select([
 			'id',
     		'post_title',
     		'post_name',
     		'status',
     		'post_type',
-		])->with('postmeta')->get();
+		])
+		->orderBy($orderName, $orderValue)
+		->skip($skip)
+		->take($take)
+		->with('postmeta')
+		->get();
 
 		// Returning the objects
     	$objects['objects'] = $posts;
@@ -341,7 +366,7 @@ class cmsController extends Controller
         return response()->json([
             'code' => 'error',
             'status' => $message,
-        ], 403);
+        ]);
     }
 
     protected function userHasWhitelistedEmail($post_type)
