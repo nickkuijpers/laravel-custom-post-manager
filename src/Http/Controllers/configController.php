@@ -32,7 +32,7 @@ class configController extends Controller
 		$nikuConfig = config("niku-cms.config.{$group}");
 		if(empty($nikuConfig)){
 			return collect([
-				'code' => 'doesnotexist',
+				'code' => 'error',
 				'status' => 'Post type does not exist'
 			]);
 		}
