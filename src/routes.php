@@ -53,6 +53,12 @@ class RouteRegistrar
 				Route::get('/niku-cms/demo/{post_type}', '\Niku\Cms\Http\Controllers\cmsController@test')->name('demo');
 			}
 
+			/**
+			 * Config pages
+			 */
+			Route::get('/niku-cms/config/{group}/edit', '\Niku\Cms\Http\Controllers\configController@show')->name('configedit');
+			Route::post('/niku-cms/config/{group}/edit', '\Niku\Cms\Http\Controllers\configController@configManager')->name('configsaver');
+
 			// Listing all posts by post type
 			Route::get('/niku-cms/{post_type}/{sort_name}/{sort_order}/{take}/{offset}', '\Niku\Cms\Http\Controllers\cmsController@index')->name('list');
 

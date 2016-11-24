@@ -21,8 +21,13 @@ export default {
             this.showPreloader();
             var form = e.target;
 
+            var body = {}
+            $(form).serializeArray().map(field => {
+                body[field.name] = field.value;
+            });
+
             // Making the post request
-            this.$http.post(form.action, new FormData(form)).then((response) => {
+            this.$http.post(form.action, body).then((response) => {
 
                 this.$parent.nikuCms.notification.message = 'Actie succesvol';
                 this.$parent.nikuCms.notification.type = 'success';
