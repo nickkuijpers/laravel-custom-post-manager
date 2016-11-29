@@ -47,6 +47,8 @@ class configController extends Controller
 		// Appending the key added in the config to the array
         // so we can use it very easliy in the component.
     	if(!empty($data['customFields'])){
+
+    		// For each custom fields
             foreach($data['customFields'] as $ckey => $customField){
                 $data['customFields'][$ckey]['id'] = $ckey;
 
@@ -89,9 +91,22 @@ class configController extends Controller
 		}
 
 		// Receiving validation rules from config
+		$repeaterArray = [];
 		foreach ($configMeta as $key => $value) {
-			$rule = config("niku-cms.config.{$group}.view.customFields.{$key}.validation");
-			if (! empty($rule)) {
+
+			// Setting the path to get the validation rules
+			if(strpos($key, '_repeater_') !== false) {
+				$explodedValue = explode('_', $key);
+
+				// We need to make a array of all repeaters so we can update it specific later
+				$repeaterArray[] = $key;
+
+				$rule = config("niku-cms.config.{$group}.view.customFields.{$explodedValue[0]}.customFields.{$explodedValue[3]}.validation");
+			} else {
+				$rule = config("niku-cms.config.{$group}.view.customFields.{$key}.validation");
+			}
+
+			if (! empty($rule) ) {
 				$validationRules[$key] = $rule;
 			}
 		}
@@ -99,7 +114,10 @@ class configController extends Controller
 		// Validate the post
 		$this->validatePost($request, $validationRules);
 
-		// Update or create
+		// Lets first delete the old repeater values
+		Config::where('option_name', 'like', $explodedValue[0] . '_' . $explodedValue[1] . '_%')->delete();
+
+		// Lets update or create the fields in the post request
 		foreach($configMeta as $index => $value){
 			Config::updateOrCreate(
 				['option_name' => $index],
