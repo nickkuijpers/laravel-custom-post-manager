@@ -1,3 +1,5 @@
+import forIn from 'lodash/forIn';
+
 export default {
     methods: {
 
@@ -54,7 +56,7 @@ export default {
          * Displaying validation errors
          */
         displayErrorMessages(form, jsonResponse) {
-            _.forIn(jsonResponse, (error, name) => {
+            forIn(jsonResponse, (error, name) => {
                 let helpBlock = '<span class="validateError help-block" style="color:red;">' + '<strong>' + error + '</strong>' + '</span>';
                 $('#' + form.id + ' #' + name).after(helpBlock);
             });
