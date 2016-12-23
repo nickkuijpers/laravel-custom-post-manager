@@ -7,7 +7,7 @@ use Niku\Cms\RouteRegistrar;
 
 class Cms
 {
-     
+
     /**
      * Get a Cms route registrar.
      *
@@ -27,5 +27,5 @@ class Cms
         Route::group($options, function ($router) use ($callback) {
             $callback(new RouteRegistrar($router));
         });
-    } 
+    }
 }

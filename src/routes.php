@@ -48,11 +48,6 @@ class RouteRegistrar
 			'as' => 'niku-cms.'
 		], function () {
 
-			// Testing and demo
-			if(config('niku-cms.demo') == 1){
-				Route::get('/niku-cms/demo/{post_type}', '\Niku\Cms\Http\Controllers\cmsController@test')->name('demo');
-			}
-
 			/**
 			 * Config pages
 			 */
@@ -76,7 +71,6 @@ class RouteRegistrar
 
 			// Creating and updating posts
 			Route::post('/niku-cms/media', '\Niku\Cms\Http\Controllers\mediaController@post')->name('mediamanagerpost');
-
 		});
 	}
 }
