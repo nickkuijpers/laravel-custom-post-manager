@@ -15,7 +15,7 @@ class cmsController extends Controller
     /**
      * Display a list based on the post type
      */
-    public function index($post_type, $orderName, $orderType, $take, $skip)
+    public function index($post_type, $orderName = 'id', $orderType = 'desc', $take = 9999, $skip = '-1')
     {
         // Validate if the user is logged in
         if(! $this->userIsLoggedIn($post_type)){
