@@ -115,7 +115,9 @@ class configController extends Controller
 		$this->validatePost($request, $validationRules);
 
 		// Lets first delete the old repeater values
-		Config::where('option_name', 'like', $explodedValue[0] . '_' . $explodedValue[1] . '_%')->delete();
+		if(strpos($key, '_repeater_') !== false) {
+			Config::where('option_name', 'like', $explodedValue[0] . '_' . $explodedValue[1] . '_%')->delete();
+		}
 
 		// Lets update or create the fields in the post request
 		foreach($configMeta as $index => $value){
