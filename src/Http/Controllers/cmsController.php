@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Niku\Cms\Http\Posts;
 
 class cmsController extends Controller
@@ -284,7 +285,7 @@ class cmsController extends Controller
 	    $url = $url;
 	    $url = preg_replace('~[^\\pL0-9_]+~u', '-', $url); // substitutes anything but letters, numbers and '_' with separator
 	    $url = trim($url, "-");
-	    $url = iconv("utf-8", "us-ascii//TRANSLIT", $url); // TRANSLIT does the whole job
+	    $url = Str::ascii($url);
 	    $url = strtolower($url);
 	    $url = preg_replace('~[^-a-z0-9_]+~', '', $url); // keep only letters, numbers, '_' and separator
 	    return $url;
