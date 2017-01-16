@@ -112,7 +112,9 @@ class configController extends Controller
 		}
 
 		// Validate the post
-		$this->validatePost($request, $validationRules);
+		if(!empty($validationRules)){
+			$this->validatePost($request, $validationRules);
+		}
 
 		// Lets first delete the old repeater values
 		if(strpos($key, '_repeater_') !== false) {
