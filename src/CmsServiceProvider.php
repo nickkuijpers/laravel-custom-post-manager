@@ -26,14 +26,4 @@ class CmsServiceProvider extends ServiceProvider
             __DIR__.'/../config/'. 'niku-cms.php' => config_path('niku-cms.php'),
         ], 'niku-config');
     }
-
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        include __DIR__.'/routes.php';
-    }
 }
