@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
-class RouteRegistrar
+class NikuRouteRegistrar
 {
 	/**
 	 * The router implementation.

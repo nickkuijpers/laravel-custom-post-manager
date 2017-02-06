@@ -3,7 +3,7 @@
 namespace Niku\Cms;
 
 use Illuminate\Support\Facades\Route;
-use Niku\Cms\RouteRegistrar;
+use Niku\Cms\NikuRouteRegistrar;
 
 class Cms
 {
@@ -25,7 +25,7 @@ class Cms
         ]);
 
         Route::group($options, function ($router) use ($callback) {
-            $callback(new RouteRegistrar($router));
+            $callback(new NikuRouteRegistrar($router));
         });
     }
 }
