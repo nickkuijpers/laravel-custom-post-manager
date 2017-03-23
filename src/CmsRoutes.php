@@ -6,8 +6,7 @@ use Illuminate\Contracts\Routing\Registrar as Router;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-
-class RouteRegistrar
+class CmsRoutes
 {
 	/**
 	 * The router implementation.

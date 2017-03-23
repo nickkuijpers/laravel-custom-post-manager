@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
-use Niku\Cms\Http\Posts;
+use Niku\Cms\Http\NikuPosts;
 
 class cmsController extends Controller
 {
@@ -40,7 +40,7 @@ class cmsController extends Controller
 		// Returning the view data like the page label
 		$objects['label'] = config("niku-cms.post_types.{$post_type}.view.label");
 
-		$posts = Posts::where($where)->select([
+		$posts = NikuPosts::where($where)->select([
 			'id',
     		'post_title',
     		'post_name',
@@ -82,7 +82,7 @@ class cmsController extends Controller
             $where[] = ['post_author', '=', Auth::user()->id];
         }
 
-    	$post = Posts::where($where);
+    	$post = NikuPosts::where($where);
     	$post->delete();
 
     	return response()->json('success');
@@ -111,7 +111,7 @@ class cmsController extends Controller
         // Where sql to get all posts by post_Type
         $where[] = ['id', '=', $id];
 
-        $post = Posts::where($where)->first();
+        $post = NikuPosts::where($where)->first();
         $postmeta = $post->postmeta()->select(['meta_key', 'meta_value'])->get();
         $postmeta = $postmeta->keyBy('meta_key');
         $postmeta = $postmeta->toArray();
@@ -165,7 +165,7 @@ class cmsController extends Controller
     	$this->validatePost($request, $action, $validationRules);
 
     	if($action == 'create'){
-    		$post = new Posts;
+    		$post = new NikuPosts;
     	} else if($action == 'edit') {
 
             // If the user can only see his own posts
@@ -175,7 +175,7 @@ class cmsController extends Controller
 
     		$where[] = ['id', '=', $request->get('_id')];
 
-    		$post = Posts::where($where)->first();
+    		$post = NikuPosts::where($where)->first();
 
     	}
 
@@ -221,7 +221,7 @@ class cmsController extends Controller
 
             // Validating the postname of the given ID to make sure it can be
             // updated and it is not overriding a other duplicated postname.
-            $post = Posts::where([
+            $post = NikuPosts::where([
                 ['id', '=', $request->get('_id')],
                 ['post_type', '=', $request->get('_posttype')]
             ])->select(['post_name'])->first();
@@ -236,7 +236,7 @@ class cmsController extends Controller
 	    } else {
 
             // Validate if the post_name is a duplicate in the current post_type
-            $post = Posts::where([
+            $post = NikuPosts::where([
                 ['post_name', '=', $request->get('post_name')],
                 ['post_type', '=', $request->get('_posttype')]
             ])->select(['post_name'])->first();
@@ -304,7 +304,7 @@ class cmsController extends Controller
         $view = $nikuConfig['view'];
 
         // Lets now fill the custom fields with data out of database
-        $post = Posts::find($id);
+        $post = NikuPosts::find($id);
         if(!empty($post)){
             $postmeta = $post->postmeta()->select(['meta_key', 'meta_value'])->get()->keyBy('meta_key')->toArray();
         }
@@ -327,8 +327,32 @@ class cmsController extends Controller
         return $view;
     }
 
+    protected function getPostType($post_type)
+    {
+    	$nikuConfig = config('niku-cms');
+
+    	// Validating if the post type exists and if so, return the model
+    	if(array_key_exists($post_type, $nikuConfig['post_types'])){
+
+    		$postType = new $nikuConfig['post_types'][$post_type];
+
+    		dd($postType);
+
+    		return $postType;
+    	} else {
+    		return false;
+    	}
+    }
+
     public function userIsLoggedIn($post_type)
     {
+    	$postType = $this->getPostType($post_type);
+    	dd($postType);
+    	// dd($post_type);
+    	dd(config('niku-cms'));
+
+    	// $postType = new $
+
         if(config("niku-cms.post_types.{$post_type}.authorization.userMustBeLoggedIn")){
             return Auth::check();
         } else {

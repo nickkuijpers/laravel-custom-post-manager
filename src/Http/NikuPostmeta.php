@@ -4,7 +4,7 @@ namespace Niku\Cms\Http;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Postmeta extends Model
+class NikuPostmeta extends Model
 {
     protected $table = 'cms_postmeta';
     protected $fillable = ['meta_key', 'meta_value'];

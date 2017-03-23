@@ -4,7 +4,7 @@ namespace Niku\Cms\Http;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Posts extends Model
+class NikuPosts extends Model
 {
     protected $table = 'cms_posts';
 

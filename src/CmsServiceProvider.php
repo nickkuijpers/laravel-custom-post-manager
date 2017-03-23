@@ -26,33 +26,28 @@ class CmsServiceProvider extends ServiceProvider
 
         // Register config
         $this->publishes([
-            __DIR__.'/../config/'. 'niku-cms.php' => config_path('niku-cms.php'),
+            __DIR__.'/../config/niku-cms.php' => config_path('niku-cms.php'),
         ], 'niku-config');
 
-        // Register Vue components
+        // Register the default post types
         $this->publishes([
-        	__DIR__.'/../resources/assets/js/vendor/skins' => public_path('js/vendor/niku-cms/skins'),
-            __DIR__.'/../resources/assets/js/' => base_path('resources/assets/js/vendor/niku-cms'),
-            __DIR__.'/../resources/assets/sass/' => base_path('resources/assets/sass/vendor/niku-cms'),
-            __DIR__.'/../resources/assets/css/' => base_path('resources/assets/css/vendor/niku-cms'),
-        ], 'niku-assets');
+            __DIR__.'/../posttypes' => app_path('/Cms/PostTypes'),
+        ], 'niku-posttypes');
+
+        // Register Vue components
+        // $this->publishes([
+        // 	__DIR__.'/../resources/assets/js/vendor/skins' => public_path('js/vendor/niku-cms/skins'),
+        //     __DIR__.'/../resources/assets/js/' => base_path('resources/assets/js/vendor/niku-cms'),
+        //     __DIR__.'/../resources/assets/sass/' => base_path('resources/assets/sass/vendor/niku-cms'),
+        //     __DIR__.'/../resources/assets/css/' => base_path('resources/assets/css/vendor/niku-cms'),
+        // ], 'niku-assets');
 
         // Register views
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'niku-cms');
+        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'niku-cms');
 
         // Register copying views
-        $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/vendor/niku-cms'),
-        ], 'niku-assets');
-    }
-
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        include __DIR__.'/routes.php';
+        // $this->publishes([
+        //     __DIR__.'/../resources/views' => resource_path('views/vendor/niku-cms'),
+        // ], 'niku-assets');
     }
 }
