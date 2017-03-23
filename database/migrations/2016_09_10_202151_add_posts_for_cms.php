@@ -24,6 +24,7 @@ class AddPostsForCms extends Migration
             $table->bigInteger('post_parent')->nullable();
             $table->string('post_type')->nullable();
             $table->integer('menu_order')->nullable();
+            $table->string('post_mime_type')->nullable();
             $table->string('status')->nullable();
             $table->string('template')->nullable();
             $table->index(['post_name', 'id']);

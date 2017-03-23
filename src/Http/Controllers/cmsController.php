@@ -12,28 +12,6 @@ use Niku\Cms\Http\NikuPosts;
 
 class CmsController extends Controller
 {
-	/**
-	 * Validating all functions
-	 */
-    protected function validateRules()
-    {
-
-    }
-
-    /**
-     * Function for sanitizing slugs
-     */
-    protected function sanitizeUrl($url)
-    {
-	    $url = $url;
-	    $url = preg_replace('~[^\\pL0-9_]+~u', '-', $url); // substitutes anything but letters, numbers and '_' with separator
-	    $url = trim($url, "-");
-	    $url = iconv("utf-8", "us-ascii//TRANSLIT", $url); // TRANSLIT does the whole job
-	    $url = strtolower($url);
-	    $url = preg_replace('~[^-a-z0-9_]+~', '', $url); // keep only letters, numbers, '_' and separator
-	    return $url;
-    }
-
     /**
      * Validating if the post type exists and returning the model.
      */
@@ -47,6 +25,10 @@ class CmsController extends Controller
 
     		// Setting the model class
     		$postTypeModel = new $nikuConfig['post_types'][$post_type];
+
+    		if(!$postTypeModel->authorized()){
+    			return false;
+    		}
 
     		// Lets validate if the request has got the correct authorizations set
     		if(!$this->authorizations($postTypeModel)){
@@ -120,4 +102,17 @@ class CmsController extends Controller
         ], 422);
     }
 
+    /**
+     * Function for sanitizing slugs
+     */
+    protected function sanitizeUrl($url)
+    {
+	    $url = $url;
+	    $url = preg_replace('~[^\\pL0-9_]+~u', '-', $url); // substitutes anything but letters, numbers and '_' with separator
+	    $url = trim($url, "-");
+	    $url = iconv("utf-8", "us-ascii//TRANSLIT", $url); // TRANSLIT does the whole job
+	    $url = strtolower($url);
+	    $url = preg_replace('~[^-a-z0-9_]+~', '', $url); // keep only letters, numbers, '_' and separator
+	    return $url;
+    }
 }
