@@ -3,6 +3,7 @@
 namespace Niku\Cms\Http\Controllers\Cms;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Niku\Cms\Http\Controllers\CmsController;
 
 class CreatePostController extends CmsController
@@ -12,23 +13,11 @@ class CreatePostController extends CmsController
      */
     public function init(Request $request, $postType)
     {
-    	// Receiving the post type class
-    	$postType = $this->getPostType($postType);
-
-    	// Validating if the user has authorization to do this request
-    	$authorized = $postType->authorizationCheck();
-    	dd($authorized);
-    	if($authorized->code === 422){
-    		return $this->abort($authorized->message);
+    	// Lets validate if the post type exists and if so, continue.
+    	$postTypeModel = $this->getPostType($postType);
+    	if(!$postTypeModel){
+    		return $this->abort('You are not authorized to do this.');
     	}
-
-    	dd('dasd');
-
-        $validationRules = [
-            'post_title' => 'required',
-            'status' => 'required',
-            'post_name' => 'required',
-        ];
 
         // Creating and cleaning up the request so we get all custom fields
         $postmeta = $request->all();
@@ -37,24 +26,31 @@ class CreatePostController extends CmsController
             unset($postmeta[$value]);
         }
 
-        foreach ($postmeta as $key => $value) {
-            $rule = config("niku-cms.post_types.{$post_type}.view.templates.{$request->template}.customFields.{$key}.validation");
+        // Receive the default validations required for the post
+        $validationRules = $postTypeModel->defaultValidationRules;
 
-            if (! empty($rule)) {
-                $validationRules[$key] = $rule;
-            }
+        // Getting the template structure
+        $template = $postTypeModel->view[$request->template];
+
+        // Appending required validations to the default validations of the post
+        foreach($postmeta as $key => $value){
+
+        	// Lets validate if the array key exists
+        	if(array_key_exists($key, $template['customFields'])){
+	            $validationRules[$key] = $template['customFields'][$key]['validation'];
+        	}
         }
 
     	// Validate the post
-    	$this->validatePost($request, $validationRules);
+    	$this->validatePost($postTypeModel, $request, $validationRules);
 
         // Saving the post data
-        $post = new NikuPosts;
+        $post = $postTypeModel;
     	$post->post_title = $request->get('post_title');
     	$post->post_name = $this->sanitizeUrl($request->get('post_name'));
     	$post->post_content = $request->get('post_content');
     	$post->status = $request->get('status');
-    	$post->post_type = $post_type;
+    	$post->post_type = $postType;
 
         // Check if user is logged in to set the author id
         if(Auth::check()){
@@ -66,31 +62,39 @@ class CreatePostController extends CmsController
         $post->template = $request->get('template');
     	$post->save();
 
-        // Deleting all current postmeta rows
-        $post->postmeta()->delete();
-
         // Saving the custom fields to the database as post meta
         foreach($postmeta as $key => $value){
-            $object = [
-                'meta_key' => $key,
-                'meta_value' => $value,
-            ];
-            $post->postmeta()->create($object);
+
+        	// Lets validate if we have whitelisted the custom field, if not we
+        	// do not want it to be saved in our database to prevent garbage.
+        	if(array_key_exists($key, $template['customFields'])){
+
+	            $object = [
+	                'meta_key' => $key,
+	                'meta_value' => $value,
+	            ];
+	            $post->postmeta()->create($object);
+	        }
         }
 
-    	return response()->json('success');
+    	return response()->json([
+    		'code' => 'success',
+    		'message' => 'Posts succesfully created.',
+    	], 200);
     }
 
     /**
      * Validating the creation and change of a post
      */
-    protected function validatePost($request, $validationRules)
+    protected function validatePost($postTypeModel, $request, $validationRules)
     {
-        // Validate if the post_name is a duplicate in the current post_type
-        $post = NikuPosts::where([
+        // Validating the postname of the given ID to make sure it can be
+        // updated and it is not overriding a other duplicated postname.
+        $post = $postTypeModel::where([
             ['post_name', '=', $request->get('post_name')],
             ['post_type', '=', $request->get('_posttype')]
         ])->select(['post_name'])->first();
+
         if($post){
             $validationRules['post_name'] = 'required|unique:cms_posts';
         } else {

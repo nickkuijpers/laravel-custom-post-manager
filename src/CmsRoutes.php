@@ -47,22 +47,14 @@ class CmsRoutes
 			'as' => 'niku-cms.'
 		], function () {
 
-			// Testing and demo
-			if(config('niku-cms.demo') == 1){
-				Route::get('/niku-cms/demo/{post_type}', '\Niku\Cms\Http\Controllers\cmsController@test')->name('demo');
-			}
-
 			// Listing all posts by post type
-			Route::get('/niku-cms/{post_type}', '\Niku\Cms\Http\Controllers\cmsController@index')->name('list');
+			Route::post('/niku-cms/{post_type}', '\Niku\Cms\Http\Controllers\Cms\ListPostsController@init')->name('list');
 
 			// Returning the single post result
-			Route::get('/niku-cms/{post_type}/show/{id}', '\Niku\Cms\Http\Controllers\cmsController@show')->name('show');
+			Route::post('/niku-cms/{post_type}/show/{id}', '\Niku\Cms\Http\Controllers\Cms\ShowPostController@init')->name('show');
 
 			// Deleting a post
-			Route::delete('/niku-cms/{post_type}/delete/{id}', '\Niku\Cms\Http\Controllers\cmsController@delete')->name('post_type');
-
-			// Recieving custom fields based on post type and template
-			Route::post('/niku-cms/{post_type}/receiveview', '\Niku\Cms\Http\Controllers\Cms\ReceiveViewController@init')->name('custom_fields');
+			Route::post('/niku-cms/{post_type}/delete/{id}', '\Niku\Cms\Http\Controllers\Cms\DeletePostController@init')->name('post_type');
 
 			// Editting a post
 			Route::post('/niku-cms/{post_type}/edit', '\Niku\Cms\Http\Controllers\Cms\EditPostController@init')->name('createedit');

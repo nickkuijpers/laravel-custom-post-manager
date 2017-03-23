@@ -9,34 +9,31 @@ class DeletePostController extends CmsController
 	/**
      * Delete a single post
      */
-    public function init($post_type, $id)
+    public function init($postType, $id)
     {
-        // Validate if the user is logged in
-        if(! $this->userIsLoggedIn($post_type)){
-            return $this->abort('User not authorized.');
-        }
-
-        // User email validation
-        if ($this->userHasWhitelistedEmail($post_type)) {
-            return $this->abort('User email is not whitelisted.');
-        }
+    	// Lets validate if the post type exists and if so, continue.
+    	$postTypeModel = $this->getPostType($postType);
+    	if(!$postTypeModel){
+    		return $this->abort('You are not authorized to do this.');
+    	}
 
         // If the user can only see his own posts
-        if($this->userCanOnlySeeHisOwnPosts($post_type)) {
+        if($postTypeModel->userCanOnlySeeHisOwnPosts){
             $where[] = ['post_author', '=', Auth::user()->id];
         }
 
     	// Where sql to get all posts by post_Type
     	$where[] = ['id', '=', $id];
 
-        // If the user can only see his own posts
-        if($this->userCanOnlySeeHisOwnPosts($post_type)) {
-            $where[] = ['post_author', '=', Auth::user()->id];
-        }
+    	// Find the post
+    	$post = $postTypeModel::where($where);
 
-    	$post = NikuPosts::where($where);
+    	// Delete the post
     	$post->delete();
 
-    	return response()->json('success');
+    	return response()->json([
+    		'code' => 'success',
+    		'message' => 'Posts succesfully deleted',
+    	], 200);
     }
 }

@@ -2,61 +2,42 @@
 
 namespace Niku\Cms\Http\Controllers\Cms;
 
+use Illuminate\Support\Facades\Auth;
 use Niku\Cms\Http\Controllers\CmsController;
 
 class ListPostsController extends CmsController
 {
-	/**
-     * Return the custom fields based on the config
-     */
-    public function init(Request $request)
+	public function init($postType)
     {
-        $postType = $request->get('_post_type');
-        $id = $request->get('_id');
+    	// Lets validate if the post type exists and if so, continue.
+    	$postTypeModel = $this->getPostType($postType);
+    	if(!$postTypeModel){
+    		return $this->abort('You are not authorized to do this.');
+    	}
 
-        // Validate if the user is logged in
-        if(! $this->userIsLoggedIn($postType)){
-            return $this->abort('User not authorized.');
+        // If the user can only see his own posts
+        if($postTypeModel->userCanOnlySeeHisOwnPosts){
+            $where[] = ['post_author', '=', Auth::user()->id];
         }
 
-        // User email validation
-        if ($this->userHasWhitelistedEmail($postType)) {
-            return $this->abort('User email is not whitelisted.');
-        }
+        // Where sql to get all posts by post_Type
+        $where[] = ['post_type', '=', $postType];
 
-        $nikuConfig = config("niku-cms.post_types.{$postType}");
-        // Validate if the post type exists
-        if(empty($nikuConfig)){
-            return collect([
-                'code' => 'doesnotexist',
-                'status' => 'Post type does not exist'
-            ]);
-        }
+        // Query the database
+		$posts = $postTypeModel::where($where)->select([
+			'id',
+    		'post_title',
+    		'post_name',
+    		'status',
+    		'post_type',
+		])->with('postmeta')->get();
 
-        // Returning the view
-        $view = $nikuConfig['view'];
+		// Returning the objects
+		$objects = [
+			'label' => $postTypeModel->label,
+			'objects' => $posts
+		];
 
-        // Lets now fill the custom fields with data out of database
-        $post = NikuPosts::find($id);
-        if(!empty($post)){
-            $postmeta = $post->postmeta()->select(['meta_key', 'meta_value'])->get()->keyBy('meta_key')->toArray();
-        }
-
-        // Appending the key added in the config to the array
-        // so we can use it very easliy in the component.
-        foreach($view['templates'] as $key => $template){
-        	if(!empty($template['customFields'])){
-	            foreach($template['customFields'] as $ckey => $customField){
-	                $view['templates'][$key]['customFields'][$ckey]['id'] = $ckey;
-	                if(!empty($post)){
-	                	if(!empty($postmeta[$ckey])){
-	                		$view['templates'][$key]['customFields'][$ckey]['value'] = $postmeta[$ckey]['meta_value'];
-	                	}
-	                }
-	            }
-	        }
-        }
-
-        return $view;
+    	return response()->json($objects);
     }
 }
