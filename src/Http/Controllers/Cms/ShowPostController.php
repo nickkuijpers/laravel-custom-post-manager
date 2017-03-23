@@ -60,13 +60,13 @@ class ShowPostController extends CmsController
     	$postmeta = $collection['postmeta'];
 
     	// Convert the custom fields to a set up
-    	foreach($view['templates'] as $key => $template){
+    	foreach($view as $key => $template){
         	if(!empty($template['customFields'])){
 	            foreach($template['customFields'] as $ckey => $customField){
-	                $view['templates'][$key]['customFields'][$ckey]['id'] = $ckey;
+	                $view[$key]['customFields'][$ckey]['id'] = $ckey;
 	                if(!empty($post)){
 	                	if(!empty($postmeta[$ckey])){
-	                		$view['templates'][$key]['customFields'][$ckey]['value'] = $postmeta[$ckey]['meta_value'];
+	                		$view[$key]['customFields'][$ckey]['value'] = $postmeta[$ckey]['meta_value'];
 	                	}
 	                }
 	            }
