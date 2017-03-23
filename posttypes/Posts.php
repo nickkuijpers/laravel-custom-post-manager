@@ -6,7 +6,7 @@ use Niku\Cms\Http\NikuPosts;
 
 class Posts extends NikuPosts
 {
-	protected $config = [
+	public $config = [
 		'authorization' => [
 			'userMustBeLoggedIn' => 0,
 			'userCanOnlySeeHisOwnPosts' => 0,

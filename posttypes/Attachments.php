@@ -2,9 +2,9 @@
 
 namespace App\Cms\PostTypes;
 
-use Niku\Cms\Http\Posts;
+use Niku\Cms\Http\NikuPosts;
 
-class Attachments extends Posts
+class Attachments extends NikuPosts
 {
 	protected $config = [
 		'authorization' => [

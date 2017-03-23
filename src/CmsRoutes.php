@@ -62,10 +62,13 @@ class CmsRoutes
 			Route::delete('/niku-cms/{post_type}/delete/{id}', '\Niku\Cms\Http\Controllers\cmsController@delete')->name('post_type');
 
 			// Recieving custom fields based on post type and template
-			Route::post('/niku-cms/{post_type}/receiveview', '\Niku\Cms\Http\Controllers\cmsController@receiveView')->name('custom_fields');
+			Route::post('/niku-cms/{post_type}/receiveview', '\Niku\Cms\Http\Controllers\Cms\ReceiveViewController@init')->name('custom_fields');
 
-			// Creating and updating posts
-			Route::post('/niku-cms/{post_type}/{action}', '\Niku\Cms\Http\Controllers\cmsController@postManagement')->name('createedit');
+			// Editting a post
+			Route::post('/niku-cms/{post_type}/edit', '\Niku\Cms\Http\Controllers\Cms\EditPostController@init')->name('createedit');
+
+			// Creating a post
+			Route::post('/niku-cms/{post_type}/create', '\Niku\Cms\Http\Controllers\Cms\CreatePostController@init')->name('createedit');
 
 			// Creating and updating posts
 			Route::post('/niku-cms/media', '\Niku\Cms\Http\Controllers\mediaController@post')->name('mediamanagerpost');
