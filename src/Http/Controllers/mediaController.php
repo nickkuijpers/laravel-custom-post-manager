@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
-use Niku\Cms\Http\Postmeta;
-use Niku\Cms\Http\Posts;
+use Niku\Cms\Http\NikuPostmeta;
+use Niku\Cms\Http\NikuPosts;
 
 class mediaController extends Controller
 {
@@ -26,7 +26,7 @@ class mediaController extends Controller
 		$postName = $this->sanitizeUrl($fileName);
 		$mime = $request->file->getMimeType();
 
-		$postmeta = Postmeta::where([
+		$postmeta = NikuPostmeta::where([
 			['meta_key', '=', 'attachment_url'],
 			['meta_value', 'LIKE', '/uploads/images/' . $fileName . '%']
 		])->get();
@@ -41,7 +41,7 @@ class mediaController extends Controller
 		$postName = $postName . $fileCount;
 		$fileName = $fileName . $fileCount . '.' . $fileExtension;
 
-		$post = new Posts;
+		$post = new NikuPosts;
 		$post->post_title = $fileName;
 		$post->post_name = $postName;
 		$post->post_type = 'attachment';
@@ -54,7 +54,7 @@ class mediaController extends Controller
 		}
 		$post->save();
 
-		$postmeta = new Postmeta;
+		$postmeta = new NikuPostmeta;
 		$postmeta->post_id = $post->id;
 		$postmeta->meta_key = 'attachment_url';
 		$postmeta->meta_value = '/uploads/images/' . $fileName;
@@ -90,7 +90,4 @@ class mediaController extends Controller
 	    $url = preg_replace('~[^-a-z0-9_]+~', '', $url); // keep only letters, numbers, '_' and separator
 	    return $url;
     }
-
-	// To do
-	// - delete files
 }
