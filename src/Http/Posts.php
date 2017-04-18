@@ -24,9 +24,9 @@ class Posts extends Model
     {
     	$postmeta = $this->postmeta;
     	$postmeta = $postmeta->keyBy('meta_key');
-    	$returnValue = $postmeta[$key]['meta_value'];
-    	return $returnValue;
-    }
-
+		if(array_has($postmeta, $key . '.meta_value')){
+			$returnValue = $postmeta[$key]['meta_value'];
+			return $returnValue;
+		}
+	}
 }
-
