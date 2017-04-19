@@ -47,22 +47,14 @@ class CmsRoutes
 			'as' => 'niku-cms.'
 		], function () {
 
-			// Creating and updating posts
-			Route::post('/niku-cms/media', '\Niku\Cms\Http\Controllers\mediaController@post')->name('mediamanagerpost');
+			// Custom media post creation
+			Route::post('/niku-cms/media', '\Niku\Cms\Http\Controllers\MediaController@post')->name('mediamanagerpost');
 
-			// Listing all posts by post type
+			// Crud listing all posts by post type
 			Route::post('/niku-cms/{post_type}', '\Niku\Cms\Http\Controllers\Cms\ListPostsController@init')->name('list');
-
-			// Returning the single post result
 			Route::post('/niku-cms/{post_type}/show/{id}', '\Niku\Cms\Http\Controllers\Cms\ShowPostController@init')->name('show');
-
-			// Deleting a post
 			Route::post('/niku-cms/{post_type}/delete/{id}', '\Niku\Cms\Http\Controllers\Cms\DeletePostController@init')->name('delete');
-
-			// Editting a post
 			Route::post('/niku-cms/{post_type}/edit', '\Niku\Cms\Http\Controllers\Cms\EditPostController@init')->name('edit');
-
-			// Creating a post
 			Route::post('/niku-cms/{post_type}/create', '\Niku\Cms\Http\Controllers\Cms\CreatePostController@init')->name('create');
 
 		});

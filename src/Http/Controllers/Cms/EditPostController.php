@@ -29,7 +29,7 @@ class EditPostController extends CmsController
         $validationRules = $postTypeModel->defaultValidationRules;
 
         // Getting the template structure
-        $template = $postTypeModel->view[$request->template];
+        $template = $postTypeModel->templates[$request->template];
 
         // Appending required validations to the default validations of the post
         foreach($postmeta as $key => $value){

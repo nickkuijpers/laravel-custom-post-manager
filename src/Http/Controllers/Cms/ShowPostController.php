@@ -25,8 +25,13 @@ class ShowPostController extends CmsController
         // Where sql to get all posts by post_Type
         $where[] = ['id', '=', $id];
 
-        $post = $postTypeModel::where($where)->first();
-        if(!$post){
+        if($id == 0){
+	        $post = $postTypeModel;
+	    } else {
+	    	$post = $postTypeModel::where($where)->first();
+	    }
+
+	    if(!$post){
         	return $this->abort('Post does not exist.');
         }
 
@@ -40,11 +45,11 @@ class ShowPostController extends CmsController
             'postmeta' => $postmeta
         ]);
 
-        // Receiving the view from the model
-        $view = $postTypeModel->view;
-
         // Mergin the collection with the data and custom fields
-        $collection = $this->mergeCollectionWithView($view, $collection);
+        $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->templates, $collection);
+
+        // Merge the configuration values
+        $collection['config'] = $postTypeModel->config;
 
         // Returning the full collection
     	return response()->json($collection);
@@ -72,9 +77,6 @@ class ShowPostController extends CmsController
 	            }
 	        }
         }
-
-        $view['post'] = $post;
-        $view['postmeta'] = $postmeta;
 
         return $view;
     }

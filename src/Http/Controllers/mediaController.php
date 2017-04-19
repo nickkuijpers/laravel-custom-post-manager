@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Niku\Cms\Http\NikuPostmeta;
 use Niku\Cms\Http\NikuPosts;
 
-class mediaController extends Controller
+class MediaController extends Controller
 {
 	/**
 	 * Add attachment to the filesystem and add it to the database
