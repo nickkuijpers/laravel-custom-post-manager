@@ -83,19 +83,24 @@ class EditPostController extends CmsController
 
             // Lets validate if we have whitelisted the custom field, if not we
         	// do not want it to be saved in our database to prevent garbage.
-        	if(array_key_exists($key, $template['customFields'])){
+        	if (
+        		array_key_exists($key, $template['customFields'])
+        		||
+        		(strpos($key, '_repeater_') !== false)
+        	) {
 
 	            $object = [
 	                'meta_key' => $key,
 	                'meta_value' => $value,
 	            ];
+
 	            $post->postmeta()->create($object);
 	        }
         }
 
     	return response()->json([
     		'code' => 'success',
-    		'message' => 'Posts succesfully editted',
+    		'message' => 'Post succesfully editted',
     	], 200);
     }
 

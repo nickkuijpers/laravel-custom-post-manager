@@ -48,8 +48,8 @@ class CmsRoutes
 		], function () {
 
 			// Config routes
-			Route::get('/niku-cms/config/{group}/edit', '\Niku\Cms\Http\Controllers\configController@show')->name('configedit');
-			Route::post('/niku-cms/config/{group}/edit', '\Niku\Cms\Http\Controllers\configController@configManager')->name('configsaver');
+			Route::post('/niku-cms/config/{group}/show', '\Niku\Cms\Http\Controllers\Config\ShowConfigController@init')->name('show');
+			Route::post('/niku-cms/config/{group}/edit', '\Niku\Cms\Http\Controllers\Config\EditConfigController@init')->name('edit');
 
 			// Custom media post creation
 			Route::post('/niku-cms/media', '\Niku\Cms\Http\Controllers\MediaController@post')->name('mediamanagerpost');

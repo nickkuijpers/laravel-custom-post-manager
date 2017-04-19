@@ -80,6 +80,11 @@ class CreatePostController extends CmsController
     	return response()->json([
     		'code' => 'success',
     		'message' => 'Posts succesfully created.',
+    		'action' => 'create',
+    		'post' => [
+    			'postType' => $post->post_type,
+    			'id' => $post->id
+    		]
     	], 200);
     }
 
