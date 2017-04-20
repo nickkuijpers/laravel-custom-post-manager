@@ -4,6 +4,7 @@ namespace Niku\Cms\Http\Controllers\Config;
 
 use Illuminate\Http\Request;
 use Niku\Cms\Http\Controllers\ConfigController;
+use Niku\Cms\Http\NikuConfig;
 
 class EditConfigController extends ConfigController
 {
@@ -27,37 +28,53 @@ class EditConfigController extends ConfigController
 			unset($configMeta[$value]);
 		}
 
-		dd($configMeta);
-
 		// Receiving validation rules from config
-		$repeaterArray = [];
+		$validationRules = [];
 		foreach ($configMeta as $key => $value) {
+
+			// dd($configMeta);
 
 			// Setting the path to get the validation rules
 			if(strpos($key, '_repeater_') !== false) {
 				$explodedValue = explode('_', $key);
 
-				// We need to make a array of all repeaters so we can update it specific later
-				$repeaterArray[] = $key;
-				$rule = config("niku-cms.config.{$group}.view.customFields.{$explodedValue[0]}.customFields.{$explodedValue[3]}.validation");
+				// Removing the old repeater values so we can resave them all, if we do
+				// not do this, it will keep having the old values in the database.
+				NikuConfig::where([
+					['option_name', 'like', $explodedValue[0] . '_' . $explodedValue[1] . '_%'],
+					['group', '=', $group]
+				])->delete();
+
+				// For each all groups to get the validation
+				foreach($postTypeModel->templates as $templateKey => $template){
+					if(array_has($template, 'customFields.' . $explodedValue[0] . '.customFields.' . $explodedValue[3] . '.validation')){
+						$rule = $template['customFields'][$explodedValue[0]]['customFields'][$explodedValue[3]]['validation'];
+					}
+				}
+
 			} else {
-				$rule = config("niku-cms.config.{$group}.view.customFields.{$key}.validation");
+
+				// For each all groups to get the validation
+				foreach($postTypeModel->templates as $templateKey => $template){
+					if(array_has($template, 'customFields.' . $key . '.validation')){
+						$rule = $template['customFields'][$key]['validation'];
+					}
+				}
+
 			}
-			if (! empty($rule) ) {
+
+			// Appending the validation rules to the validation array
+			if(!empty($rule)){
 				$validationRules[$key] = $rule;
 			}
+
 		}
 
-		// Validate the post
+		// Validate the request
 		if(!empty($validationRules)){
 			$this->validatePost($request, $validationRules);
 		}
 
-		// Lets first delete the old repeater values, because if we do not do this,
-		// it will keep adding it self because we are not
-		if(strpos($key, '_repeater_') !== false) {
-			NikuConfig::where('option_name', 'like', $explodedValue[0] . '_' . $explodedValue[1] . '_%')->delete();
-		}
 
 		// Lets update or create the fields in the post request
 		foreach($configMeta as $index => $value){
