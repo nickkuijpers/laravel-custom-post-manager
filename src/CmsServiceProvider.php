@@ -31,7 +31,11 @@ class CmsServiceProvider extends ServiceProvider
 
         // Register the default post types
         $this->publishes([
-            __DIR__.'/../posttypes' => app_path('/Cms/PostTypes'),
+            __DIR__.'/../PostTypes' => app_path('/Cms/PostTypes'),
+        ], 'niku-posttypes');
+
+        $this->publishes([
+            __DIR__.'/../ConfigTypes' => app_path('/Cms/ConfigTypes'),
         ], 'niku-posttypes');
 
     }

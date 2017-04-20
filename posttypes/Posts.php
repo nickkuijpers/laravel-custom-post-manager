@@ -7,7 +7,7 @@ use Niku\Cms\Http\NikuPosts;
 class Posts extends NikuPosts
 {
 	// The label of the custom post type
-	public $label = 'Berichten';
+	public $label = 'Posts';
 
 	// Does the user have to be logged in to view the posts?
 	public $userMustBeLoggedIn = false;

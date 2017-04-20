@@ -1,11 +1,19 @@
 <?php
+/**
+ * Adding custom post types
+ */
 
 return [
 
-	// Define the required 'whitelisted' post types
-	'post_types' => [
-		App\PostTypes\Cms\Attachments::class,
-		App\PostTypes\Cms\Posts::class,
-	],
+    'post_types' => [
+        'page' => App\Cms\PostTypes\Pages::class,
+        'attachment' => App\Cms\PostTypes\Attachment::class,
+        //
+    ],
+
+    'config_types' => [
+        'defaultsettings' => App\Cms\ConfigTypes\DefaultSettings::class,
+        //
+    ]
 
 ];
