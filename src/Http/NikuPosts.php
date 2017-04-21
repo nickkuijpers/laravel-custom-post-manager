@@ -30,6 +30,22 @@ class NikuPosts extends Model
     }
 
     /**
+     * Get posts of taxonomy
+     */
+    public function posts()
+    {
+    	return $this->belongsToMany('Niku\Cms\Http\NikuPosts', 'cms_taxonomy', 'taxonomy_post_id', 'post_id');
+    }
+
+    /**
+     * Get taxonomies of post
+     */
+    public function taxonomies()
+    {
+    	return $this->belongsToMany('Niku\Cms\Http\NikuPosts', 'cms_taxonomy', 'post_id', 'taxonomy_post_id');
+    }
+
+    /**
      * Retrieve the meta value of a certain key
      */
     public function getMeta($key)

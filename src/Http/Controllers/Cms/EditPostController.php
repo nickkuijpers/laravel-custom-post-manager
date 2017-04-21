@@ -36,7 +36,9 @@ class EditPostController extends CmsController
 
         	// Lets validate if the array key exists
         	if(array_key_exists($key, $template['customFields'])){
-	            $validationRules[$key] = $template['customFields'][$key]['validation'];
+        		if(!empty($template['customFields'][$key]['validation'])){
+		            $validationRules[$key] = $template['customFields'][$key]['validation'];
+		        }
         	}
         }
 

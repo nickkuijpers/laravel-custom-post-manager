@@ -37,7 +37,9 @@ class CreatePostController extends CmsController
 
         	// Lets validate if the array key exists
         	if(array_key_exists($key, $template['customFields'])){
-	            $validationRules[$key] = $template['customFields'][$key]['validation'];
+        		if(!empty($template['customFields'][$key]['validation'])){
+		            $validationRules[$key] = $template['customFields'][$key]['validation'];
+		        }
         	}
         }
 
@@ -50,6 +52,9 @@ class CreatePostController extends CmsController
     	$post->post_name = $this->sanitizeUrl($request->get('post_name'));
     	$post->post_content = $request->get('post_content');
     	$post->status = $request->get('status');
+    	if($postTypeModel->isTaxonomy){
+    		$post->taxonomy = $postTypeModel->taxonomyName;
+    	}
     	$post->post_type = $postType;
 
         // Check if user is logged in to set the author id

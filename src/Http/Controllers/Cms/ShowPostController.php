@@ -37,12 +37,10 @@ class ShowPostController extends CmsController
 
         $postmeta = $post->postmeta()->select(['meta_key', 'meta_value'])->get();
         $postmeta = $postmeta->keyBy('meta_key');
-        $postmeta = $postmeta->toArray();
-        $post = $post->toArray();
 
         $collection = collect([
-            'post' => $post,
-            'postmeta' => $postmeta
+            'post' => $post->toArray(),
+            'postmeta' => $postmeta->toArray()
         ]);
 
         // Mergin the collection with the data and custom fields
@@ -50,6 +48,15 @@ class ShowPostController extends CmsController
 
         // Merge the configuration values
         $collection['config'] = $postTypeModel->config;
+
+        // Appending taxonomies if they exist
+        if($postTypeModel->isTaxonomy){
+
+        	// List all posts connected to this post
+        	$taxonomyPosts = $post->posts()->get();;
+
+	        $collection['taxonomyPosts'] = $taxonomyPosts;
+	    }
 
         // Returning the full collection
     	return response()->json($collection);
