@@ -88,6 +88,9 @@ class CreatePostController extends CmsController
         $post->template = $request->get('template');
     	$post->save();
 
+        // Presetting a empty array so we can append pivot values to the sync function.
+        $pivotValue = [];
+
         // Saving the meta values to the database
         foreach($postmeta as $key => $value){
 
@@ -125,6 +128,20 @@ class CreatePostController extends CmsController
 
         		if(array_has($template, 'customFields.' . $key)){
 
+        			// When the custom field is marked as taxonomy, we need to
+        			// attach and sync the connections in the pivot table.
+        			$customFieldObject = $template['customFields'][$key];
+
+        			if(array_has($customFieldObject, 'type')){
+        				if($customFieldObject['type'] == 'taxonomy'){
+
+	        				foreach(json_decode($value) as $valueItem){
+	        					$pivotValue[$valueItem] = ['taxonomy' => $key];
+	        				}
+
+		        		}
+		        	}
+
 	        		// Saving it to the database
 					$object = [
 		                'meta_key' => $key,
@@ -142,6 +159,10 @@ class CreatePostController extends CmsController
         	}
 
         }
+
+        // Saving the sync to the database, if we do this inside the loop
+    	// it will delete the old ones so we need to prepare the array.
+    	$post->taxonomies()->sync($pivotValue);
 
     	return response()->json([
     		'code' => 'success',

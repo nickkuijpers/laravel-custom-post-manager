@@ -92,17 +92,6 @@ class CmsController extends Controller
     }
 
     /**
-     * Abort the request
-     */
-    public function abort($message = 'Not authorized.')
-    {
-        return response()->json([
-            'code' => 'error',
-            'status' => $message,
-        ], 422);
-    }
-
-    /**
      * Function for sanitizing slugs
      */
     protected function sanitizeUrl($url)
@@ -114,5 +103,16 @@ class CmsController extends Controller
 	    $url = strtolower($url);
 	    $url = preg_replace('~[^-a-z0-9_]+~', '', $url); // keep only letters, numbers, '_' and separator
 	    return $url;
+    }
+
+    /**
+     * Abort the request
+     */
+    public function abort($message = 'Not authorized.')
+    {
+        return response()->json([
+            'code' => 'error',
+            'status' => $message,
+        ], 422);
     }
 }

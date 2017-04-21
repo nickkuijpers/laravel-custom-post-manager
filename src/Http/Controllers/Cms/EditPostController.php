@@ -101,6 +101,8 @@ class EditPostController extends CmsController
         // Deleting all current postmeta's out of the database so we can recreate it.
         $post->postmeta()->delete();
 
+        // Presetting a empty array so we can append pivot values to the sync function.
+        $pivotValue = [];
 
         // Saving the meta values to the database
         foreach($postmeta as $key => $value){
@@ -139,6 +141,20 @@ class EditPostController extends CmsController
 
         		if(array_has($template, 'customFields.' . $key)){
 
+        			// When the custom field is marked as taxonomy, we need to
+        			// attach and sync the connections in the pivot table.
+        			$customFieldObject = $template['customFields'][$key];
+
+        			if(array_has($customFieldObject, 'type')){
+        				if($customFieldObject['type'] == 'taxonomy'){
+
+	        				foreach(json_decode($value) as $valueItem){
+	        					$pivotValue[$valueItem] = ['taxonomy' => $key];
+	        				}
+
+		        		}
+		        	}
+
 	        		// Saving it to the database
 					$object = [
 		                'meta_key' => $key,
@@ -156,6 +172,10 @@ class EditPostController extends CmsController
         	}
 
         }
+
+        // Saving the sync to the database, if we do this inside the loop
+    	// it will delete the old ones so we need to prepare the array.
+    	$post->taxonomies()->sync($pivotValue);
 
     	return response()->json([
     		'code' => 'success',
