@@ -57,6 +57,7 @@ class CmsRoutes
 			// Crud listing all posts by post type
 			Route::post('/niku-cms/{post_type}', '\Niku\Cms\Http\Controllers\Cms\ListPostsController@init')->name('list');
 			Route::post('/niku-cms/{post_type}/show/{id}', '\Niku\Cms\Http\Controllers\Cms\ShowPostController@init')->name('show');
+			Route::post('/niku-cms/{post_type}/show/{id}/posts', '\Niku\Cms\Http\Controllers\Cms\ShowTaxonomyPosts@init')->name('show');
 			Route::post('/niku-cms/{post_type}/delete/{id}', '\Niku\Cms\Http\Controllers\Cms\DeletePostController@init')->name('delete');
 			Route::post('/niku-cms/{post_type}/edit', '\Niku\Cms\Http\Controllers\Cms\EditPostController@init')->name('edit');
 			Route::post('/niku-cms/{post_type}/create', '\Niku\Cms\Http\Controllers\Cms\CreatePostController@init')->name('create');

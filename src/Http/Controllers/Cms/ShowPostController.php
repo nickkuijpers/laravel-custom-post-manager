@@ -50,13 +50,13 @@ class ShowPostController extends CmsController
         $collection['config'] = $postTypeModel->config;
 
         // Appending taxonomies if they exist
-        if($postTypeModel->isTaxonomy){
+     //    if($postTypeModel->isTaxonomy){
 
-        	// List all posts connected to this post
-        	$taxonomyPosts = $post->posts()->get();;
+     //    	// List all posts connected to this post
+     //    	$taxonomyPosts = $post->posts()->get();;
 
-	        $collection['taxonomyPosts'] = $taxonomyPosts;
-	    }
+	    //     $collection['taxonomyPosts'] = $taxonomyPosts;
+	    // }
 
         // Returning the full collection
     	return response()->json($collection);
