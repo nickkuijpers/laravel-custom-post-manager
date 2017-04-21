@@ -32,8 +32,6 @@ class EditConfigController extends ConfigController
 		$validationRules = [];
 		foreach ($configMeta as $key => $value) {
 
-			// dd($configMeta);
-
 			// Setting the path to get the validation rules
 			if(strpos($key, '_repeater_') !== false) {
 				$explodedValue = explode('_', $key);

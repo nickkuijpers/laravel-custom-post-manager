@@ -34,12 +34,33 @@ class EditPostController extends CmsController
         // Appending required validations to the default validations of the post
         foreach($postmeta as $key => $value){
 
-        	// Lets validate if the array key exists
-        	if(array_key_exists($key, $template['customFields'])){
-        		if(!empty($template['customFields'][$key]['validation'])){
-		            $validationRules[$key] = $template['customFields'][$key]['validation'];
-		        }
-        	}
+        	// Setting the path to get the validation rules
+			if(strpos($key, '_repeater_') !== false) {
+				$explodedValue = explode('_', $key);
+
+				// For each all groups to get the validation
+				foreach($postTypeModel->templates as $templateKey => $template){
+					if(array_has($template, 'customFields.' . $explodedValue[0] . '.customFields.' . $explodedValue[3] . '.validation')){
+						$rule = $template['customFields'][$explodedValue[0]]['customFields'][$explodedValue[3]]['validation'];
+					}
+				}
+
+			} else {
+
+				// For each all groups to get the validation
+				foreach($postTypeModel->templates as $templateKey => $template){
+					if(array_has($template, 'customFields.' . $key . '.validation')){
+						$rule = $template['customFields'][$key]['validation'];
+					}
+				}
+
+			}
+
+			// Appending the validation rules to the validation array
+			if(!empty($rule)){
+				$validationRules[$key] = $rule;
+			}
+
         }
 
         // Validating the postname of the given ID to make sure it can be
@@ -80,24 +101,60 @@ class EditPostController extends CmsController
         // Deleting all current postmeta's out of the database so we can recreate it.
         $post->postmeta()->delete();
 
-        // Saving the custom fields to the database as post meta
+
+        // Saving the meta values to the database
         foreach($postmeta as $key => $value){
 
-            // Lets validate if we have whitelisted the custom field, if not we
-        	// do not want it to be saved in our database to prevent garbage.
-        	if (
-        		array_key_exists($key, $template['customFields'])
-        		||
-        		(strpos($key, '_repeater_') !== false)
-        	) {
+        	// Processing the repeater type values
+        	if((strpos($key, '_repeater_') !== false)){
 
-	            $object = [
-	                'meta_key' => $key,
-	                'meta_value' => $value,
-	            ];
+        		// Explode the value
+        		$explodedValue = explode('_', $key);
 
-	            $post->postmeta()->create($object);
-	        }
+        		// Foreaching all templates to validate if the key exists somewhere in a group
+        		foreach($postTypeModel->templates as $templateKey => $template){
+
+        			if(array_has($template, 'customFields.' . $explodedValue[0] . '.customFields.' . $explodedValue[3])){
+
+        				// Saving it to the database
+        				$object = [
+			                'meta_key' => $key,
+			                'meta_value' => $value,
+			            ];
+
+			            $post->postmeta()->create($object);
+
+			            // Unsetting the value
+		        		unset($postmeta[$key]);
+		        		continue;
+
+        			}
+
+        		}
+
+        	}
+
+        	// Processing all other type values
+        	foreach($postTypeModel->templates as $templateKey => $template){
+
+        		if(array_has($template, 'customFields.' . $key)){
+
+	        		// Saving it to the database
+					$object = [
+		                'meta_key' => $key,
+		                'meta_value' => $value,
+		            ];
+
+		            $post->postmeta()->create($object);
+
+		            // Unsetting the value
+	        		unset($postmeta[$key]);
+	        		continue;
+
+		        }
+
+        	}
+
         }
 
     	return response()->json([
