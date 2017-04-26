@@ -64,19 +64,23 @@ php artisan migrate
 
 Before you are able to use the post types, you need to whitelist and setup the required custom fields and templates in the config/niku-cms.php file.
 
-For each custom post type defined, you can set authorization rules in the config to define the permissions of a post type.
-
 ```php
-'authorization' => [
-    'userMustBeLoggedIn' => 1,
-    'userCanOnlySeeHisOwnPosts' => 0,
-    'allowedUserEmailAddresses' => [],
-],
+return [
+    'post_types' => [
+
+        // Default
+        'attachment' => App\Cms\PostTypes\Attachment::class,
+
+        // CMS
+        'page' => App\Cms\PostTypes\Pages::class,
+        'posts' => App\Cms\PostTypes\Pages::class,
+        'posts-category' => App\Cms\PostTypes\PostsCategory::class,
+        //
+    ];
 ```
 
-You can view the config/niku-cms.php to view all options, we've set one demo post type which you can read and reuse for multiple post types.
-
-It is possible to set validation rules for each post type as you add the following array key to the custom field like this:
+For each post type registered, you can set up default data and custom fields. You can add validations to the validation array key of the custom field you insert. All Laravel validation rules
+will be supported as it will only pass it thru to the validator class.
 
 ```php
 namespace App\Cms\PostTypes;
@@ -109,40 +113,18 @@ class Pages extends NikuPosts
     public $templates = [
         'default' => [
             'customFields' => [
-                'text' => [
+                'post_content' => [
                     'component' => 'niku-cms-text-customfield',
                     'label' => 'Text',
                     'value' => '',
                     'validation' => 'required',
                 ],
-                'PostMultiselect' => [
-                    'component' => 'niku-cms-posttype-multiselect',
-                    'label' => 'Post multiselect',
-                    'post_type' => ['page'],
+                'author' => [
+                    'component' => 'niku-cms-text-customfield',
+                    'label' => 'Author',
                     'validation' => 'required',
                 ],
-                'periods' => [
-                    'component' => 'niku-cms-repeater-customfield',
-                    'label' => 'Perioden',
-                    'validation' => 'required',
-                    'customFields' => [
-
-                        'label' => [
-                            'component' => 'niku-cms-text-customfield',
-                            'label' => 'Label',
-                            'value' => '',
-                            'validation' => '',
-                        ],
-
-                        'boolean' => [
-                            'component' => 'niku-cms-boolean-customfield',
-                            'label' => 'Boolean button',
-                            'value' => '',
-                            'validation' => '',
-                        ],
-
-                    ]
-                ],
+                // more custom fields
             ],
         ],
     ];
