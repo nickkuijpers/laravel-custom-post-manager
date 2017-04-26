@@ -8,8 +8,9 @@
 A API based codeable post manager for Laravel with custom fields. Extendable as you wish. Based on the API request, you will receive the post type configurations
 in a way where you can build your front-end with. We will take care of the CRUD functionality with support of taxonomies, media management and post meta.
 
-We use our package internally in our projects to remove the need of basic post management. We are now able to  We are now able to setup advanced dashboard functionality for all type of
-post data like Pages, Posts and whatever post type you require. You can add or remove custom fields in no time with no need to touch the database.
+We use our package internally in our projects to remove the need of basic post management. We are now able to setup advanced dashboard functionality for all type of
+post data like Pages, Posts, Products and whatever post type or category you require. You can add or remove custom fields in no time with no need to touch the
+database as the package does that automatically for you.
 
 > :We are working on a decoupled front-end package in Vue.js and Axios which makes it possible to interact with the API in your Laravel project or Single Page Application.
 
