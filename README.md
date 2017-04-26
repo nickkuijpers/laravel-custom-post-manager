@@ -5,18 +5,11 @@
 [![License](https://poser.pugx.org/niku-solutions/cms/license)](https://packagist.org/packages/niku-solutions/cms)
 [![Monthly Downloads](https://poser.pugx.org/niku-solutions/cms/d/monthly)](https://packagist.org/packages/niku-solutions/cms)
 
-A codeable post manager for Laravel with custom fields. Extendable as you wish. Define your required fields in the config
+A API based codeable post manager for Laravel with custom fields. Extendable as you wish. Define your required fields in the config
 and see the magic. It will automatically display the custom fields added in the niku-cms.php config file and will
 take care of the database management.
 
-Vue.js and Vue Resource is required. But as Laravel 5.3 ships this by default, you will be able to install this easily.
-This package gives you the possibility to easily add a user interface to manage post types with custom fields based on the
-selected page template and authentication. This package includes default custom fields but you can extend it very
-easily as you read the 'Extending the custom fields' section.
-
-You will be able to create a user interface for content management in minutes.
-
-> :warning: This is still a work in progress, and breaking changes may be introduced. It is functional.
+> :We are working on a decoupled front-end package in Vue.js and Axios which makes it possible to interact with the API in your Laravel project or Single Page Application.
 
 ## Impression
 
@@ -53,17 +46,10 @@ Enable the API where the frontend is communicating with by adding the following 
 Niku\Cms\Cms::routes();
 ```
 
-You need to run the following artisan command to publish the required assets and views.
+You need to run the following artisan command to publish the required config file to register your post types.
 
 ```
-php artisan vendor:publish --tag=niku-assets
 php artisan vendor:publish --tag=niku-config
-```
-
-If you have previously installed this package and you want to update the assets, use the following command. This will override your previous files.
-
-```
-php artisan vendor:publish --tag=niku-assets --force
 ```
 
 Migrate the database tables by running:
@@ -72,119 +58,8 @@ Migrate the database tables by running:
 php artisan migrate
 ```
 
-### Asset installation
 
-#### gulpfile.js
-
-As I advice you, for default websites, to keep the frontend and the backend decoupled, you have to define the following into your gulpfile.js.
-You don't have to do anything in there, but it gives you the possibility to add new custom fields like editors and datepickers.
-
-*In the niku-cms.js you will see a Bootstrap 3 function, you can disable this if you are not using Bootstrap but this will make sure the
-sidebar of the single post view is fixed for usability.*
-
-Make sure you add it to the same existing elixir function as where your Vue instance is created.
-
-```javascript
-elixir(mix => {
-    ...
-    mix.scripts([ // Vendor scripts like tinymce and datepickers
-        'vendor/niku-cms/vendor/tinymce.min.js',
-        // 'vendor/niku-cms/vendor/jquery-3.1.1.min.js',
-        'vendor/niku-cms/vendor/jquery-ui.js',
-    ], 'public/js/vendor/niku-cms/vendor.js')
-    .webpack([ // Custom scripting
-        'vendor/niku-cms/niku-cms.js',
-    ], 'public/js/vendor/niku-cms/niku-cms.js')
-    .styles([ // Vendor styling like tinymce and datepickers
-        'vendor/niku-cms/vendor/jquery-ui.css',
-    ], 'public/css/vendor/niku-cms/vendor.css')
-    .sass([ // Custom styling
-        'vendor/niku-cms/mediamanager.scss',
-        'vendor/niku-cms/dropzone.scss',
-        'vendor/niku-cms/niku-cms.scss',
-    ], 'public/css/vendor/niku-cms/niku-cms.css');
-    ...
-});
-```
-
-#### app.js
-
-Include the following require function above the starting of the Vue instance in your app.js.
-
-```javascript
-require('./vendor/niku-cms/init-niku-cms.js');
-```
-
-Now, in the Vue instance already added by Laravel, you need to add the following data object. If it already exists, you
-only need to add the nikuCms section. If it doesn't exist yet, you also need to add the data object.
-
-```javascript
-const app = new Vue({
-    el: 'body',
-    data: {
-        'nikuCms': {
-            view: 'niku-cms-list-posts',
-            data: {},
-            postType: 'page',
-            mediaManager: {'display': 0},
-            notification: {'display': 0, 'type': '', 'message': ''}
-        },
-    }
-});
-```
-
-#### Final step
-
-Run gulp in the terminal and the installation is done!
-
-```
-gulp
-```
-
-### Demo and testing
-
-In the config/niku-cms.php you will see a demo variable. If you enable this, you can open up the cms by requesting the following url. The variable will be dynamically added
-to the Vue component and will be used as the post type for saving the post. To see the power of the post types, try changing the {post_type} variable into something like
-'post' and you will be adding and listing posts to the 'post' post type in the database.
-
-*In the demo view, the component name is dynamically created. I advice you to hardcode this value when you are using this in a
-certain page like http://yourdomain.com/cms/page where the component name is page or the type of post type you require.*
-
-The `page` post type is whitelisted in the config/niku-cms.php so you will be able to use this demo setup.
-
-If you are not authorized and you want to test the demo, make sure you disable the userMustBeLoggedIn in the config/niku-cms.php for post types you wish to test and the the attachment post type.
-
-```
-http://domain.com/niku-cms/demo/{post_type}
-```
-
-## Usage
-
-### Backend usage
-
-After testing the demo URL and the CMS is working, you can implement it into your application. Make sure you add
-the required assets in each page you use the CMS component. As this CMS is based on Vue, you must of course include
-your default assets.
-
-You can change the `post_type` variable in the `<component>` to change the post type of the CMS.
-
-```blade
-<head>
-    ...
-    <link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/vendor/niku-cms/vendor.css') }}">
-    <link media="all" type="text/css" rel="stylesheet" href="{{ asset('css/vendor/niku-cms/niku-cms.css') }}">
-</head>
-<body>
-    <niku-cms-spinner></niku-cms-spinner>
-    <niku-cms-notification v-bind:notification="nikuCms.notification"></niku-cms-notification>
-    ...
-    <component :is="nikuCms.view" post_type="{{ $post_type }}"></component>
-    <niku-cms-media-manager></niku-cms-media-manager>
-    ...
-    <script src="{{ asset('js/vendor/niku-cms/vendor.js') }}"></script>
-    <script src="{{ asset('js/vendor/niku-cms/niku-cms.js') }}"></script>
-</body>
-```
+### Usage
 
 Before you are able to use the post types, you need to whitelist and setup the required custom fields and templates in the config/niku-cms.php file.
 
@@ -203,14 +78,86 @@ You can view the config/niku-cms.php to view all options, we've set one demo pos
 It is possible to set validation rules for each post type as you add the following array key to the custom field like this:
 
 ```php
-'customFields' => [
-    'telephone' => [
-        'component' => 'niku-cms-text-customfield',
-        'label' => 'Telephone number',
-        'value' => '',
-        'validation' => 'required|number',
-    ],
-]
+namespace App\Cms\PostTypes;
+
+use Niku\Cms\Http\NikuPosts;
+
+class Pages extends NikuPosts
+{
+    // The label of the custom post type
+    public $label = 'Pages';
+
+    // Does the user have to be logged in to view the posts?
+    public $userMustBeLoggedIn = true;
+
+    // Users can only view their own posts when this is set to true
+    public $userCanOnlySeeHisOwnPosts = false;
+
+    // Default required values for posts
+    public $defaultValidationRules = [
+        'post_title' => 'required',
+        'status' => 'required',
+        'post_name' => 'required',
+    ];
+
+    public $config = [
+
+    ];
+
+    // Setting up the template structure
+    public $templates = [
+        'default' => [
+            'customFields' => [
+                'text' => [
+                    'component' => 'niku-cms-text-customfield',
+                    'label' => 'Text',
+                    'value' => '',
+                    'validation' => 'required',
+                ],
+                'PostMultiselect' => [
+                    'component' => 'niku-cms-posttype-multiselect',
+                    'label' => 'Post multiselect',
+                    'post_type' => ['page'],
+                    'validation' => 'required',
+                ],
+                'periods' => [
+                    'component' => 'niku-cms-repeater-customfield',
+                    'label' => 'Perioden',
+                    'validation' => 'required',
+                    'customFields' => [
+
+                        'label' => [
+                            'component' => 'niku-cms-text-customfield',
+                            'label' => 'Label',
+                            'value' => '',
+                            'validation' => '',
+                        ],
+
+                        'boolean' => [
+                            'component' => 'niku-cms-boolean-customfield',
+                            'label' => 'Boolean button',
+                            'value' => '',
+                            'validation' => '',
+                        ],
+
+                    ]
+                ],
+            ],
+        ],
+    ];
+
+    /**
+     * Determine if the user is authorized to make this request.
+     * You can create some custom function here to manipulate
+     * the functionalty on some certain custom actions.
+     */
+    public function authorized()
+    {
+        return true;
+    }
+
+}
+
 ```
 
 Do you want to change the custom fields displayed based on the template? You can add multiple views which are selectable in the frontend for the end user and change the visible custom fields.
