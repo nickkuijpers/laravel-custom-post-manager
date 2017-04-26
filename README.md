@@ -5,14 +5,18 @@
 [![License](https://poser.pugx.org/niku-solutions/cms/license)](https://packagist.org/packages/niku-solutions/cms)
 [![Monthly Downloads](https://poser.pugx.org/niku-solutions/cms/d/monthly)](https://packagist.org/packages/niku-solutions/cms)
 
-A API based codeable post manager for Laravel with custom fields. Extendable as you wish. Define your required fields in the config
-and see the magic. It will automatically display the custom fields added in the niku-cms.php config file and will
-take care of the database management.
+A API based codeable post manager for Laravel with custom fields. Extendable as you wish. Based on the API request, you will receive the post type configurations
+in a way where you can build your front-end with. We will take care of the CRUD functionality with support of taxonomies, media management and post meta.
+
+We use our package internally in our projects to remove the need of basic post management. We are now able to  We are now able to setup advanced dashboard functionality for all type of
+post data like Pages, Posts and whatever post type you require. You can add or remove custom fields in no time with no need to touch the database.
 
 > :We are working on a decoupled front-end package in Vue.js and Axios which makes it possible to interact with the API in your Laravel project or Single Page Application.
 
 #### Features
 * Custom post types
+* Configuration pages
+* Taxonomies like categories
 * Media manager with upload functionality and management
 * Repeating custom field groups
 * Custom fields
@@ -20,9 +24,7 @@ take care of the database management.
 * Conditional custom fields based on template selection
 * Easy default user authentication based on if a user is logged in
 * Possibility to let users only view their own posts
-* Taxonomies like categories
 * Menu management support, you will need our front-end package for that.
-
 
 ## Installation
 
