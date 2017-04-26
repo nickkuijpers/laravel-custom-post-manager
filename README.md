@@ -10,7 +10,7 @@ in a way where you can build your front-end with. We will take care of the CRUD 
 
 We use our package internally in our projects to remove the need of basic post management. We are now able to setup advanced dashboard functionality for all type of
 post data like Pages, Posts, Products and whatever post type or category you require. You can add or remove custom fields in no time with no need to touch the
-database as the package does that automatically for you.
+database as the package does that automatically for you and save the data and shows it to you when displaying the editting form.
 
 > :We are working on a decoupled front-end package in Vue.js and Axios which makes it possible to interact with the API in your Laravel project or Single Page Application.
 
