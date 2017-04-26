@@ -53,6 +53,12 @@ You need to run the following artisan command to publish the required config fil
 php artisan vendor:publish --tag=niku-config
 ```
 
+If you run the following vendor publish, you will receive a example set of post types to use
+
+```
+php artisan vendor:publish --tag=niku-posttypes
+```
+
 Migrate the database tables by running:
 
 ```
@@ -75,7 +81,7 @@ return [
         'page' => App\Cms\PostTypes\Pages::class,
         'posts' => App\Cms\PostTypes\Pages::class,
         'posts-category' => App\Cms\PostTypes\PostsCategory::class,
-        //
+
     ];
 ```
 
