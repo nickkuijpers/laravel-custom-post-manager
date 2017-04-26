@@ -11,20 +11,18 @@ take care of the database management.
 
 > :We are working on a decoupled front-end package in Vue.js and Axios which makes it possible to interact with the API in your Laravel project or Single Page Application.
 
-## Impression
+#### Features
+* Custom post types
+* Media manager with upload functionality and management
+* Repeating custom field groups
+* Custom fields
+* Validation rules for custom fields
+* Conditional custom fields based on template selection
+* Easy default user authentication based on if a user is logged in
+* Possibility to let users only view their own posts
+* Taxonomies like categories
+* Menu management support, you will need our front-end package for that.
 
-| ![Impression 1] | ![Impression 2] | ![Impression 3] | ![Impression 4] |
-|-----------------|-----------------|-----------------|-----------------|
-| ![Impression 5] | ![Impression 6] | ![Impression 7] | ![Impression 8] |
-
-[Impression 1]:  https://niku-solutions.nl/laravel-niku-cms/impression1.png
-[Impression 2]:  https://niku-solutions.nl/laravel-niku-cms/impression2.png
-[Impression 3]:  https://niku-solutions.nl/laravel-niku-cms/impression3.png
-[Impression 4]:  https://niku-solutions.nl/laravel-niku-cms/impression4.png
-[Impression 5]:  https://niku-solutions.nl/laravel-niku-cms/impression5.png
-[Impression 6]:  https://niku-solutions.nl/laravel-niku-cms/impression6.png
-[Impression 7]:  https://niku-solutions.nl/laravel-niku-cms/impression7.png
-[Impression 8]:  https://niku-solutions.nl/laravel-niku-cms/impression8.png
 
 ## Installation
 
@@ -163,7 +161,7 @@ class Pages extends NikuPosts
 Do you want to change the custom fields displayed based on the template? You can add multiple views which are selectable in the frontend for the end user and change the visible custom fields.
 
 ```php
-'templates' => [
+public $templates = [
     'default' => [
         'label' => 'Default page',
         'template' => 'default',
@@ -176,7 +174,7 @@ Do you want to change the custom fields displayed based on the template? You can
             ]
         ]
     ],
-    'sidebar-layout' => [
+    'sidebar' => [
         'label' => 'Sidebar layout',
         'template' => 'sidebar-layout',
         'customFields' => [
@@ -188,49 +186,7 @@ Do you want to change the custom fields displayed based on the template? You can
             ]
         ]
     ],
-]
-```
-
-### Frontend usage
-
-#### Single pages
-
-If you want to display your custom post type 'page' to the frontend, you can do the following.
-
-Enable the following type in your routes/web.php.
-
-```php
-Route::get({post_name}, 'PageController@singlePage');
-```
-
-Next in your PageController, you do the following:
-
-```php
-public function single($post_name)
-{
-    $page = Posts::where([
-        ['status', '=', '1'],
-        ['post_type', '=', 'page'],
-        ['post_name', '=', $post_name]
-    ])->with('postmeta')->firstOrFail();
-    return view('static.singlepage', compact('page'));
-}
-```
-
-You can display it in blade like this.
-
-```blade
-@extends('static.layouts.default')
-
-@section('metatitle', $page->post_title)
-@section('metacontent', $page->getMeta('excerpt'))
-
-@section('title', $page->post_title)
-@section('content')
-    <div class="main-post-content">
-        {{ $page->post_content }}
-    </div>
-@endsection
+];
 ```
 
 #### Blog
@@ -292,10 +248,7 @@ selected one template, you can switch views in the frontend like this.
 
 ## Extending the custom fields and defining your own
 
-You can define your own custom fields by registering them in the resources/assets/js/vendor/niku-cms/components/customFields directory. After creating a Vue component, you
-need to register it in the init-niku-cms.js or above your existing Vue instance. After registering the component, you can define the component name in the custom field like this.
-
-config/niku-cms.php
+You can create your own custom fields by using the registered component identifier to identify which Vue component you need to show.
 
 ```php
 'text' => [
@@ -306,13 +259,14 @@ config/niku-cms.php
 ],
 ```
 
-Your init-niku-js or Vue instance
+Registrate your component with they key you define in the post type config.
 
 ```javascript
 Vue.component('niku-cms-text-customfield', require('./components/customFields/text.vue'));
 ```
 
-Your component
+And for example use the following code structure
+
 ```vue
 <template>
     <div class="form-group">
@@ -335,106 +289,6 @@ export default {
     ready () {
     }
 }
-</script>
-```
-
-In our main single-page Vue component, we will receive all the custom fields enabled in the niku-cms.php and foreach include the component. This means you have got full access
-to the variables defined in your custom field array in the niku-cms.php config. You are required to return the name and value of the object to make sure we can automatically display
-old user input when the post is edited like this.
-
-The `name="{{ data.id }}"` will be used as custom field name, the `v-model="input"` as a method to manipulate the input of the value and the value `value="{{ data.value }}"` to insert the data
-received out of the database when editing it.
-
-You can register your own components like this.
-
-```javascript
-mix.scripts([ // Vendor scripts like tinymce and datepickers
-        'vendor/niku-cms/vendor/tinymce.min.js',
-        'vendor/niku-cms/vendor/jquery-3.1.1.min.js',
-        ...
-        // Your custom libraries
-        ...
-        'vendor/niku-cms/vendor/jquery-ui.js',
-    ], 'public/js/vendor/niku-cms/vendor.js')
-```
-
-If you want you can change the HTML and styling of the post manager but I advice you not to so you can update the package easily and enjoy the future releases.
-
-## Custom fields
-
-#### Existing
-* Text
-* Textarea
-* WYSIWYG editor
-* Select
-* Image upload
-
-#### Future milestones
-* Gallery
-* Colorpicker
-* Icon
-* Checkbox
-* Radio
-* Repeater
-* Google Maps
-* Datepicker
-* Range slider
-* HTML
-* Hidden
-* Password
-* Switch
-* Multiple select
-* File upload
-
-## Features
-
-#### Existing
-* Custom post types
-* Media manager
-* Custom fields
-* Custom validation rules for custom fields
-* Include the component in your own template
-* Conditional custom fields based on template selection
-* Add user authentication rules because now you are required to be authenticated to use the CMS.
-* Possibility to add validation rules into the config for custom fields
-* Media management with interface so custom fields can keep that as default
-
-#### Future milestones
-* Taxonomies like categories
-* Translations, now you need to hardcode the language
-* Dynamically manipulate the table headers of the list overview by the config file
-* Adding post meta fields into the overview list page
-* Pagination
-* Creation of a global option page where website wide data is stored
-* Vue 2.0
-* Menu manager
-* Enable media manager video and file uploads
-* Beautify media manager
-* Advanced search for post types
-* Backup your CMS content
-* Custom posts type revision
-* Media gallery inside WYSIWYG editor
-* Media resize on upload and optimize it for web
-
-## Help
-
-Here are the solutions for some common issues.
-
-#### Console error with a message about fragment component
-
-If you receive a message like this, make sure you check you gulpfile.js and validate if you have included the components in the same
-elixir function as where you have included your main Vue instance.
-
-#### Laravel is not Defined
-
-This issue means you have not set the csrfToken which Laravel and Vue Resource requires to prevent man in the middle attacks.
-To solve this you can add the following code in the header.
-
-```blade
-<script>
-window.Laravel = <?php echo json_encode([
-    'csrfToken' => csrf_token(),
-]); ?>
 </script>
 ```
 
