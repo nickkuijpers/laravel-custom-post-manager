@@ -2,6 +2,7 @@
 namespace Niku\Cms\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -206,6 +207,7 @@ class CmsController extends Controller
 
 	protected function removeUnrequiredMetas($postmeta)
 	{
+
 		$unsetValues = [
 			'_token',
 			'_posttype',
@@ -309,6 +311,7 @@ class CmsController extends Controller
 		// it will delete the old ones so we need to prepare the array.
 		$post->taxonomies()->sync($pivotValue);
 	}
+
 
 	public function getCustomFieldObject($postTypeModel, $key)
 	{
