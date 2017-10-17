@@ -159,16 +159,6 @@ class Pages extends NikuPosts
         ],
     ];
 
-    /**
-     * Determine if the user is authorized to make this request.
-     * You can create some custom function here to manipulate
-     * the functionalty on some certain custom actions.
-     */
-    public function authorized()
-    {
-        return true;
-    }
-
 }
 
 ```
