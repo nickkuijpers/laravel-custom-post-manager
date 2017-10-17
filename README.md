@@ -41,7 +41,8 @@ Register the following class into the 'providers' array in your config/app.php
 Niku\Cms\CmsServiceProvider::class,
 ```
 
-Register the following middleware to whitelist your post types in the route files.
+Register the following middleware to whitelist your post types in the route files. You dont have to do anything further with this as
+we use this in our provider to secure the api routes of the post manager.
 
 ```php
 protected $routeMiddleware = [
