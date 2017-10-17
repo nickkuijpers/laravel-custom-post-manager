@@ -14,6 +14,11 @@ use Niku\Cms\Http\NikuPosts;
 
 class CmsController extends Controller
 {
+	public function __construct()
+	{
+
+	}
+
 	/**
 	 * Validating if the post type exists and returning the model.
 	 */
@@ -46,12 +51,6 @@ class CmsController extends Controller
 
 	protected function authorizations($postTypeModel)
 	{
-		// If the user needs to be authenticated, we need to make
-		// sure we are not allowing the user to view the posts.
-		if(!$this->userMustBeLoggedIn($postTypeModel)){
-			return false;
-		}
-
 		// If users can only view their own posts, we need to make
 		// sure that the users are logged in before continueing.
 		if(!$this->userCanOnlySeeHisOwnPosts($postTypeModel)){
@@ -59,22 +58,6 @@ class CmsController extends Controller
 		}
 
 		return true;
-	}
-
-	/**
-	 * The user must be logged in to view the post(s)
-	 */
-	protected function userMustBeLoggedIn($postTypeModel)
-	{
-		if($postTypeModel->userMustBeLoggedIn){
-			if(!Auth::check()){
-				return false;
-			} else {
-				return true;
-			}
-		} else {
-			return true;
-		}
 	}
 
 	/**
@@ -112,7 +95,10 @@ class CmsController extends Controller
 		// Receive the default validations required for the post
 		$validationRules = $postTypeModel->defaultValidationRules;
 
-		// Getting the template structure
+		// Getting the template structure and validating if it exists
+		if(empty($request->template)){
+			$request->template = 'default';
+		}
 		$template = $postTypeModel->templates[$request->template];
 
 		// Appending required validations to the default validations of the post
@@ -190,6 +176,12 @@ class CmsController extends Controller
 		if($postTypeModel->isTaxonomy){
 			$post->taxonomy = $postTypeModel->taxonomyName;
 		}
+
+		// Lets check if we have configured a custom post type identifer
+        if(!empty($postTypeModel->identifier)){
+        	$postType = $postTypeModel->identifier;
+        }
+
 		$post->post_type = $postType;
 
 		// Check if user is logged in to set the author id
@@ -207,7 +199,6 @@ class CmsController extends Controller
 
 	protected function removeUnrequiredMetas($postmeta)
 	{
-
 		$unsetValues = [
 			'_token',
 			'_posttype',
@@ -258,7 +249,6 @@ class CmsController extends Controller
 						// Unsetting the value
 						unset($postmeta[$key]);
 						continue;
-
 					}
 
 				}
@@ -311,7 +301,6 @@ class CmsController extends Controller
 		// it will delete the old ones so we need to prepare the array.
 		$post->taxonomies()->sync($pivotValue);
 	}
-
 
 	public function getCustomFieldObject($postTypeModel, $key)
 	{

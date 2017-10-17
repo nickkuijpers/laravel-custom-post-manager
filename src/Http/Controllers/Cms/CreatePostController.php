@@ -8,6 +8,11 @@ use Niku\Cms\Http\Controllers\CmsController;
 
 class CreatePostController extends CmsController
 {
+	public function __construct()
+	{
+		parent::__construct();
+	}
+
 	/**
      * The manager of the database communication for adding and manipulating posts
      */
@@ -31,6 +36,11 @@ class CreatePostController extends CmsController
 
         // Getting the post instance where we can add upon
         $post = $postTypeModel;
+
+        // Lets check if we have configured a custom post type identifer
+        if(!empty($post->identifier)){
+        	$postType = $post->identifier;
+        }
 
         // Saving the post values to the database
     	$post = $this->savePostToDatabase($post, $postTypeModel, $request, $postType);

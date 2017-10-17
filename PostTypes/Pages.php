@@ -9,8 +9,8 @@ class Pages extends NikuPosts
 	// The label of the custom post type
 	public $label = 'Pages';
 
-	// Does the user have to be logged in to view the posts?
-	public $userMustBeLoggedIn = true;
+	// Custom post type identifer
+	public $identifier = 'page';
 
 	// Users can only view their own posts when this is set to true
 	public $userCanOnlySeeHisOwnPosts = false;
@@ -67,15 +67,5 @@ class Pages extends NikuPosts
 			],
 		],
 	];
-
-	/**
-	 * Determine if the user is authorized to make this request.
-	 * You can create some custom function here to manipulate
-	 * the functionalty on some certain custom actions.
-	 */
-	public function authorized()
-	{
-		return true;
-	}
 
 }

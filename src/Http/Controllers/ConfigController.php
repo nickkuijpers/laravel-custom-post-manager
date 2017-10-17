@@ -46,12 +46,6 @@ class ConfigController extends Controller
 
     protected function authorizations($postTypeModel)
     {
-    	// If the user needs to be authenticated, we need to make
-    	// sure we are not allowing the user to view the posts.
-    	if(!$this->userMustBeLoggedIn($postTypeModel)){
-    		return false;
-    	}
-
     	// If users can only view their own posts, we need to make
     	// sure that the users are logged in before continueing.
     	if(!$this->userCanOnlySeeHisOwnPosts($postTypeModel)){
@@ -59,22 +53,6 @@ class ConfigController extends Controller
     	}
 
     	return true;
-    }
-
-    /**
-     * The user must be logged in to view the post(s)
-     */
-    protected function userMustBeLoggedIn($postTypeModel)
-    {
-        if($postTypeModel->userMustBeLoggedIn){
-            if(!Auth::check()){
-        		return false;
-        	} else {
-        		return true;
-        	}
-        } else {
-        	return true;
-        }
     }
 
     /**

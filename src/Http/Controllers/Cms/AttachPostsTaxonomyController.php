@@ -23,8 +23,6 @@ class AttachPostsTaxonomyController extends CmsController
 			$where[] = ['post_author', '=', Auth::user()->id];
 		}
 
-		dd(json_encode($request->all()));
-
 		// Where sql to get all posts by post_Type
 		$where[] = ['id', '=', $id];
 

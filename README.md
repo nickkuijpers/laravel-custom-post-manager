@@ -41,10 +41,33 @@ Register the following class into the 'providers' array in your config/app.php
 Niku\Cms\CmsServiceProvider::class,
 ```
 
-Enable the API where the frontend is communicating with by adding the following into your routes/web.php.
+Register the following middleware to whitelist your post types in the route files.
 
 ```php
-Niku\Cms\Cms::routes();
+protected $routeMiddleware = [
+	...
+	'posttypes' => WhitelistPostTypesMiddleware::class,
+	...
+];
+```
+
+You can register the routes by pasting the following method in your route file. You can add middlewares like you would normally do to
+secure the routes with authentication etc. The post_type in the registed routes are variable but secured by a parameter in the method, so by default no api requests are enabled.
+
+To enable the API routes, you need to register the names of the post types you would like to use as you see in the 'register_post_types' array key below.
+When registering a post type, you fill in the name of the array key in the config/niku-cms.php file. For more information about the config, read on.
+
+If you for example have 2 user roles which have to communicate to the same post type but require different permissions, you can create 2 config files
+where the normal user account can only view their own posts, and the superadmin can view all of the users their posts. You do that by naming the array
+key of the config/niku-cms.php unique and creating 2 config files where the '$identifier' is pointed to the same 'post_type'.
+
+```php
+Niku\Cms\Cms::postTypeRoutes([
+	'register_post_types' => [
+		'posts',
+		'superadminposts',
+	],
+]);
 ```
 
 You need to run the following artisan command to publish the required config file to register your post types.
@@ -98,8 +121,8 @@ class Pages extends NikuPosts
     // The label of the custom post type
     public $label = 'Pages';
 
-    // Does the user have to be logged in to view the posts?
-    public $userMustBeLoggedIn = true;
+    // Custom post type identifer
+	public $identifier = 'page';
 
     // Users can only view their own posts when this is set to true
     public $userCanOnlySeeHisOwnPosts = false;

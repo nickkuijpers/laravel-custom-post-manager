@@ -11,7 +11,7 @@ class EditPostController extends CmsController
 	/**
      * The manager of the database communication for adding and manipulating posts
      */
-    public function init(Request $request, $postType)
+    public function init(Request $request, $postType, $id)
     {
         $postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
@@ -28,7 +28,7 @@ class EditPostController extends CmsController
         $postmeta = $this->removeUnrequiredMetas($postmeta);
 
         // Get the post instance
-        $post = $this->findPostInstance($postTypeModel, $request, $postType);
+        $post = $this->findPostInstance($postTypeModel, $request, $postType, $id);
         if(!$post){
 			return $this->abort('Post does not exist.');
 		}
@@ -50,7 +50,7 @@ class EditPostController extends CmsController
     	], 200);
     }
 
-    protected function findPostInstance($postTypeModel, $request, $postType)
+    protected function findPostInstance($postTypeModel, $request, $postType, $id)
     {
     	// Validating the postname of the given ID to make sure it can be
         // updated and it is not overriding a other duplicated postname.
@@ -59,7 +59,12 @@ class EditPostController extends CmsController
             $where[] = ['post_author', '=', Auth::user()->id];
         }
 
-		$where[] = ['id', '=', $request->get('_id')];
+        // Lets check if we have configured a custom post type identifer
+        if(!empty($postTypeModel->identifier)){
+        	$postType = $postTypeModel->identifier;
+        }
+
+		$where[] = ['id', '=', $id];
 		$where[] = ['post_type', '=', $postType];
 
 		return $postTypeModel::where($where)->first();

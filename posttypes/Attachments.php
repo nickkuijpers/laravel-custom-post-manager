@@ -7,10 +7,10 @@ use Niku\Cms\Http\NikuPosts;
 class Attachments extends NikuPosts
 {
 	// The label of the custom post type
-	public $label = 'Berichten';
+	public $label = 'Attachments';
 
-	// Does the user have to be logged in to view the posts?
-	public $userMustBeLoggedIn = false;
+	// Custom post type identifer
+	public $identifier = 'attachment';
 
 	// Users can only view their own posts when this is set to true
 	public $userCanOnlySeeHisOwnPosts = false;
