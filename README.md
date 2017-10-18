@@ -251,9 +251,74 @@ selected one template, you can switch views in the frontend like this.
 @extends('static.layouts.' . $posts->template)
 ```
 
+## API
+
+To retrieve the base structure of your post type, you can request the following post API where the value is 0. This means we creating a new post.
+The result of this request will give you the structure of what you have inserted in the config file. With this data you can build the front-end
+of your page to automaticly create the input fields of the create form.
+
+```
+/your-prefix/{post_type}/show/0
+```
+
+You will get the following response;
+
+```json
+{
+  "post": {
+    "template": "default"
+  },
+  "postmeta": [],
+  "templates": {
+    "default": {
+      "customFields": {
+        "text": {
+          "component": "niku-cms-text-customfield",
+          "label": "Text",
+          "value": "",
+          "validation": "required",
+          "id": "text"
+        },
+        "PostMultiselect": {
+          "component": "niku-cms-posttype-multiselect",
+          "label": "Post multiselect",
+          "post_type": [
+            "page"
+          ],
+          "validation": "required",
+          "id": "PostMultiselect"
+        },
+        "periods": {
+          "component": "niku-cms-repeater-customfield",
+          "label": "Perioden",
+          "validation": "required",
+          "customFields": {
+            "label": {
+              "component": "niku-cms-text-customfield",
+              "label": "Label",
+              "value": "",
+              "validation": ""
+            },
+            "boolean": {
+              "component": "niku-cms-boolean-customfield",
+              "label": "Boolean button",
+              "value": "",
+              "validation": ""
+            }
+          },
+          "id": "periods"
+        }
+      }
+    }
+  },
+  "config": []
+}
+```
+
 ## Extending the custom fields and defining your own
 
-You can create your own custom fields by using the registered component identifier to identify which Vue component you need to show.
+You can create your own custom fields by using the registered component identifier to identify which Vue component you need to show. This information
+will be attached to the API request when requesting the following API;
 
 ```php
 'text' => [
