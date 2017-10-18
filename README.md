@@ -257,11 +257,11 @@ To retrieve the base structure of your post type, you can request the following 
 The result of this request will give you the structure of what you have inserted in the config file. With this data you can build the front-end
 of your page to automaticly create the input fields of the create form.
 
-```
-/your-prefix/{post_type}/show/0
-```
+You will trigger this API on initialisation of the page where you want to create a new post item. (/superadmin/pages/create).
 
-You will get the following response;
+```
+POST /your-prefix/{post_type}/show/0
+```
 
 ```json
 {
