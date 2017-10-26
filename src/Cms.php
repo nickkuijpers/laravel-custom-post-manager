@@ -70,8 +70,8 @@ class Cms
 
 			// Taxonomy
 			Route::post('/{post_type}/show/{id}/{sub_post_type}', '\Niku\Cms\Http\Controllers\Cms\ShowTaxonomyPosts@init')->name('show');
-			Route::post('/{post_type}/show/{id}/{sub_post_type}/attach', '\Niku\Cms\Http\Controllers\Cms\AttachPostsTaxonomyController@init')->name('show');
 
+			// Crud
 			Route::post('/{post_type}/delete/{id}', '\Niku\Cms\Http\Controllers\Cms\DeletePostController@init')->name('delete');
 			Route::post('/{post_type}/edit/{id}', '\Niku\Cms\Http\Controllers\Cms\EditPostController@init')->name('edit');
 			Route::post('/{post_type}/create', '\Niku\Cms\Http\Controllers\Cms\CreatePostController@init')->name('create');
