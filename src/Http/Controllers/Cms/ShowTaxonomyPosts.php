@@ -37,7 +37,7 @@ class ShowTaxonomyPosts extends CmsController
 		}
 
 		$collection = collect([
-			'posts' => $post->posts()->where('post_type', '=', $subPostTypeModel->identifier)->get()->toArray(),
+			'objects' => $post->posts()->where('post_type', '=', $subPostTypeModel->identifier)->get()->toArray(),
 		]);
 
 		// Returning the full collection

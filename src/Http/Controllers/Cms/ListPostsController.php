@@ -9,13 +9,13 @@ use Niku\Cms\Http\Controllers\CmsController;
 class ListPostsController extends CmsController
 {
 	public function init(Request $request, $postType)
-    {    	
+    {    					
     	// Lets validate if the post type exists and if so, continue.
     	$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
     		return $this->abort('Custom post type does not exist');
     	}
-
+		
         // If the user can only see his own posts
         if($postTypeModel->userCanOnlySeeHisOwnPosts){
             $where[] = ['post_author', '=', Auth::user()->id];
