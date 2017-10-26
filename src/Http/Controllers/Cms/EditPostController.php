@@ -17,7 +17,7 @@ class EditPostController extends CmsController
     	if(!$postTypeModel){
     		return $this->abort('You are not authorized to do this.');
     	}
-
+        
     	// Receive the post meta values
         $postmeta = $request->all();
 

@@ -7,11 +7,6 @@ use Niku\Cms\CmsRoutes;
 
 class Cms
 {
-	public function __construct()
-	{
-
-	}
-
     /**
      * Get a Cms route registrar.
      *
@@ -35,21 +30,21 @@ class Cms
     }
 
     public static function postTypeRoutes($postTypeConfig = [])
-    {
+    {		
     	$postTypes = '';
     	$i = 0;
     	foreach($postTypeConfig['register_post_types'] as $key => $value) {
     		$i++;
 
     		if($i == 1){
-    			$postTypes .= $key;
+    			$postTypes .= $value;
     		} else {
-    			$postTypes .= '|' . $key;
+    			$postTypes .= '|' . $value;
     		}
     	}
 
        	Route::group([
-       		// 'middleware' => 'posttypes:' . $postTypes
+       		'middleware' => 'posttypes:' . $postTypes
        	], function ($object) {
 
 			// Crud listing all posts by post type

@@ -33,10 +33,6 @@ class CmsController extends Controller
 			// Setting the model class
 			$postTypeModel = new $nikuConfig['post_types'][$post_type];
 
-			if(!$postTypeModel->authorized()){
-				return false;
-			}
-
 			// Lets validate if the request has got the correct authorizations set
 			if(!$this->authorizations($postTypeModel)){
 				return false;
@@ -94,13 +90,13 @@ class CmsController extends Controller
 	{
 		// Receive the default validations required for the post
 		$validationRules = $postTypeModel->defaultValidationRules;
-
+		
 		// Getting the template structure and validating if it exists
 		if(empty($request->template)){
 			$request->template = 'default';
 		}
-		$template = $postTypeModel->templates[$request->template];
-
+		$template = $postTypeModel->view[$request->template];
+		
 		// Appending required validations to the default validations of the post
 		foreach($postmeta as $key => $value){
 
@@ -110,18 +106,18 @@ class CmsController extends Controller
 			// Setting the path to get the validation rules
 			if(strpos($key, '_repeater_') !== false) {
 				$explodedValue = explode('_', $key);
-
+				
 				// For each all groups to get the validation
-				foreach($postTypeModel->templates as $templateKey => $template){
+				foreach($postTypeModel->view as $templateKey => $template){
 					if(array_has($template, 'customFields.' . $explodedValue[0] . '.customFields.' . $explodedValue[3] . '.validation')){
 						$rule = $template['customFields'][$explodedValue[0]]['customFields'][$explodedValue[3]]['validation'];
 					}
 				}
-
+				
 			} else {
-
+				
 				// For each all groups to get the validation
-				foreach($postTypeModel->templates as $templateKey => $template){
+				foreach($postTypeModel->view as $templateKey => $template){
 					if(array_has($template, 'customFields.' . $key . '.validation')){
 						$rule = $template['customFields'][$key]['validation'];
 					}
@@ -234,7 +230,7 @@ class CmsController extends Controller
 				$explodedValue = explode('_', $key);
 
 				// Foreaching all templates to validate if the key exists somewhere in a group
-				foreach($postTypeModel->templates as $templateKey => $template){
+				foreach($postTypeModel->view as $templateKey => $template){
 
 					if(array_has($template, 'customFields.' . $explodedValue[0] . '.customFields.' . $explodedValue[3])){
 
@@ -256,7 +252,7 @@ class CmsController extends Controller
 			}
 
 			// Processing all other type values
-			foreach($postTypeModel->templates as $templateKey => $template){
+			foreach($postTypeModel->view as $templateKey => $template){
 
 				if(array_has($template, 'customFields.' . $key)){
 
@@ -303,9 +299,9 @@ class CmsController extends Controller
 	}
 
 	public function getCustomFieldObject($postTypeModel, $key)
-	{
+	{		
 		// Processing all other type values
-		foreach($postTypeModel->templates as $templateKey => $template){
+		foreach($postTypeModel->view as $templateKey => $template){
 
 			if(array_has($template, 'customFields.' . $key)){
 

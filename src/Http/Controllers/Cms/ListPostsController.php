@@ -9,12 +9,11 @@ use Niku\Cms\Http\Controllers\CmsController;
 class ListPostsController extends CmsController
 {
 	public function init(Request $request, $postType)
-    {
-    	dd($request);
+    {    	
     	// Lets validate if the post type exists and if so, continue.
     	$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
-    		return $this->abort('You are not authorized to do this.');
+    		return $this->abort('Custom post type does not exist');
     	}
 
         // If the user can only see his own posts

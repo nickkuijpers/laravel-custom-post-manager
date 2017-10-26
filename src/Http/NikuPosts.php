@@ -12,14 +12,7 @@ class NikuPosts extends Model
     protected $attributes = array(
 	  	'template' => 'default'
 	);
-
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorized()
-    {
-        return true;
-    }
+    
 
 	/**
 	 * Has Many connection to the post meta table

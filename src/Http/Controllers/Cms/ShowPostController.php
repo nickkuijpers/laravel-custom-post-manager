@@ -24,7 +24,7 @@ class ShowPostController extends CmsController
 
         // Where sql to get all posts by post_Type
         $where[] = ['id', '=', $id];
-
+		
         if($id == 0){
 	        $post = $postTypeModel;
 	    } else {
@@ -34,15 +34,15 @@ class ShowPostController extends CmsController
 	    if(!$post){
         	return $this->abort('Post does not exist.');
         }
-
+	
 		// Converting the updated_at to the input picker in the front-end
         $updatedAtCustomField = $this->getCustomFieldObject($postTypeModel, 'updated_at');
-
+		
         // If we have not set a custom date format, we will not touch this formatting
         if(!empty($updatedAtCustomField['date_format_php'])){
         	$post->created = $post->updated_at->format($updatedAtCustomField['date_format_php']);
         }
-
+		
 		// Converting the created_at to the input picker in the front-end
         $createdAtCustomField = $this->getCustomFieldObject($postTypeModel, 'created_at');
 
@@ -58,9 +58,9 @@ class ShowPostController extends CmsController
             'post' => $post->toArray(),
             'postmeta' => $postmeta->toArray()
         ]);
-
+	
         // Mergin the collection with the data and custom fields
-        $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->templates, $collection);
+        $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->view, $collection);
 
         // Merge the configuration values
         $collection['config'] = $postTypeModel->config;
@@ -76,7 +76,7 @@ class ShowPostController extends CmsController
     protected function mergeCollectionWithView($view, $collection)
     {
     	$post = $collection['post'];
-    	$postmeta = $collection['postmeta'];
+		$postmeta = $collection['postmeta'];	
 
     	// Foreaching all templates in the custom field configuration file
     	foreach($view as $templateKey => $template){

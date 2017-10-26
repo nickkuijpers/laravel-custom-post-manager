@@ -16,7 +16,7 @@ class WhitelistPostTypesMiddleware
 	 */
 	public function handle($request, Closure $next, $acceptedPostTypes)
 	{
-		$acceptedPostTypes = explode('|', $acceptedPostTypes);
+		$acceptedPostTypes = explode('|', $acceptedPostTypes);		
 
 		// Lets verify that we are authorized to use this post type
         if(!in_array($request->route('post_type'), $acceptedPostTypes)){

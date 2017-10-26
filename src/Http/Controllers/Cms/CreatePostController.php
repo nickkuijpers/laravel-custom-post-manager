@@ -8,11 +8,6 @@ use Niku\Cms\Http\Controllers\CmsController;
 
 class CreatePostController extends CmsController
 {
-	public function __construct()
-	{
-		parent::__construct();
-	}
-
 	/**
      * The manager of the database communication for adding and manipulating posts
      */
@@ -22,15 +17,16 @@ class CreatePostController extends CmsController
     	$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
     		return $this->abort('You are not authorized to do this.');
-    	}
+        }        
 
     	// Receive the post meta values
         $postmeta = $request->all();
-
+        
         // Validating the request
-        $validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
-		$this->validatePost($postTypeModel, $request, $validationRules);
-
+        $validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);        
+        
+        $this->validatePost($postTypeModel, $request, $validationRules);
+        
         // Unset unrequired post meta keys
         $postmeta = $this->removeUnrequiredMetas($postmeta);
 
