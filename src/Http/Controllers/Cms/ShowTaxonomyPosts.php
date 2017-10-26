@@ -9,7 +9,7 @@ class ShowTaxonomyPosts extends CmsController
 	/**
 	 * Display a single post
 	 */
-	public function init($postType, $id)
+	public function init($postType, $id, $subPostType)
 	{
 		// Lets validate if the post type exists and if so, continue.
 		$postTypeModel = $this->getPostType($postType);
@@ -21,17 +21,23 @@ class ShowTaxonomyPosts extends CmsController
 		if($postTypeModel->userCanOnlySeeHisOwnPosts){
 			$where[] = ['post_author', '=', Auth::user()->id];
 		}
-
+		
 		// Where sql to get all posts by post_Type
 		$where[] = ['id', '=', $id];
 
 		$post = $postTypeModel::where($where)->first();
 		if(!$post){
 			return $this->abort('No posts connected to this taxonomy.');
+		}		
+		
+		// Lets get the post type of the sub post type object
+		$subPostTypeModel = $this->getPostType($subPostType);
+		if(!$subPostTypeModel){
+			return $this->abort('You are not authorized to do this.');
 		}
 
 		$collection = collect([
-			'posts' => $post->posts()->get()->toArray(),
+			'posts' => $post->posts()->where('post_type', '=', $subPostTypeModel->identifier)->get()->toArray(),
 		]);
 
 		// Returning the full collection

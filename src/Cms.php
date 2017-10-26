@@ -13,11 +13,28 @@ class Cms
      * @param  array  $options
      * @return RouteRegistrar
      */
-    public static function configRoutes($registeredPostTypes)
+    public static function configRoutes($groupConfig)
     {
-		// Config routes
-		Route::post('/config/{group}/show', '\Niku\Cms\Http\Controllers\Config\ShowConfigController@init')->name('show');
-		Route::post('/config/{group}/edit', '\Niku\Cms\Http\Controllers\Config\EditConfigController@init')->name('edit');
+		$groups = '';
+    	$i = 0;
+    	foreach($groupConfig['register_groups'] as $key => $value) {
+    		$i++;
+
+    		if($i == 1){
+    			$groups .= $value;
+    		} else {
+    			$groups .= '|' . $value;
+    		}
+    	}
+
+       	Route::group([
+       		'middleware' => 'groups:' . $groups
+       	], function ($object) {
+
+			Route::post('/config/{group}/show', '\Niku\Cms\Http\Controllers\Config\ShowConfigController@init')->name('show');
+			Route::post('/config/{group}/edit', '\Niku\Cms\Http\Controllers\Config\EditConfigController@init')->name('edit');
+
+		});
     }
 
     public static function mediaManagerRoutes($route, $name = 'niku-cms')
@@ -52,8 +69,8 @@ class Cms
 			Route::post('/{post_type}/show/{id}', '\Niku\Cms\Http\Controllers\Cms\ShowPostController@init')->name('show');
 
 			// Taxonomy
-			Route::post('/{post_type}/show/{id}/posts', '\Niku\Cms\Http\Controllers\Cms\ShowTaxonomyPosts@init')->name('show');
-			Route::post('/{post_type}/show/{id}/posts/attach', '\Niku\Cms\Http\Controllers\Cms\AttachPostsTaxonomyController@init')->name('show');
+			Route::post('/{post_type}/show/{id}/{sub_post_type}', '\Niku\Cms\Http\Controllers\Cms\ShowTaxonomyPosts@init')->name('show');
+			Route::post('/{post_type}/show/{id}/{sub_post_type}/attach', '\Niku\Cms\Http\Controllers\Cms\AttachPostsTaxonomyController@init')->name('show');
 
 			Route::post('/{post_type}/delete/{id}', '\Niku\Cms\Http\Controllers\Cms\DeletePostController@init')->name('delete');
 			Route::post('/{post_type}/edit/{id}', '\Niku\Cms\Http\Controllers\Cms\EditPostController@init')->name('edit');

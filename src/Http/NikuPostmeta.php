@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class NikuPostmeta extends Model
 {
     protected $table = 'cms_postmeta';
-    
     protected $fillable = ['meta_key', 'meta_value'];
 
     public function post()

@@ -25,6 +25,9 @@ class Attachments extends NikuPosts
 	// Setting up the template structure
 	public $view = [
 		'default' => [
+
+			'label' => 'Default',
+
 			'customFields' => [
 				'text' => [
                     'component' => 'niku-cms-text-customfield',

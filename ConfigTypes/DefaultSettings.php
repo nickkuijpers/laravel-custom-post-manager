@@ -9,8 +9,8 @@ class DefaultSettings extends NikuConfig
 	// The label of the custom post type
 	public $label = 'Default settings';
 
-	// Users can only view their own posts when this is set to true
-	public $userCanOnlySeeHisOwnPosts = false;
+	// Does the user have to be logged in to view the posts?
+	public $userMustBeLoggedIn = true;
 
 	// Default required values for posts
 	public $defaultValidationRules = [
@@ -30,13 +30,7 @@ class DefaultSettings extends NikuConfig
 					'label' => 'Text',
 					'value' => '',
 					'validation' => 'required',
-				],
-				'PostMultiselect' => [
-					'component' => 'niku-cms-posttype-multiselect',
-					'label' => 'Post multiselect',
-					'post_type' => ['page'],
-					'validation' => 'required',
-				],
+				],								
 				'periods' => [
 					'component' => 'niku-cms-repeater-customfield',
 					'label' => 'Perioden',

@@ -12,7 +12,7 @@ class ShowPostController extends CmsController
     public function init($postType, $id)
     {
         // Lets validate if the post type exists and if so, continue.
-    	$postTypeModel = $this->getPostType($postType);
+		$postTypeModel = $this->getPostType($postType);		
     	if(!$postTypeModel){
     		return $this->abort('You are not authorized to do this.');
     	}
@@ -46,10 +46,12 @@ class ShowPostController extends CmsController
 		// Converting the created_at to the input picker in the front-end
         $createdAtCustomField = $this->getCustomFieldObject($postTypeModel, 'created_at');
 
-        // If we have not set a custom date format, we will not touch this formatting
-        if(!empty($createdAtCustomField['date_format_php'])){
-        	$post->created = $post->created_at->format($createdAtCustomField['date_format_php']);
-        }
+		// If we have not set a custom date format, we will not touch this formatting
+		if(!empty($post->created_at)){
+			if(!empty($createdAtCustomField['date_format_php'])){
+				$post->created = $post->created_at->format($createdAtCustomField['date_format_php']);
+			}
+		}
 
         $postmeta = $post->postmeta()->select(['meta_key', 'meta_value'])->get();
         $postmeta = $postmeta->keyBy('meta_key');
@@ -93,18 +95,22 @@ class ShowPostController extends CmsController
 	            		// If we find the customFieldKey created_at, we know it is in the config file
 	            		case 'created_at':
 
-	            			// Because of that we will add the post created_at value to the custom field
-	            			$view[$templateKey]['customFields'][$customFieldKey]['id'] = $customFieldKey;
-	            			$view[$templateKey]['customFields'][$customFieldKey]['value'] = $post['created_at'];
+							// Because of that we will add the post created_at value to the custom field
+							if(!empty($post['created_at'])){
+	            				$view[$templateKey]['customFields'][$customFieldKey]['id'] = $customFieldKey;
+								$view[$templateKey]['customFields'][$customFieldKey]['value'] = $post['created_at'];
+							}
 
 	            		break;
 
 	            		// If we find the customFieldKey updated_at, we know it is in the config file
 	            		case 'updated_at':
 
-	            			// Because of that we will add the post updated_at value to the custom field
-	            			$view[$templateKey]['customFields'][$customFieldKey]['id'] = $customFieldKey;
-	            			$view[$templateKey]['customFields'][$customFieldKey]['value'] = $post['updated_at'];
+							// Because of that we will add the post updated_at value to the custom field
+							if(!empty($post['updated_at'])){
+	            				$view[$templateKey]['customFields'][$customFieldKey]['id'] = $customFieldKey;
+								$view[$templateKey]['customFields'][$customFieldKey]['value'] = $post['updated_at'];
+							}
 
 	            		break;
 	            	}

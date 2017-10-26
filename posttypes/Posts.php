@@ -25,6 +25,9 @@ class Posts extends NikuPosts
 	// Setting up the template structure
 	public $view = [
 		'default' => [
+
+			'label' => 'Default',
+
 			'customFields' => [
 				'text' => [
                     'component' => 'niku-cms-text-customfield',
@@ -34,6 +37,7 @@ class Posts extends NikuPosts
                 ],
 			],
 		],
+		
 	];
 
 }

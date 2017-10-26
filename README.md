@@ -41,13 +41,16 @@ Register the following class into the 'providers' array in your config/app.php
 Niku\Cms\CmsServiceProvider::class,
 ```
 
-Register the following middleware to whitelist your post types in the route files. You dont have to do anything further with this as
-we use this in our provider to secure the api routes of the post manager.
+Register the following middleware to whitelist your post types and config groups in the route files. You dont have to do anything further with this as we use this in our provider to secure the api routes of the post manager.
 
 ```php
+use Niku\Cms\Http\Middlewares\WhitelistPostTypesMiddleware;
+use Niku\Cms\Http\Middlewares\WhitelistConfigGroupsMiddleware;
+
 protected $routeMiddleware = [
 	...
-	'posttypes' => WhitelistPostTypesMiddleware::class,
+    'posttypes' => WhitelistPostTypesMiddleware::class,
+    'groups' => WhitelistConfigGroupsMiddleware::class,
 	...
 ];
 ```
@@ -70,7 +73,6 @@ Migrate the database tables by running:
 php artisan migrate
 ```
 
-
 ### Usage
 
 Before you are able to use the post types, you need to whitelist and setup the required custom fields and templates in the config/niku-cms.php file.
@@ -86,6 +88,13 @@ return [
         'page' => App\Cms\PostTypes\Pages::class,
         'posts' => App\Cms\PostTypes\Pages::class,
         'posts-category' => App\Cms\PostTypes\PostsCategory::class,
+
+    ],
+
+    'config_types' => [
+
+        // Registering the single config page
+        'defaultsettings' => App\Cms\ConfigTypes\DefaultSettings::class,        
 
     ];
 ```
@@ -105,6 +114,13 @@ Niku\Cms\Cms::postTypeRoutes([
 	'register_post_types' => [
 		'posts',
 		'superadminposts',
+	],
+]);
+
+// Registering the routes for config pages
+Niku\Cms\Cms::postTypeRoutes([
+	'register_groups' => [
+		'defaultsettings',		
 	],
 ]);
 ```

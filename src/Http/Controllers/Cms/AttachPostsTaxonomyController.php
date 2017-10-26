@@ -10,7 +10,7 @@ class AttachPostsTaxonomyController extends CmsController
 	/**
 	 * Display a single post
 	 */
-	public function init(Request $request, $postType, $id)
+	public function init(Request $request, $postType, $id, $subPostType)
 	{
 		// Lets validate if the post type exists and if so, continue.
 		$postTypeModel = $this->getPostType($postType);

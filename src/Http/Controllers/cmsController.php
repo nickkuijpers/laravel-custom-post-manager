@@ -299,7 +299,7 @@ class CmsController extends Controller
 	}
 
 	public function getCustomFieldObject($postTypeModel, $key)
-	{		
+	{				
 		// Processing all other type values
 		foreach($postTypeModel->view as $templateKey => $template){
 

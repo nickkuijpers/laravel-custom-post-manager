@@ -28,10 +28,6 @@ class ConfigController extends Controller
     		// Setting the model class
     		$postTypeModel = new $nikuConfig['config_types'][$group];
 
-    		if(!$postTypeModel->authorized()){
-    			return false;
-    		}
-
     		// Lets validate if the request has got the correct authorizations set
     		if(!$this->authorizations($postTypeModel)){
     			return false;
