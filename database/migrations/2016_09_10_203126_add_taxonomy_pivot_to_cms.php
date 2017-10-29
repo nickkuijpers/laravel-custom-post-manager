@@ -22,8 +22,8 @@ class AddTaxonomyPivotToCms extends Migration
 
             $table->bigInteger('post_parent')->nullable();
 
-            $table->foreign('post_id')->references('id')->on('cms_posts');
-            $table->foreign('taxonomy_post_id')->references('id')->on('cms_posts');
+            $table->foreign('post_id')->references('id')->on('cms_posts')->onDelete('cascade');
+            $table->foreign('taxonomy_post_id')->references('id')->on('cms_posts')->onDelete('cascade');
 
             $table->timestamps();
 
