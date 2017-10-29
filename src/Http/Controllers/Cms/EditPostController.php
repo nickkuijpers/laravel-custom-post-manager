@@ -38,9 +38,6 @@ class EditPostController extends CmsController
 		// Saving the post values to the database
     	$post = $this->savePostToDatabase($post, $postTypeModel, $request, $postType);
 
-        // Deleting all current postmeta's out of the database so we can recreate it.
-        $post->postmeta()->delete();
-
         // Saving the post meta values to the database
         $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
 

@@ -256,37 +256,56 @@ class CmsController extends Controller
 
 				if(array_has($template, 'customFields.' . $key)){
 
-					// When the custom field is marked as taxonomy, we need to
-					// attach and sync the connections in the pivot table.
+					// Lets get the custom field object from our niku-cms config
 					$customFieldObject = $template['customFields'][$key];
 
-					if(array_has($customFieldObject, 'type')){
-						if($customFieldObject['type'] == 'taxonomy'){
+					// When the custom field is marked as taxonomy, we need to
+					// attach and sync the connections in the pivot table.				
+					if(isset($customFieldObject['type']) && $customFieldObject['type'] == 'taxonomy'){						
 
-							// Validate if there is any value given
-							if(!empty($value)){
+						// Validate if there is any value given
+						if(!empty($value)){							
 
-								foreach(json_decode($value) as $valueItem){
+							// In the config of this custom field we have defined which post types this post
+							// can be connected too. We need to add this to the where query to validate.
+							$customfieldPostTypes = $this->getPostTypeIdentifiers($customFieldObject['post_type']);
+
+							// Lets decode the json array with all the taxonomy id's
+							foreach(json_decode($value) as $valueItem){
+
+								// For each post id give, we need to query the database and validate if this
+								// taxonomie of the connect post does exist and we got permission to it.
+								$taxonomyPost = NikuPosts::where('id', '=', $valueItem)
+									->whereIn('post_type', $customfieldPostTypes)
+									->first();
+								
+								// If there is a taxonomy result, we can safely add it to the pivot.
+								if($taxonomyPost) {
 									$pivotValue[$valueItem] = ['taxonomy' => $key];
 								}
-
+								
 							}
 
 						}
+
+					// Lets save the post meta to the database if it is not a taxonomy
+					} else {
+
+						// Saving it to the database
+						$object = [
+							'meta_key' => $key,
+							'meta_value' => $value,
+						];
+
+						// Update or create the meta key of the post
+						$post->postmeta()->updateOrCreate([
+							'meta_key' => $key
+						], $object);
 					}
-
-					// Saving it to the database
-					$object = [
-						'meta_key' => $key,
-						'meta_value' => $value,
-					];
-
-					$post->postmeta()->create($object);
 
 					// Unsetting the value
 					unset($postmeta[$key]);
 					continue;
-
 				}
 
 			}
@@ -296,6 +315,26 @@ class CmsController extends Controller
 		// Saving the sync to the database, if we do this inside the loop
 		// it will delete the old ones so we need to prepare the array.
 		$post->taxonomies()->sync($pivotValue);
+	}
+
+	/**
+	 * Get the post type real identifiers how it is saved in the database
+	 */
+	protected function getPostTypeIdentifiers($postTypes)
+	{
+		$postTypeIdentifiers = [];
+
+		foreach($postTypes as $postTypeKey => $value){
+
+			$postTypeModel = $this->getPostType($value);		
+			if($postTypeModel){
+				
+				// Add the real identifier to the array
+				array_push($postTypeIdentifiers, $postTypeModel->identifier);		
+			}			
+		}
+		
+		return $postTypeIdentifiers;
 	}
 
 	public function getCustomFieldObject($postTypeModel, $key)

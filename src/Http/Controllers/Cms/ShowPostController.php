@@ -53,12 +53,13 @@ class ShowPostController extends CmsController
 			}
 		}
 
-        $postmeta = $post->postmeta()->select(['meta_key', 'meta_value'])->get();
-        $postmeta = $postmeta->keyBy('meta_key');
-
+		// Retrieve all the post meta's and taxonomies
+		$postmeta = $this->retrieveConfigPostMetas($post, $postTypeModel);		
+		
+		// Format the collection
         $collection = collect([
             'post' => $post->toArray(),
-            'postmeta' => $postmeta->toArray()
+            'postmeta' => $postmeta,
         ]);
 	
         // Mergin the collection with the data and custom fields
@@ -70,6 +71,71 @@ class ShowPostController extends CmsController
         // Returning the full collection
     	return response()->json($collection);
     }
+
+	/**
+	 * Get all the post meta keys of the post
+	 */
+	protected function retrieveConfigPostMetas($post, $postTypeModel)
+	{
+		$metaKeys = [];		
+		$metaTaxonomies = [];
+
+		// Lets foreach all the views so we can make a big array of all the required post meta's to show
+		foreach($postTypeModel->view as $template => $value){
+								
+			// Lets foreach all the custom fields
+			foreach($value['customFields'] as $customFieldIdentifer => $customField) {												
+				
+				// When the custom field is marked as taxonomy, we need to
+				// attach and sync the connections in the pivot table.
+				if(isset($customField['type']) && $customField['type'] == 'taxonomy'){						
+
+					// We need to get the values from the taxonomy table
+					$customfieldPostTypes = $this->getPostTypeIdentifiers($customField['post_type']);
+				
+					// Lets query the post to retrieve all the connected ids
+					$taxonomyIds = $post->taxonomies()->whereIn('post_type', $customfieldPostTypes)						
+						->get();		
+						
+					// Lets foreach all the posts because we only need the id
+					$ids = [];
+					foreach($taxonomyIds as $value){
+						array_push($ids, $value->id);
+					}					
+
+					$ids = json_encode($ids);						
+
+					$metaTaxonomies[$customFieldIdentifer] = [
+						'meta_key' => $customFieldIdentifer,
+						'meta_value' => $ids,					
+					];								
+
+				// The other items are default	
+				} else {
+
+					// Register it to the main array so we can query it later
+					array_push($metaKeys, $customFieldIdentifer);
+
+				}
+
+			}
+
+		}		
+
+		// Lets query the database to get only the values where we have registered the meta keys
+		$postmetaSimple = $post->postmeta()
+			->whereIn('meta_key', $metaKeys)
+			->select(['meta_key', 'meta_value'])			
+			->get()
+			->keyBy('meta_key')
+			->toArray();	
+
+		// Lets merge all the types of configs
+		$postmeta = array_merge($postmetaSimple, $metaTaxonomies);
+		
+		// Return the post meta's
+		return $postmeta;		
+	}	
 
     /**
      * Appending the key added in the config to the array
