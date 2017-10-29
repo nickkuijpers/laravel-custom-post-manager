@@ -49,5 +49,21 @@ class NikuPosts extends Model
 			$returnValue = $postmeta[$key]['meta_value'];
 			return $returnValue;
 		}
-	}
+    }
+    
+    public function saveMetas($metas)
+    {
+        foreach($metas as $key => $value){
+            // Saving it to the database
+            $object = [
+                'meta_key' => $key,
+                'meta_value' => $value,
+            ];
+
+            // Update or create the meta key of the post
+            $this->postmeta()->updateOrCreate([
+                'meta_key' => $key
+            ], $object);
+        }
+    }
 }
