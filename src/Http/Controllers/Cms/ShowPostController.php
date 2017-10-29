@@ -65,8 +65,13 @@ class ShowPostController extends CmsController
         // Mergin the collection with the data and custom fields
         $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->view, $collection);
 
-        // Merge the configuration values
-        $collection['config'] = $postTypeModel->config;
+		// Merge the configuration values
+		$config = [];
+		if($postTypeModel->config){
+			$config = $postTypeModel->config;
+		}
+
+        $collection['config'] = $config;
 
         // Returning the full collection
     	return response()->json($collection);
@@ -130,8 +135,20 @@ class ShowPostController extends CmsController
 			->keyBy('meta_key')
 			->toArray();	
 
+		// Attachment of default post data
+		$defaultPostData = [
+			'post_title' => [
+				'meta_key' => 'post_title',
+				'meta_value' => $post->post_title,
+			],
+			'post_name' => [
+				'meta_key' => 'post_name',
+				'meta_value' => $post->post_name,
+			],
+		];
+
 		// Lets merge all the types of configs
-		$postmeta = array_merge($postmetaSimple, $metaTaxonomies);
+		$postmeta = array_merge($postmetaSimple, $metaTaxonomies, $defaultPostData);
 		
 		// Return the post meta's
 		return $postmeta;		
