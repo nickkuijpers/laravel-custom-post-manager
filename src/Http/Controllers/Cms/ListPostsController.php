@@ -30,13 +30,17 @@ class ListPostsController extends CmsController
         $where[] = ['post_type', '=', $postType];
 
         // Query the database
-		$posts = $postTypeModel::where($where)->select([
-			'id',
-    		'post_title',
-    		'post_name',
-    		'status',
-    		'post_type',
-		])->with('postmeta')->get();
+		$posts = $postTypeModel::where($where)
+			->select([
+				'id',
+				'post_title',
+				'post_name',
+				'status',
+				'post_type',
+			])
+			->with('postmeta')
+			->orderBy('id', 'desc')
+			->get();
 
 		// Returning the objects
 		$objects = [
