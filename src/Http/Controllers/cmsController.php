@@ -89,7 +89,7 @@ class CmsController extends Controller
 	protected function validatePostFields($postmeta, $request, $postTypeModel)
 	{
 		// Receive the default validations required for the post
-		$validationRules = $postTypeModel->defaultValidationRules;
+		$validationRules = [];
 		
 		// Getting the template structure and validating if it exists
 		if(empty($request->template)){

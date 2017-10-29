@@ -12,11 +12,6 @@ class DefaultSettings extends NikuConfig
 	// Does the user have to be logged in to view the posts?
 	public $userMustBeLoggedIn = true;
 
-	// Default required values for posts
-	public $defaultValidationRules = [
-		//
-	];
-
 	public $config = [
 		//
 	];
