@@ -54,6 +54,7 @@ class NikuPosts extends Model
     public function saveMetas($metas)
     {
         foreach($metas as $key => $value){
+         
             // Saving it to the database
             $object = [
                 'meta_key' => $key,
@@ -64,6 +65,6 @@ class NikuPosts extends Model
             $this->postmeta()->updateOrCreate([
                 'meta_key' => $key
             ], $object);
-        }
+        }        
     }
 }
