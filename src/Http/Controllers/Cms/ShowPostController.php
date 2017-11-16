@@ -12,7 +12,7 @@ class ShowPostController extends CmsController
     public function init($postType, $id)
     {
         // Lets validate if the post type exists and if so, continue.
-		$postTypeModel = $this->getPostType($postType);		
+		$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
     		return $this->abort('You are not authorized to do this.');
     	}
@@ -24,7 +24,7 @@ class ShowPostController extends CmsController
 
         // Where sql to get all posts by post_Type
         $where[] = ['id', '=', $id];
-		
+
         if($id == 0){
 	        $post = $postTypeModel;
 	    } else {
@@ -34,15 +34,15 @@ class ShowPostController extends CmsController
 	    if(!$post){
         	return $this->abort('Post does not exist.');
         }
-	
+
 		// Converting the updated_at to the input picker in the front-end
         $updatedAtCustomField = $this->getCustomFieldObject($postTypeModel, 'updated_at');
-		
+
         // If we have not set a custom date format, we will not touch this formatting
         if(!empty($updatedAtCustomField['date_format_php'])){
         	$post->created = $post->updated_at->format($updatedAtCustomField['date_format_php']);
         }
-		
+
 		// Converting the created_at to the input picker in the front-end
         $createdAtCustomField = $this->getCustomFieldObject($postTypeModel, 'created_at');
 
@@ -54,14 +54,14 @@ class ShowPostController extends CmsController
 		}
 
 		// Retrieve all the post meta's and taxonomies
-		$postmeta = $this->retrieveConfigPostMetas($post, $postTypeModel);		
-		
+		$postmeta = $this->retrieveConfigPostMetas($post, $postTypeModel);
+
 		// Format the collection
         $collection = collect([
             'post' => $post->toArray(),
             'postmeta' => $postmeta,
         ]);
-	
+
         // Mergin the collection with the data and custom fields
         $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->view, $collection);
 
@@ -82,40 +82,40 @@ class ShowPostController extends CmsController
 	 */
 	protected function retrieveConfigPostMetas($post, $postTypeModel)
 	{
-		$metaKeys = [];		
+		$metaKeys = [];
 		$metaTaxonomies = [];
 
 		// Lets foreach all the views so we can make a big array of all the required post meta's to show
 		foreach($postTypeModel->view as $template => $value){
-								
+
 			// Lets foreach all the custom fields
-			foreach($value['customFields'] as $customFieldIdentifer => $customField) {												
-				
+			foreach($value['customFields'] as $customFieldIdentifer => $customField) {
+
 				// When the custom field is marked as taxonomy, we need to
 				// attach and sync the connections in the pivot table.
-				if(isset($customField['type']) && $customField['type'] == 'taxonomy'){						
+				if(isset($customField['type']) && $customField['type'] == 'taxonomy'){
 
 					// We need to get the values from the taxonomy table
 					$customfieldPostTypes = $this->getPostTypeIdentifiers($customField['post_type']);
-				
+
 					// Lets query the post to retrieve all the connected ids
-					$taxonomyIds = $post->taxonomies()->whereIn('post_type', $customfieldPostTypes)						
-						->get();		
-						
+					$taxonomyIds = $post->taxonomies()->whereIn('post_type', $customfieldPostTypes)
+						->get();
+
 					// Lets foreach all the posts because we only need the id
 					$ids = [];
 					foreach($taxonomyIds as $value){
 						array_push($ids, $value->id);
-					}					
+					}
 
-					$ids = json_encode($ids);						
+					$ids = json_encode($ids);
 
 					$metaTaxonomies[$customFieldIdentifer] = [
 						'meta_key' => $customFieldIdentifer,
-						'meta_value' => $ids,					
-					];								
+						'meta_value' => $ids,
+					];
 
-				// The other items are default	
+				// The other items are default
 				} else {
 
 					// Register it to the main array so we can query it later
@@ -125,15 +125,15 @@ class ShowPostController extends CmsController
 
 			}
 
-		}		
+		}
 
 		// Lets query the database to get only the values where we have registered the meta keys
 		$postmetaSimple = $post->postmeta()
 			->whereIn('meta_key', $metaKeys)
-			->select(['meta_key', 'meta_value'])			
+			->select(['meta_key', 'meta_value'])
 			->get()
 			->keyBy('meta_key')
-			->toArray();	
+			->toArray();
 
 		// Attachment of default post data
 		$defaultPostData = [
@@ -149,10 +149,10 @@ class ShowPostController extends CmsController
 
 		// Lets merge all the types of configs
 		$postmeta = array_merge($postmetaSimple, $metaTaxonomies, $defaultPostData);
-		
+
 		// Return the post meta's
-		return $postmeta;		
-	}	
+		return $postmeta;
+	}
 
     /**
      * Appending the key added in the config to the array
@@ -161,7 +161,7 @@ class ShowPostController extends CmsController
     protected function mergeCollectionWithView($view, $collection)
     {
     	$post = $collection['post'];
-		$postmeta = $collection['postmeta'];	
+		$postmeta = $collection['postmeta'];
 
     	// Foreaching all templates in the custom field configuration file
     	foreach($view as $templateKey => $template){
