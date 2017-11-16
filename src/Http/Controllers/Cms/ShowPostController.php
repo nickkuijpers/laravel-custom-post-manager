@@ -39,7 +39,7 @@ class ShowPostController extends CmsController
         $updatedAtCustomField = $this->getCustomFieldObject($postTypeModel, 'updated_at');
 
         // If we have not set a custom date format, we will not touch this formatting
-        if(!empty($updatedAtCustomField['date_format_php'])){
+        if(!empty($updatedAtCustomField['date_format_php']) && !empty($post->updated_at)){
         	$post->created = $post->updated_at->format($updatedAtCustomField['date_format_php']);
         }
 
@@ -47,7 +47,7 @@ class ShowPostController extends CmsController
         $createdAtCustomField = $this->getCustomFieldObject($postTypeModel, 'created_at');
 
         // If we have not set a custom date format, we will not touch this formatting
-        if(!empty($createdAtCustomField['date_format_php'])){
+        if( !empty($createdAtCustomField['date_format_php']) && !empty($post->created_at) ){
         	$post->created = $post->created_at->format($createdAtCustomField['date_format_php']);
         }
 
@@ -94,8 +94,10 @@ class ShowPostController extends CmsController
 	            		case 'created_at':
 
 	            			// Because of that we will add the post created_at value to the custom field
-	            			$view[$templateKey]['customFields'][$customFieldKey]['id'] = $customFieldKey;
-	            			$view[$templateKey]['customFields'][$customFieldKey]['value'] = $post['created_at'];
+	            			if(!empty($post['created_at'])){
+		            			$view[$templateKey]['customFields'][$customFieldKey]['id'] = $customFieldKey;
+		            			$view[$templateKey]['customFields'][$customFieldKey]['value'] = $post['created_at'];
+		            		}
 
 	            		break;
 
@@ -103,8 +105,10 @@ class ShowPostController extends CmsController
 	            		case 'updated_at':
 
 	            			// Because of that we will add the post updated_at value to the custom field
-	            			$view[$templateKey]['customFields'][$customFieldKey]['id'] = $customFieldKey;
-	            			$view[$templateKey]['customFields'][$customFieldKey]['value'] = $post['updated_at'];
+	            			if(!empty($post['updated_at'])){
+		            			$view[$templateKey]['customFields'][$customFieldKey]['id'] = $customFieldKey;
+		            			$view[$templateKey]['customFields'][$customFieldKey]['value'] = $post['updated_at'];
+		            		}
 
 	            		break;
 	            	}
