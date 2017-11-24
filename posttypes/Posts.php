@@ -15,6 +15,25 @@ class Posts extends NikuPosts
 	// Users can only view their own posts when this is set to true
 	public $userCanOnlySeeHisOwnPosts = false;
 
+	// Register events based on the actions
+    public $events = [
+        'on_create' => [
+            //
+        ],
+        'on_browse' => [
+            //
+        ],
+        'on_read' => [
+            //
+        ],
+        'on_edit' => [
+            //
+        ],
+        'on_delete' => [
+            //
+        ],
+    ];
+
 	// Setting up the template structure
 	public $view = [
 		'default' => [
@@ -30,7 +49,7 @@ class Posts extends NikuPosts
                 ],
 			],
 		],
-		
+
 	];
 
 }

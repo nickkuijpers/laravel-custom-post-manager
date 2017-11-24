@@ -25,12 +25,17 @@ class ShowPostController extends CmsController
         // Where sql to get all posts by post_Type
         $where[] = ['id', '=', $id];
 
+        // Query only the post type requested
+        $where[] = ['post_type', '=', $postTypeModel->identifier];
+
+        // If the ID is empty, that means we are returning the frame to create a new post.
         if($id == 0){
 	        $post = $postTypeModel;
 	    } else {
 	    	$post = $postTypeModel::where($where)->first();
 	    }
 
+	    // Validate if the post exists
 	    if(!$post){
         	return $this->abort('Post does not exist.');
         }
@@ -55,6 +60,9 @@ class ShowPostController extends CmsController
 
 		// Retrieve all the post meta's and taxonomies
 		$postmeta = $this->retrieveConfigPostMetas($post, $postTypeModel);
+
+		// Lets fire events as registered in the post type
+        $this->triggerEvent('on_read', $postTypeModel, $post);
 
 		// Format the collection
         $collection = collect([

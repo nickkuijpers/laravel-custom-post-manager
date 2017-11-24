@@ -10,10 +10,29 @@ class CategoryPosts extends NikuPosts
     public $label = 'Post categories';
 
     // Users can only view their own posts when this is set to true
-    public $userCanOnlySeeHisOwnPosts = false;       
+    public $userCanOnlySeeHisOwnPosts = false;
 
     public $config = [
 
+    ];
+
+    // Register events based on the actions
+    public $events = [
+        'on_create' => [
+            //
+        ],
+        'on_browse' => [
+            //
+        ],
+        'on_read' => [
+            //
+        ],
+        'on_edit' => [
+            //
+        ],
+        'on_delete' => [
+            //
+        ],
     ];
 
     // Setting up the template structure
@@ -31,7 +50,7 @@ class CategoryPosts extends NikuPosts
 
                 'posts' => [
                     'component' => 'niku-cms-category-posts-customfield',
-                    'label' => 'Associated posts',                    
+                    'label' => 'Associated posts',
                     'config' => [
                         'sub_post_type' => 'posts',
                         'posts_edit_url_identifier' => 'Single',

@@ -47,7 +47,7 @@ class Cms
     }
 
     public static function postTypeRoutes($postTypeConfig = [])
-    {		
+    {
     	$postTypes = '';
     	$i = 0;
     	foreach($postTypeConfig['register_post_types'] as $key => $value) {
@@ -69,7 +69,8 @@ class Cms
 			Route::post('/{post_type}/show/{id}', '\Niku\Cms\Http\Controllers\Cms\ShowPostController@init')->name('show');
 
 			// Taxonomy
-			Route::post('/{post_type}/show/{id}/{sub_post_type}', '\Niku\Cms\Http\Controllers\Cms\ShowTaxonomyPosts@init')->name('show');
+			Route::post('/{post_type}/show/{id}/taxonomies/{sub_post_type}', '\Niku\Cms\Http\Controllers\Cms\ShowPostTaxonomies@init')->name('show');
+			Route::post('/{post_type}/show/{id}/posts/{sub_post_type}', '\Niku\Cms\Http\Controllers\Cms\ShowTaxonomyPosts@init')->name('show');
 
 			// Crud
 			Route::post('/{post_type}/delete/{id}', '\Niku\Cms\Http\Controllers\Cms\DeletePostController@init')->name('delete');

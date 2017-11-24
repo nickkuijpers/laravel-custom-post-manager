@@ -90,13 +90,13 @@ class CmsController extends Controller
 	{
 		// Receive the default validations required for the post
 		$validationRules = [];
-		
+
 		// Getting the template structure and validating if it exists
 		if(empty($request->template)){
 			$request->template = 'default';
 		}
 		$template = $postTypeModel->view[$request->template];
-		
+
 		// Appending required validations to the default validations of the post
 		foreach($postmeta as $key => $value){
 
@@ -106,16 +106,16 @@ class CmsController extends Controller
 			// Setting the path to get the validation rules
 			if(strpos($key, '_repeater_') !== false) {
 				$explodedValue = explode('_', $key);
-				
+
 				// For each all groups to get the validation
 				foreach($postTypeModel->view as $templateKey => $template){
 					if(array_has($template, 'customFields.' . $explodedValue[0] . '.customFields.' . $explodedValue[3] . '.validation')){
 						$rule = $template['customFields'][$explodedValue[0]]['customFields'][$explodedValue[3]]['validation'];
 					}
 				}
-				
+
 			} else {
-				
+
 				// For each all groups to get the validation
 				foreach($postTypeModel->view as $templateKey => $template){
 					if(array_has($template, 'customFields.' . $key . '.validation')){
@@ -260,11 +260,11 @@ class CmsController extends Controller
 					$customFieldObject = $template['customFields'][$key];
 
 					// When the custom field is marked as taxonomy, we need to
-					// attach and sync the connections in the pivot table.				
-					if(isset($customFieldObject['type']) && $customFieldObject['type'] == 'taxonomy'){						
+					// attach and sync the connections in the pivot table.
+					if(isset($customFieldObject['type']) && $customFieldObject['type'] == 'taxonomy'){
 
 						// Validate if there is any value given
-						if(!empty($value)){							
+						if(!empty($value)){
 
 							// In the config of this custom field we have defined which post types this post
 							// can be connected too. We need to add this to the where query to validate.
@@ -278,12 +278,12 @@ class CmsController extends Controller
 								$taxonomyPost = NikuPosts::where('id', '=', $valueItem)
 									->whereIn('post_type', $customfieldPostTypes)
 									->first();
-								
+
 								// If there is a taxonomy result, we can safely add it to the pivot.
 								if($taxonomyPost) {
 									$pivotValue[$valueItem] = ['taxonomy' => $key];
 								}
-								
+
 							}
 
 						}
@@ -326,19 +326,19 @@ class CmsController extends Controller
 
 		foreach($postTypes as $postTypeKey => $value){
 
-			$postTypeModel = $this->getPostType($value);		
+			$postTypeModel = $this->getPostType($value);
 			if($postTypeModel){
-				
+
 				// Add the real identifier to the array
-				array_push($postTypeIdentifiers, $postTypeModel->identifier);		
-			}			
+				array_push($postTypeIdentifiers, $postTypeModel->identifier);
+			}
 		}
-		
+
 		return $postTypeIdentifiers;
 	}
 
 	public function getCustomFieldObject($postTypeModel, $key)
-	{				
+	{
 		// Processing all other type values
 		foreach($postTypeModel->view as $templateKey => $template){
 
@@ -349,6 +349,20 @@ class CmsController extends Controller
 
 			}
 
+		}
+	}
+
+	/**
+	 * Integrate events based on the action
+	 */
+	public function triggerEvent($action, $postTypeModel, $post)
+	{
+		if(!empty($postTypeModel->events)){
+			if(array_key_exists($action, $postTypeModel->events)){
+				foreach($postTypeModel->events[$action] as $event) {
+					event(new $event($post));
+				}
+			}
 		}
 	}
 

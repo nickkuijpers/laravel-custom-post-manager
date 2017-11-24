@@ -17,16 +17,17 @@ class CreatePostController extends CmsController
     	$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
     		return $this->abort('You are not authorized to do this.');
-        }        
+        }
 
     	// Receive the post meta values
         $postmeta = $request->all();
-        
+
         // Validating the request
-        $validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);        
-        
+        $validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
+
+        // Validate the post
         $this->validatePost($postTypeModel, $request, $validationRules);
-        
+
         // Unset unrequired post meta keys
         $postmeta = $this->removeUnrequiredMetas($postmeta);
 
@@ -44,6 +45,10 @@ class CreatePostController extends CmsController
         // Saving the post meta values to the database
         $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
 
+        // Lets fire events as registered in the post type
+        $this->triggerEvent('on_create', $postTypeModel, $post);
+
+        // Return the response
     	return response()->json([
     		'code' => 'success',
     		'message' => 'Posts succesfully created.',

@@ -22,18 +22,34 @@ class DeletePostController extends CmsController
             $where[] = ['post_author', '=', Auth::user()->id];
         }
 
+        // Query only the post type requested
+        $where[] = ['post_type', '=', $postTypeModel->identifier];
+
     	// Where sql to get all posts by post_Type
     	$where[] = ['id', '=', $id];
 
     	// Find the post
-    	$post = $postTypeModel::where($where);
+    	$post = $postTypeModel::where($where)->first();
+
+    	// Lets validate if the post exist
+    	if(!$post){
+	    	return response()->json([
+	    		'code' => 'failure',
+	    		'message' => 'Post does not exist',
+	    	], 422);
+    	}
 
     	// Delete the post
     	$post->delete();
 
+    	// Lets fire events as registered in the post type
+        $this->triggerEvent('on_delete', $postTypeModel, $post);
+
+        // Return the response
     	return response()->json([
     		'code' => 'success',
     		'message' => 'Posts succesfully deleted',
+    		'object' => $post,
     	], 200);
     }
 }

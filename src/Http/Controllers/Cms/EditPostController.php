@@ -17,7 +17,7 @@ class EditPostController extends CmsController
     	if(!$postTypeModel){
     		return $this->abort('You are not authorized to do this.');
     	}
-        
+
     	// Receive the post meta values
         $postmeta = $request->all();
 
@@ -41,6 +41,10 @@ class EditPostController extends CmsController
         // Saving the post meta values to the database
         $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
 
+        // Lets fire events as registered in the post type
+        $this->triggerEvent('on_edit', $postTypeModel, $post);
+
+        // Lets return the response
     	return response()->json([
     		'code' => 'success',
     		'message' => 'Post succesfully editted',

@@ -4,7 +4,7 @@ namespace Niku\Cms\Http\Controllers\Cms;
 
 use Niku\Cms\Http\Controllers\CmsController;
 
-class ShowTaxonomyPosts extends CmsController
+class ShowPostTaxonomies extends CmsController
 {
 	/**
 	 * Display a single post
@@ -40,7 +40,7 @@ class ShowTaxonomyPosts extends CmsController
 		}
 
 		$collection = collect([
-			'objects' => $post->posts()->where('post_type', '=', $subPostTypeModel->identifier)->get()->toArray(),
+			'objects' => $post->taxonomies()->where('post_type', '=', $subPostTypeModel->identifier)->get()->toArray(),
 		]);
 
 		// Returning the full collection
