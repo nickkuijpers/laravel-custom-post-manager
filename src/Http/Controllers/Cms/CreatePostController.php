@@ -4,6 +4,7 @@ namespace Niku\Cms\Http\Controllers\Cms;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Niku\Cms\Http\Controllers\CmsController;
 
 class CreatePostController extends CmsController
@@ -66,11 +67,19 @@ class CreatePostController extends CmsController
         // updated and it is not overriding a other duplicated postname.
         $post = $postTypeModel::where([
             ['post_name', '=', $request->get('post_name')],
-            ['post_type', '=', $request->get('_posttype')]
+            ['post_type', '=', $postTypeModel->identifier]
         ])->select(['post_name'])->first();
 
+        // If the post does not exist already,
         if($post){
-            $validationRules['post_name'] = 'required|unique:cms_posts';
+
+        	// Make sure that only the post_name of the requested post_type is unique
+            $validationRules['post_name'] = [
+            	'required',
+            	'unique:cms_posts,post_name, ' . $postTypeModel->identifier . ',post_type',
+            ];
+
+        // If the post does does exist
         } else {
             $validationRules['post_name'] = 'required';
         }
