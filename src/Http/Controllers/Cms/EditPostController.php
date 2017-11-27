@@ -79,7 +79,13 @@ class EditPostController extends CmsController
 		if($request->get('post_name') == $post->post_name){
 	    	$validationRules['post_name'] = 'required';
 	    } else {
-	    	$validationRules['post_name'] = 'required|unique:cms_posts';
+
+	    	// Make sure that only the post_name of the requested post_type is unique
+            $validationRules['post_name'] = [
+            	'required',
+            	'unique:cms_posts,post_name, ' . $post->identifier . ',post_type',
+            ];
+
 	    }
 
         return $this->validate($request, $validationRules);
