@@ -16,6 +16,11 @@ class ListPostsController extends CmsController
     		return $this->abort('Custom post type does not exist');
     	}
 
+    	// Check if the post type has a identifier
+    	if(empty($postTypeModel->identifier)){
+    		return $this->abort('The post type does not have a identifier.');
+    	}
+
         // If the user can only see his own posts
         if($postTypeModel->userCanOnlySeeHisOwnPosts){
             $where[] = ['post_author', '=', Auth::user()->id];

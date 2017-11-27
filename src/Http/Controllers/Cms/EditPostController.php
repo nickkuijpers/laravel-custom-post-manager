@@ -18,6 +18,11 @@ class EditPostController extends CmsController
     		return $this->abort('You are not authorized to do this.');
     	}
 
+    	// Check if the post type has a identifier
+    	if(empty($postTypeModel->identifier)){
+    		return $this->abort('The post type does not have a identifier.');
+    	}
+
     	// Receive the post meta values
         $postmeta = $request->all();
 
