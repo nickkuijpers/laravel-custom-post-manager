@@ -135,7 +135,7 @@ class CmsController extends Controller
 		return $validationRules;
 	}
 
-	protected function savePostToDatabase($post, $postTypeModel, $request, $postType)
+	protected function savePostToDatabase($action, $post, $postTypeModel, $request, $postType)
 	{
 		// Remove unregistrated fields
 		$request = $this->removeUnregistratedFields($request, $postTypeModel);
@@ -189,22 +189,28 @@ class CmsController extends Controller
 				break;
 				case 'created_at':
 
-					// We need to convert the input to a normal format based on the custom field setting
-					$createdAtCustomField = $this->getCustomFieldObject($postTypeModel, 'created_at');
+					if($action == 'create'){
 
-					// Convert the date by the inserted format data in the custom field setting
-					$convertedCreatedAtDate = Carbon::createFromFormat($createdAtCustomField['date_format_php'], $request->get('created_at'));
+						// We need to convert the input to a normal format based on the custom field setting
+						$createdAtCustomField = $this->getCustomFieldObject($postTypeModel, 'created_at');
 
-					// Save the converted date to the model
-					$post->created_at = $convertedCreatedAtDate;
+						// Convert the date by the inserted format data in the custom field setting
+						$convertedCreatedAtDate = Carbon::createFromFormat($createdAtCustomField['date_format_php'], $request->get('created_at'));
+
+						// Save the converted date to the model
+						$post->created_at = $convertedCreatedAtDate;
+
+					}
 
 				break;
 			}
 		}
 
 		// If the post_name is requested as random in the post type, we create a unique random string
-		if($postTypeModel->makePostNameRandom){
-			$post->post_name = $this->randomUniqueString();
+		if($action == 'create'){
+			if($postTypeModel->makePostNameRandom){
+				$post->post_name = $this->randomUniqueString();
+			}
 		}
 
 		// Setting some global settings

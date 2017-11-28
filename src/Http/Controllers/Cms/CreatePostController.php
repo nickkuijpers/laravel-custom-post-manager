@@ -46,7 +46,7 @@ class CreatePostController extends CmsController
         }
 
         // Saving the post values to the database
-    	$post = $this->savePostToDatabase($post, $postTypeModel, $request, $postType);
+    	$post = $this->savePostToDatabase('create', $post, $postTypeModel, $request, $postType);
 
         // Saving the post meta values to the database
         $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
@@ -81,7 +81,7 @@ class CreatePostController extends CmsController
 		}
 
         // Lets validate if a post_name is required.
-        if(!$postTypeModel->disablePostNameUnique){
+        if(!$postTypeModel->disableDefaultPostName){
 
         	// Make sure that only the post_name of the requested post_type is unique
 	        $validationRules['post_name'][] = 'required';

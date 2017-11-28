@@ -42,7 +42,7 @@ class EditPostController extends CmsController
 		$this->validatePost($request, $post, $validationRules);
 
 		// Saving the post values to the database
-    	$post = $this->savePostToDatabase($post, $postTypeModel, $request, $postType);
+    	$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $request, $postType);
 
         // Saving the post meta values to the database
         $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
@@ -95,7 +95,7 @@ class EditPostController extends CmsController
 		}
 
     	// Lets validate if a post_name is required.
-        if(!$post->disablePostNameUnique){
+        if(!$post->disableDefaultPostName){
 
 			// If we are edditing the current existing post, we must remove the unique check
 			if($request->get('post_name') == $post->post_name){
