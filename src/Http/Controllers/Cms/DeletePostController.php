@@ -48,7 +48,7 @@ class DeletePostController extends CmsController
     	$post->delete();
 
     	// Lets fire events as registered in the post type
-        $this->triggerEvent('on_delete', $postTypeModel, $post);
+        $this->triggerEvent('on_delete', $postTypeModel, $post->id);
 
         // Return the response
     	return response()->json([

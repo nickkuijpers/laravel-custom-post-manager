@@ -52,7 +52,7 @@ class CreatePostController extends CmsController
         $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
 
         // Lets fire events as registered in the post type
-        $this->triggerEvent('on_create', $postTypeModel, $post);
+        $this->triggerEvent('on_create', $postTypeModel, $post->id);
 
         // Return the response
     	return response()->json([
