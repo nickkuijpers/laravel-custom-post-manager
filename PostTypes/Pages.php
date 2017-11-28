@@ -15,9 +15,8 @@ class Pages extends NikuPosts
 	// Users can only view their own posts when this is set to true
 	public $userCanOnlySeeHisOwnPosts = false;
 
-	public $config = [
-
-	];
+	// Disable post_name requirement, this will random generate a string
+    public $disablePostName = true;
 
 	// Register events based on the actions
     public $events = [

@@ -75,18 +75,17 @@ class CreatePostController extends CmsController
             ['post_type', '=', $postTypeModel->identifier]
         ])->select(['post_name'])->first();
 
-        // If the post does not exist already,
-        if($post){
+        $validationRules = [];
+
+        // Lets validate if a post_name is required. If not, we generate a random string.
+        if(!$postTypeModel->disablePostName){
 
         	// Make sure that only the post_name of the requested post_type is unique
-            $validationRules['post_name'] = [
-            	'required',
-            	'unique:cms_posts,post_name, ' . $postTypeModel->identifier . ',post_type',
-            ];
+	        $validationRules['post_name'] = [
+	        	'required',
+	        	'unique:cms_posts,post_name, ' . $postTypeModel->identifier . ',post_type',
+	        ];
 
-        // If the post does does exist
-        } else {
-            $validationRules['post_name'] = 'required';
         }
 
         return $this->validate($request, $validationRules);
