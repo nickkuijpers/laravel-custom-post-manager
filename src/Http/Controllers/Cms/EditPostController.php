@@ -4,6 +4,7 @@ namespace Niku\Cms\Http\Controllers\Cms;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Niku\Cms\Http\Controllers\CmsController;
 
 class EditPostController extends CmsController
@@ -88,7 +89,9 @@ class EditPostController extends CmsController
 	    	// Make sure that only the post_name of the requested post_type is unique
             $validationRules['post_name'] = [
             	'required',
-            	'unique:cms_posts,post_name, ' . $post->identifier . ',post_type',
+            	Rule::unique('cms_posts')->where(function ($query) use ($postTypeModel) {
+				    return $query->where('post_type', $postTypeModel->identifier);
+				})
             ];
 
 	    }

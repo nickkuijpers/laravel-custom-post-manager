@@ -83,7 +83,9 @@ class CreatePostController extends CmsController
         	// Make sure that only the post_name of the requested post_type is unique
 	        $validationRules['post_name'] = [
 	        	'required',
-	        	'unique:cms_posts,post_name, ' . $postTypeModel->identifier . ',post_type',
+	        	Rule::unique('cms_posts')->where(function ($query) use ($postTypeModel) {
+				    return $query->where('post_type', $postTypeModel->identifier);
+				})
 	        ];
 
         }
