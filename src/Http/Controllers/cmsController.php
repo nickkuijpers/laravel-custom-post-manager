@@ -202,6 +202,11 @@ class CmsController extends Controller
 			}
 		}
 
+		// If the post_name is requested as random in the post type, we create a unique random string
+		if($postTypeModel->makePostNameRandom){
+			$post->post_name = $this->randomUniqueString();
+		}
+
 		// Setting some global settings
 		$post->post_type = $postTypeModel->identifier;
 
@@ -215,6 +220,29 @@ class CmsController extends Controller
 		$post->save();
 
 		return $post;
+	}
+
+	protected function randomUniqueString()
+	{
+        $done = 0;
+        while(!$done){
+
+            // Creating a unique identifier
+            $uniqueIdentifier = str_replace('/', '-',uniqid(str_random(36)));
+
+            // Lets validate if there is none already to prevent error
+            $existingValidation = NikuPosts::where([
+                ['post_name', '=', $uniqueIdentifier]
+            ])->count();
+
+            // Continue as long as there is no unique value
+            if($existingValidation === 0){
+                $done = 1;
+            }
+
+        }
+
+        return $uniqueIdentifier;
 	}
 
 	protected function removeUnregistratedFields($request, $postTypeModel)

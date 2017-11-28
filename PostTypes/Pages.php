@@ -18,6 +18,7 @@ class Pages extends NikuPosts
 	// Disable post_name requirement, this will random generate a string
     public $disablePostNameUnique = false;
     public $disableSanitizingPostName = true;
+    public $makePostNameRandom = true;
 
 	// Register events based on the actions
     public $events = [
