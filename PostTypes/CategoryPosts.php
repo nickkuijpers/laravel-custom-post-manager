@@ -56,6 +56,7 @@ class CategoryPosts extends NikuPosts
                     'config' => [
                         'sub_post_type' => 'posts',
                         'posts_edit_url_identifier' => 'Single',
+                        'saveable' => false,
                     ],
                 ],
 
