@@ -16,7 +16,7 @@ class Posts extends NikuPosts
 	public $userCanOnlySeeHisOwnPosts = false;
 
 	// Disable post_name requirement, this will random generate a string
-    public $disablePostName = false;
+    public $disablePostNameUnique = false;
     public $disableSanitizingPostName = true;
 
 	// Register events based on the actions

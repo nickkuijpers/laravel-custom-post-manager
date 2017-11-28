@@ -81,7 +81,7 @@ class CreatePostController extends CmsController
 		}
 
         // Lets validate if a post_name is required.
-        if(!$postTypeModel->disablePostName){
+        if(!$postTypeModel->disablePostNameUnique){
 
         	// Make sure that only the post_name of the requested post_type is unique
 	        $validationRules['post_name'][] = 'required';

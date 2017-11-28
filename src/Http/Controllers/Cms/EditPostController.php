@@ -95,7 +95,7 @@ class EditPostController extends CmsController
 		}
 
     	// Lets validate if a post_name is required.
-        if(!$post->disablePostName){
+        if(!$post->disablePostNameUnique){
 
 			// If we are edditing the current existing post, we must remove the unique check
 			if($request->get('post_name') == $post->post_name){

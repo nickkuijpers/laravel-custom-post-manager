@@ -137,55 +137,73 @@ class CmsController extends Controller
 
 	protected function savePostToDatabase($post, $postTypeModel, $request, $postType)
 	{
-		// Saving the post data
-		$post->post_title = $request->get('post_title');
+		// Remove unregistrated fields
+		$request = $this->removeUnregistratedFields($request, $postTypeModel);
 
-		// Validate if we need to sanitize the post name or not.
-		if(!$postTypeModel->disableSanitizingPostName){
-			$post->post_name = $this->sanitizeUrl($request->get('post_name'));
-		} else {
-			$post->post_name = $request->get('post_name');
+		// Lets mapp all the items
+		foreach($request as $key => $value){
+
+			switch($key){
+				case 'post_title':
+					$post->$key = $value;
+				break;
+				case 'post_content':
+					$post->$key = $value;
+				break;
+				case 'post_excerpt':
+					$post->$key = $value;
+				break;
+				case 'post_password':
+					$post->$key = $value;
+				break;
+				case 'post_name':
+
+					// Validate if we need to sanitize the post name or not.
+					if(!$postTypeModel->disableSanitizingPostName){
+						$post->post_name = $this->sanitizeUrl($request['post_name']);
+					} else {
+						$post->post_name = $request['post_name'];
+					}
+
+				break;
+				case 'menu_order':
+					$post->$key = $value;
+				break;
+				case 'status':
+					$post->$key = $value;
+				break;
+				case 'post_author':
+					$post->$key = $value;
+				break;
+				case 'updated_at':
+
+					// We need to convert the input to a normal format based on the custom field setting
+					$createdAtCustomField = $this->getCustomFieldObject($postTypeModel, 'updated_at');
+
+					// Convert the date by the inserted format data in the custom field setting
+					$convertedUpdatedAtDate = Carbon::createFromFormat($createdAtCustomField['date_format_php'], $request->get('updated_at'));
+
+					// Save the converted date to the model
+					$post->updated_at = $convertedUpdatedAtDate;
+
+				break;
+				case 'created_at':
+
+					// We need to convert the input to a normal format based on the custom field setting
+					$createdAtCustomField = $this->getCustomFieldObject($postTypeModel, 'created_at');
+
+					// Convert the date by the inserted format data in the custom field setting
+					$convertedCreatedAtDate = Carbon::createFromFormat($createdAtCustomField['date_format_php'], $request->get('created_at'));
+
+					// Save the converted date to the model
+					$post->created_at = $convertedCreatedAtDate;
+
+				break;
+			}
 		}
 
-		$post->post_content = $request->get('post_content');
-		$post->status = $request->get('status');
-
-		// If we've sent a custom created_at date lets save it
-		if(!empty($request->get('created_at'))){
-
-			// We need to convert the input to a normal format based on the custom field setting
-			$createdAtCustomField = $this->getCustomFieldObject($postTypeModel, 'created_at');
-
-			// Convert the date by the inserted format data in the custom field setting
-			$convertedCreatedAtDate = Carbon::createFromFormat($createdAtCustomField['date_format_php'], $request->get('created_at'));
-
-			// Save the converted date to the model
-			$post->created_at = $convertedCreatedAtDate;
-		}
-
-		// If we've sent a custom updated_at date lets save it
-		if(!empty($request->get('updated_at'))){
-
-			// We need to convert the input to a normal format based on the custom field setting
-			$createdAtCustomField = $this->getCustomFieldObject($postTypeModel, 'updated_at');
-
-			// Convert the date by the inserted format data in the custom field setting
-			$convertedUpdatedAtDate = Carbon::createFromFormat($createdAtCustomField['date_format_php'], $request->get('updated_at'));
-
-			// Save the converted date to the model
-			$post->updated_at = $convertedUpdatedAtDate;
-		}
-
-		if($postTypeModel->isTaxonomy){
-			$post->taxonomy = $postTypeModel->taxonomyName;
-		}
-
-		// Lets check if we have configured a custom post type identifer
-        if(!empty($postTypeModel->identifier)){
-        	$postType = $postTypeModel->identifier;
-        }
-
-		$post->post_type = $postType;
+		// Setting some global settings
+		$post->post_type = $postTypeModel->identifier;
 
 		// Check if user is logged in to set the author id
 		if(Auth::check()){
@@ -194,10 +212,26 @@ class CmsController extends Controller
 			$post->post_author = 0;
 		}
 
-		$post->template = $request->get('template');
 		$post->save();
 
 		return $post;
+	}
+
+	protected function removeUnregistratedFields($request, $postTypeModel)
+	{
+		$whitelisted = [];
+		$whitelisted[] = 'template';
+
+		// Lets foreach all the custom
+		foreach($postTypeModel->view as $group){
+			foreach($group['customFields'] as $key => $value){
+				$whitelisted[] = $key;
+			}
+		}
+
+		$request = $request->only($whitelisted);
+
+		return $request;
 	}
 
 	protected function removeUnrequiredMetas($postmeta)
