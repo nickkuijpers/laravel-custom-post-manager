@@ -51,6 +51,7 @@ class Posts extends NikuPosts
                     'label' => 'Text',
                     'value' => '',
                     'validation' => 'required',
+                    'saveable' => true,
                 ],
 			],
 		],

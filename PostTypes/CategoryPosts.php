@@ -47,6 +47,7 @@ class CategoryPosts extends NikuPosts
                 'description' => [
                     'component' => 'niku-cms-editor-customfield',
                     'label' => 'Description',
+                    'saveable' => false,
                 ],
 
                 'posts' => [

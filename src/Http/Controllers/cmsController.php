@@ -256,10 +256,16 @@ class CmsController extends Controller
 		$whitelisted = [];
 		$whitelisted[] = 'template';
 
-		// Lets foreach all the custom
+		// Lets foreach all the customfields so we can add it to the save array
 		foreach($postTypeModel->view as $group){
 			foreach($group['customFields'] as $key => $value){
-				$whitelisted[] = $key;
+
+				// Validating if this field can be saved
+				if(array_key_exists('saveable', $value) && $value['saveable'] == false){
+
+				} else {
+					$whitelisted[] = $key;
+				}
 			}
 		}
 
