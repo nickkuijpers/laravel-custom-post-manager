@@ -139,7 +139,14 @@ class CmsController extends Controller
 	{
 		// Saving the post data
 		$post->post_title = $request->get('post_title');
-		$post->post_name = $this->sanitizeUrl($request->get('post_name'));
+
+		// Validate if we need to sanitize the post name or not.
+		if(!$postTypeModel->disableSanitizingPostName){
+			$post->post_name = $this->sanitizeUrl($request->get('post_name'));
+		} else {
+			$post->post_name = $request->get('post_name');
+		}
+
 		$post->post_content = $request->get('post_content');
 		$post->status = $request->get('status');
 

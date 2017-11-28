@@ -68,25 +68,26 @@ class CreatePostController extends CmsController
      */
     protected function validatePost($postTypeModel, $request, $validationRules)
     {
-        // Validating the postname of the given ID to make sure it can be
-        // updated and it is not overriding a other duplicated postname.
-        $post = $postTypeModel::where([
-            ['post_name', '=', $request->get('post_name')],
-            ['post_type', '=', $postTypeModel->identifier]
-        ])->select(['post_name'])->first();
+    	// Lets receive the current items from the post type validation array
+    	if(array_key_exists('post_name', $validationRules) && !is_array($validationRules['post_name'])){
 
-        $validationRules = [];
+	    	$exploded = explode('|', $validationRules['post_name']);
 
-        // Lets validate if a post_name is required. If not, we generate a random string.
+	    	$validationRules['post_name'] = [];
+
+	    	foreach($exploded as $key => $value){
+	    		$validationRules['post_name'][] = $value;
+	    	}
+		}
+
+        // Lets validate if a post_name is required.
         if(!$postTypeModel->disablePostName){
 
         	// Make sure that only the post_name of the requested post_type is unique
-	        $validationRules['post_name'] = [
-	        	'required',
-	        	Rule::unique('cms_posts')->where(function ($query) use ($postTypeModel) {
-				    return $query->where('post_type', $postTypeModel->identifier);
-				})
-	        ];
+	        $validationRules['post_name'][] = 'required';
+	        $validationRules['post_name'][] = Rule::unique('cms_posts')->where(function ($query) use ($postTypeModel) {
+			    return $query->where('post_type', $postTypeModel->identifier);
+			});
 
         }
 

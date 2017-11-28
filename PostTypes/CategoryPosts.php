@@ -13,7 +13,8 @@ class CategoryPosts extends NikuPosts
     public $userCanOnlySeeHisOwnPosts = false;
 
     // Disable post_name requirement, this will random generate a string
-    public $disablePostName = true;
+    public $disablePostName = false;
+    public $disableSanitizingPostName = true;
 
     // Register events based on the actions
     public $events = [

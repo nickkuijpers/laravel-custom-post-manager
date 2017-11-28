@@ -82,19 +82,38 @@ class EditPostController extends CmsController
      */
     protected function validatePost($request, $post, $validationRules)
     {
-		if($request->get('post_name') == $post->post_name){
-	    	$validationRules['post_name'] = 'required';
-	    } else {
+    	// Lets receive the current items from the post type validation array
+    	if(array_key_exists('post_name', $validationRules) && !is_array($validationRules['post_name'])){
 
-	    	// Make sure that only the post_name of the requested post_type is unique
-            $validationRules['post_name'] = [
-            	'required',
-            	Rule::unique('cms_posts')->where(function ($query) use ($postTypeModel) {
-				    return $query->where('post_type', $postTypeModel->identifier);
-				})
-            ];
+	    	$exploded = explode('|', $validationRules['post_name']);
 
-	    }
+	    	$validationRules['post_name'] = [];
+
+	    	foreach($exploded as $key => $value){
+	    		$validationRules['post_name'][] = $value;
+	    	}
+		}
+
+    	// Lets validate if a post_name is required.
+        if(!$post->disablePostName){
+
+			// If we are edditing the current existing post, we must remove the unique check
+			if($request->get('post_name') == $post->post_name){
+
+		    	$validationRules['post_name'] = 'required';
+
+		    // If this is not a existing post name, we need to validate if its unique. They are changing the post name.
+		    } else {
+
+		    	// Make sure that only the post_name of the requested post_type is unique
+		        $validationRules['post_name'][] = 'required';
+		        $validationRules['post_name'][] = Rule::unique('cms_posts')->where(function ($query) use ($post) {
+				    return $query->where('post_type', $post->identifier);
+				});
+
+		    }
+
+		}
 
         return $this->validate($request, $validationRules);
     }
