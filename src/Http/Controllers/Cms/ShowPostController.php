@@ -104,10 +104,10 @@ class ShowPostController extends CmsController
 			// Lets see if we have a mutator registered
 			if(array_has($customField, 'mutators.out')){
 
-				$mutatorValue = (new $customField['mutators']['out'])->handle($value);
+				$mutatorValue = (new $customField['mutators']['out'])->handle($value, $collection);
 
 				// Lets append the new data to the array
-				$collection['postmeta'][$key]['mutator_value'] = $mutatorValue;
+				$collection['postmeta'][$key][] = $mutatorValue;
 			}
 
 		}
