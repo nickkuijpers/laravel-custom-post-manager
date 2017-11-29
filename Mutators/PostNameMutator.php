@@ -8,6 +8,8 @@ class PostNameMutator extends MutatorController
 {
  	public function handle($value)
  	{
+ 		$value['mutator_value'] = 'test';
+
  		return $value;
  	}
 }
