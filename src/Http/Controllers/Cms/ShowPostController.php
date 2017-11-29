@@ -96,18 +96,23 @@ class ShowPostController extends CmsController
     // Lets check if there are any manipulators active for showing the post
 	protected function showMutator($postTypeModel, $collection)
 	{
-		foreach($collection['postmeta'] as $key => $value){
+		foreach($collection['templates'] as $groupKey => $groupValue){
 
-			// Receiving the custom field
-			$customField = $this->getCustomFieldObject($postTypeModel, $key);
+			foreach($groupValue['customFields'] as $key => $value){
 
-			// Lets see if we have a mutator registered
-			if(array_has($customField, 'mutators.out')){
+				// Receiving the custom field
+				$customField = $this->getCustomFieldObject($postTypeModel, $key);
 
-				$mutatorValue = (new $customField['mutators']['out'])->handle($value, $collection);
+				// Lets see if we have a mutator registered
+				if(array_has($customField, 'mutators.out')){
 
-				// Lets append the new data to the array
-				$collection['postmeta'][$key][] = $mutatorValue;
+					$mutatorValue = (new $customField['mutators']['out'])->handle($value, $collection);
+
+					// Lets append the new data to the array
+					$collection['templates'][$groupKey]['customFields'][$key] = $mutatorValue;
+					// $collection['postmeta'][$key][] = $mutatorValue;
+				}
+
 			}
 
 		}
