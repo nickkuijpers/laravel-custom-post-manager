@@ -70,10 +70,10 @@ class ShowPostController extends CmsController
         $this->triggerEvent('on_read', $postTypeModel, $post->id);
 
 		// Format the collection
-        $collection = collect([
+        $collection = [
             'post' => $post->toArray(),
             'postmeta' => $postmeta,
-        ]);
+        ];
 
         // Mergin the collection with the data and custom fields
         $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->view, $collection);
@@ -86,9 +86,34 @@ class ShowPostController extends CmsController
 
         $collection['config'] = $config;
 
+        // Lets check if there are any manipulators active
+        $collection = $this->showMutator($postTypeModel, $collection);
+
         // Returning the full collection
     	return response()->json($collection);
     }
+
+    // Lets check if there are any manipulators active for showing the post
+	protected function showMutator($postTypeModel, $collection)
+	{
+		foreach($collection['postmeta'] as $key => $value){
+
+			// Receiving the custom field
+			$customField = $this->getCustomFieldObject($postTypeModel, $key);
+
+			// Lets see if we have a mutator registered
+			if(array_has($customField, 'mutators.out')){
+
+				$mutatorValue = (new $customField['mutators']['out'])->handle($value);
+
+				// Lets append the new data to the array
+				$collection['postmeta'][$key]['mutator_value'] = $mutatorValue;
+			}
+
+		}
+
+		return $collection;
+	}
 
 	/**
 	 * Get all the post meta keys of the post
