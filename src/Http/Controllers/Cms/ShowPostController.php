@@ -110,7 +110,6 @@ class ShowPostController extends CmsController
 
 					// Lets append the new data to the array
 					$collection['templates'][$groupKey]['customFields'][$key] = $mutatorValue;
-					// $collection['postmeta'][$key][] = $mutatorValue;
 				}
 
 			}
