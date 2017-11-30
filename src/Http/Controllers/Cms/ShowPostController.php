@@ -75,6 +75,7 @@ class ShowPostController extends CmsController
             'postmeta' => $postmeta,
         ];
 
+
         // Mergin the collection with the data and custom fields
         $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->view, $collection);
 
@@ -104,12 +105,15 @@ class ShowPostController extends CmsController
 				$customField = $this->getCustomFieldObject($postTypeModel, $key);
 
 				// Lets see if we have a mutator registered
-				if(array_has($customField, 'mutators.out')){
+				if(array_has($customField, 'mutator')){
 
-					$mutatorValue = (new $customField['mutators']['out'])->handle($value, $collection);
+					if(method_exists(new $customField['mutator'], 'out')){
+						$mutatorValue = (new $customField['mutator'])->out($value, $collection);
 
-					// Lets append the new data to the array
-					$collection['templates'][$groupKey]['customFields'][$key] = $mutatorValue;
+						// Lets append the new data to the array
+						$collection['templates'][$groupKey]['customFields'][$key] = $mutatorValue;
+					}
+
 				}
 
 			}
@@ -177,16 +181,17 @@ class ShowPostController extends CmsController
 			->keyBy('meta_key')
 			->toArray();
 
-		// Attachment of default post data
-		$defaultPostData = [
-			'post_title' => [
-				'meta_key' => 'post_title',
-				'meta_value' => $post->post_title,
-			],
-			'post_name' => [
-				'meta_key' => 'post_name',
-				'meta_value' => $post->post_name,
-			],
+		// Lets attach the default post columns
+		$defaultPostData = [];
+
+		$defaultPostData['post_title'] = [
+			'meta_key' => 'post_title',
+			'meta_value' => $post->post_title,
+		];
+
+		$defaultPostData['post_name'] = [
+			'meta_key' => 'post_name',
+			'meta_value' => $post->post_name,
 		];
 
 		// Lets merge all the types of configs

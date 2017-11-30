@@ -143,6 +143,9 @@ class CmsController extends Controller
 		// Lets mapp all the items
 		foreach($request as $key => $value){
 
+			// Lets validate if there is a mutator for this value
+			$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request);
+
 			switch($key){
 				case 'post_title':
 					$post->$key = $value;
@@ -304,6 +307,9 @@ class CmsController extends Controller
 		// Saving the meta values to the database
 		foreach($postmeta as $key => $value){
 
+			// Lets validate if there is a mutator for this value
+			$value = $this->saveMutator($postTypeModel, $key, $value, $post, $postmeta);
+
 			// Processing the repeater type values
 			if((strpos($key, '_repeater_') !== false)){
 
@@ -396,6 +402,35 @@ class CmsController extends Controller
 		// Saving the sync to the database, if we do this inside the loop
 		// it will delete the old ones so we need to prepare the array.
 		$post->taxonomies()->sync($pivotValue);
+	}
+
+	// Lets check if there are any manipulators active for showing the post
+	protected function saveMutator($postTypeModel, $key, $value, $post, $postmeta)
+	{
+		$post = $post->toArray();
+		$postmeta = $postmeta;
+		$postRequest = array_merge($post, $postmeta);
+
+		// Receiving the custom field
+		$customField = $this->getCustomFieldObject($postTypeModel, $key);
+
+		if(!empty($customField)){
+
+			// Lets see if we have a mutator registered
+			if(array_has($customField, 'mutator')){
+
+				if(method_exists(new $customField['mutator'], 'in')){
+					$mutatorValue = (new $customField['mutator'])->in($value, $postRequest);
+
+					// Lets set the new value to the existing value
+					$value = $mutatorValue;
+				}
+
+			}
+
+		}
+
+		return $value;
 	}
 
 	/**
