@@ -156,6 +156,9 @@ class CmsController extends Controller
 				case 'post_excerpt':
 					$post->$key = $value;
 				break;
+				case 'template':
+					$post->$key = $value;
+				break;
 				case 'post_password':
 					$post->$key = $value;
 				break;
