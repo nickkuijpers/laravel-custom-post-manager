@@ -27,11 +27,22 @@ class ShowPostTaxonomies extends CmsController
 			$where[] = ['post_author', '=', Auth::user()->id];
 		}
 
+		// Finding the post with the post_name instead of the id
+        if($postTypeModel->getPostByPostName){
+        	$where[] = ['post_name', '=', $id];
+        } else {
+        	$where[] = ['id', '=', $id];
+        }
+
 		// Query only the post type requested
         $where[] = ['post_type', '=', $postTypeModel->identifier];
 
-		// Where sql to get all posts by post_Type
-		$where[] = ['id', '=', $id];
+		// Adding a custom query functionality so we can manipulate the find by the config
+		if($postTypeModel->appendCustomWhereQueryToCmsPosts){
+			foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
+				$where[] = [$value[0], $value[1], $value[2]];
+			}
+		}
 
 		$post = $postTypeModel::where($where)->first();
 		if(!$post){

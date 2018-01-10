@@ -27,11 +27,22 @@ class ShowPostController extends CmsController
             $where[] = ['post_author', '=', Auth::user()->id];
         }
 
-        // Where sql to get all posts by post_Type
-        $where[] = ['id', '=', $id];
+        // Finding the post with the post_name instead of the id
+        if($postTypeModel->getPostByPostName){
+        	$where[] = ['post_name', '=', $id];
+        } else {
+        	$where[] = ['id', '=', $id];
+        }
 
         // Query only the post type requested
         $where[] = ['post_type', '=', $postTypeModel->identifier];
+
+        // Adding a custom query functionality so we can manipulate the find by the config
+		if($postTypeModel->appendCustomWhereQueryToCmsPosts){
+			foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
+				$where[] = [$value[0], $value[1], $value[2]];
+			}
+		}
 
         // If the ID is empty, that means we are returning the frame to create a new post.
         if($id == 0){
@@ -69,12 +80,20 @@ class ShowPostController extends CmsController
 		// Lets fire events as registered in the post type
         $this->triggerEvent('on_read', $postTypeModel, $post->id);
 
+        $postArray = $post->toArray();
+        $postArraySanitized = [
+			'id' => $postArray['id'],
+			'post_title' => $postArray['post_title'],
+			'post_name' => $postArray['post_name'],
+			'status' => $postArray['status'],
+			'post_type' => $postArray['post_type'],
+		];
+
 		// Format the collection
         $collection = [
-            'post' => $post->toArray(),
+            'post' => $postArraySanitized,
             'postmeta' => $postmeta,
         ];
-
 
         // Mergin the collection with the data and custom fields
         $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->view, $collection);

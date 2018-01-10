@@ -54,6 +54,14 @@ class EditPostController extends CmsController
     	return response()->json([
     		'code' => 'success',
     		'message' => 'Post succesfully editted',
+    		'action' => 'edit',
+    		'post' => [
+    			'id' => $post->id,
+    			'post_title' => $post->post_title,
+    			'post_name' => $post->post_name,
+				'status' => $post->status,
+				'post_type' => $post->post_type,
+    		],
     	], 200);
     }
 
@@ -71,8 +79,21 @@ class EditPostController extends CmsController
         	$postType = $postTypeModel->identifier;
         }
 
-		$where[] = ['id', '=', $id];
+        // Finding the post with the post_name instead of the id
+        if($postTypeModel->getPostByPostName){
+        	$where[] = ['post_name', '=', $id];
+        } else {
+        	$where[] = ['id', '=', $id];
+        }
+
 		$where[] = ['post_type', '=', $postType];
+
+		// Adding a custom query functionality so we can manipulate the find by the config
+		if($postTypeModel->appendCustomWhereQueryToCmsPosts){
+			foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
+				$where[] = [$value[0], $value[1], $value[2]];
+			}
+		}
 
 		return $postTypeModel::where($where)->first();
     }

@@ -59,7 +59,13 @@ class CreatePostController extends CmsController
     		'code' => 'success',
     		'message' => 'Posts succesfully created.',
     		'action' => 'create',
-    		'post' => $post
+    		'post' => [
+    			'id' => $post->id,
+    			'post_title' => $post->post_title,
+    			'post_name' => $post->post_name,
+				'status' => $post->status,
+				'post_type' => $post->post_type,
+    		],
     	], 200);
     }
 

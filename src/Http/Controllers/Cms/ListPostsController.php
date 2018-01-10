@@ -34,6 +34,13 @@ class ListPostsController extends CmsController
         // Where sql to get all posts by post_Type
         $where[] = ['post_type', '=', $postType];
 
+        // Adding a custom query functionality so we can manipulate the find by the config
+		if($postTypeModel->appendCustomWhereQueryToCmsPosts){
+			foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
+				$where[] = [$value[0], $value[1], $value[2]];
+			}
+		}
+
         // Query the database
 		$posts = $postTypeModel::where($where)
 			->select([
