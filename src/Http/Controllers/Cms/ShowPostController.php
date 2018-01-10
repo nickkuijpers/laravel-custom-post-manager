@@ -81,13 +81,28 @@ class ShowPostController extends CmsController
         $this->triggerEvent('on_read', $postTypeModel, $post->id);
 
         $postArray = $post->toArray();
-        $postArraySanitized = [
-			'id' => $postArray['id'],
-			'post_title' => $postArray['post_title'],
-			'post_name' => $postArray['post_name'],
-			'status' => $postArray['status'],
-			'post_type' => $postArray['post_type'],
-		];
+
+        $postArraySanitized = [];
+
+        if(array_has($postArray, 'id')){
+        	$postArraySanitized['id'] = $postArray['id'];
+		}
+
+		if(array_has($postArray, 'post_title')){
+        	$postArraySanitized['post_title'] = $postArray['post_title'];
+		}
+
+		if(array_has($postArray, 'post_name')){
+        	$postArraySanitized['post_name'] = $postArray['post_name'];
+		}
+
+		if(array_has($postArray, 'status')){
+        	$postArraySanitized['status'] = $postArray['status'];
+		}
+
+		if(array_has($postArray, 'post_type')){
+        	$postArraySanitized['post_type'] = $postArray['post_type'];
+		}
 
 		// Format the collection
         $collection = [
