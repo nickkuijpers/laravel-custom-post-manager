@@ -35,6 +35,10 @@ class CmsServiceProvider extends ServiceProvider
         ], 'niku-posttypes');
 
         $this->publishes([
+            __DIR__.'/../Mutators' => app_path('/Cms/Mutators'),
+        ], 'niku-posttypes');
+
+        $this->publishes([
             __DIR__.'/../ConfigTypes' => app_path('/Cms/ConfigTypes'),
         ], 'niku-posttypes');
 

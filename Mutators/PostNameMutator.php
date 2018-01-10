@@ -8,7 +8,7 @@ class PostNameMutator extends MutatorController
 {
  	public function in($value, $collection)
  	{
- 		$value['mutator_value'] = 'test';
+ 		$value = 'test';
 
  		return $value;
  	}
