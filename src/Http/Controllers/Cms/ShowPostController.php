@@ -53,7 +53,7 @@ class ShowPostController extends CmsController
 		}
 
         // If the ID is empty, that means we are returning the frame to create a new post.
-        if($id == 0){
+        if($id == '0'){
 	        $post = $postTypeModel;
 	    } else {
 	    	$post = $postTypeModel::where($where)->first();
