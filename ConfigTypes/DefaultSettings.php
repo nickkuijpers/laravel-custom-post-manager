@@ -16,6 +16,14 @@ class DefaultSettings extends NikuConfig
 		//
 	];
 
+	public $errorMessages = [
+        'config_type_does_not_exist' => 'The config type does not exist.',
+    ];
+
+    public $successMessage = [
+        'config_updated' => 'Config successful updated',
+    ];
+
 	// Setting up the template structure
 	public $templates = [
 		'default' => [
@@ -25,7 +33,7 @@ class DefaultSettings extends NikuConfig
 					'label' => 'Text',
 					'value' => '',
 					'validation' => 'required',
-				],								
+				],
 				'periods' => [
 					'component' => 'niku-cms-repeater-customfield',
 					'label' => 'Perioden',

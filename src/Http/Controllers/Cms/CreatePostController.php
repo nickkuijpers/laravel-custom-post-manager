@@ -17,12 +17,20 @@ class CreatePostController extends CmsController
     	// Lets validate if the post type exists and if so, continue.
     	$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
-    		return $this->abort('You are not authorized to do this.');
+    		$errorMessages = 'You are not authorized to do this.';
+    		if(array_has($postTypeModel->errorMessages, 'post_type_does_not_exist')){
+    			$errorMessages = $postTypeModel->errorMessages['post_type_does_not_exist'];
+    		}
+    		return $this->abort($errorMessages);
         }
 
         // Check if the post type has a identifier
     	if(empty($postTypeModel->identifier)){
-    		return $this->abort('The post type does not have a identifier.');
+    		$errorMessages = 'The post type does not have a identifier.';
+    		if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_exist')){
+    			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_exist'];
+    		}
+    		return $this->abort($errorMessages);
     	}
 
     	// Receive the post meta values
@@ -54,10 +62,15 @@ class CreatePostController extends CmsController
         // Lets fire events as registered in the post type
         $this->triggerEvent('on_create', $postTypeModel, $post->id);
 
+        $successMessage = 'Post succesfully created.';
+		if(array_has($postTypeModel->successMessage, 'post_created')){
+			$successMessage = $postTypeModel->successMessage['post_created'];
+		}
+
         // Return the response
     	return response()->json([
     		'code' => 'success',
-    		'message' => 'Posts succesfully created.',
+    		'message' => $successMessage,
     		'action' => 'create',
     		'post' => [
     			'id' => $post->id,

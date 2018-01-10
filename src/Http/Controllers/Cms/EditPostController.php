@@ -16,12 +16,20 @@ class EditPostController extends CmsController
     {
         $postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
-    		return $this->abort('You are not authorized to do this.');
+    		$errorMessages = 'You are not authorized to do this.';
+    		if(array_has($postTypeModel->errorMessages, 'post_type_does_not_exist')){
+    			$errorMessages = $postTypeModel->errorMessages['post_type_does_not_exist'];
+    		}
+    		return $this->abort($errorMessages);
     	}
 
     	// Check if the post type has a identifier
     	if(empty($postTypeModel->identifier)){
-    		return $this->abort('The post type does not have a identifier.');
+    		$errorMessages = 'The post type does not have a identifier.';
+    		if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_exist')){
+    			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_exist'];
+    		}
+    		return $this->abort($errorMessages);
     	}
 
     	// Receive the post meta values
@@ -36,7 +44,11 @@ class EditPostController extends CmsController
         // Get the post instance
         $post = $this->findPostInstance($postTypeModel, $request, $postType, $id);
         if(!$post){
-			return $this->abort('Post does not exist.');
+        	$errorMessages = 'Post does not exist.';
+    		if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){
+    			$errorMessages = $postTypeModel->errorMessages['post_does_not_exist'];
+    		}
+    		return $this->abort($errorMessages);
 		}
 
 		$this->validatePost($request, $post, $validationRules);
@@ -50,10 +62,15 @@ class EditPostController extends CmsController
         // Lets fire events as registered in the post type
         $this->triggerEvent('on_edit', $postTypeModel, $post->id);
 
+        $successMessage = 'Post succesfully updated.';
+		if(array_has($postTypeModel->successMessage, 'post_updated')){
+			$successMessage = $postTypeModel->successMessage['post_updated'];
+		}
+
         // Lets return the response
     	return response()->json([
     		'code' => 'success',
-    		'message' => 'Post succesfully editted',
+    		'message' => $successMessage,
     		'action' => 'edit',
     		'post' => [
     			'id' => $post->id,

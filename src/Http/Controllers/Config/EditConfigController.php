@@ -16,7 +16,11 @@ class EditConfigController extends ConfigController
 		// Lets validate if the post type exists and if so, continue.
 		$postTypeModel = $this->getPostType($group);
 		if(!$postTypeModel){
-			return $this->abort('You are not authorized to do this.');
+			$errorMessages = 'You are not authorized to do this.';
+    		if(array_has($postTypeModel->errorMessages, 'post_type_does_not_exist')){
+    			$errorMessages = $postTypeModel->errorMessages['post_type_does_not_exist'];
+    		}
+    		return $this->abort($errorMessages);
 		}
 
 		// Recieving the values
@@ -73,7 +77,6 @@ class EditConfigController extends ConfigController
 			$this->validatePost($request, $validationRules);
 		}
 
-
 		// Lets update or create the fields in the post request
 		foreach($configMeta as $index => $value){
 
@@ -86,9 +89,14 @@ class EditConfigController extends ConfigController
 			);
 		}
 
+		$successMessage = 'Config succesfully updated.';
+		if(array_has($postTypeModel->successMessage, 'config_updated')){
+			$successMessage = $postTypeModel->successMessage['config_updated'];
+		}
+
 		return response()->json([
 			'code' => 'success',
-			'message' => 'Instellingen succesvol opgeslagen'
+			'message' => $successMessage
 		]);
 	}
 

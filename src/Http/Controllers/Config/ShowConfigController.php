@@ -16,7 +16,11 @@ class ShowConfigController extends ConfigController
 		// Lets validate if the post type exists and if so, continue.
 		$postTypeModel = $this->getPostType($group);
 		if(!$postTypeModel){
-			return $this->abort('You are not authorized to do this.');
+			$errorMessages = 'You are not authorized to do this.';
+    		if(array_has($postTypeModel->errorMessages, 'config_type_does_not_exist')){
+    			$errorMessages = $postTypeModel->errorMessages['config_type_does_not_exist'];
+    		}
+    		return $this->abort($errorMessages);
 		}
 
 		// Receiving the current data of the group
@@ -51,44 +55,6 @@ class ShowConfigController extends ConfigController
 		]);
 
 		return response()->json($collection);
-
-
-
-
-
-
-		// Where sql to get all posts by post_Type
-		$where[] = ['id', '=', $id];
-
-		if($id == 0){
-			$post = $postTypeModel;
-		} else {
-			$post = $postTypeModel::where($where)->first();
-		}
-
-		if(!$post){
-			return $this->abort('Post does not exist.');
-		}
-
-		$postmeta = $post->postmeta()->select(['meta_key', 'meta_value'])->get();
-		$postmeta = $postmeta->keyBy('meta_key');
-		$postmeta = $postmeta->toArray();
-		$post = $post->toArray();
-
-		$collection = collect([
-			'post' => $post,
-			'postmeta' => $postmeta
-		]);
-
-		// Mergin the collection with the data and custom fields
-		$collection['templates'] = $this->mergeCollectionWithView($postTypeModel->templates, $collection);
-
-		// Merge the configuration values
-		$collection['config'] = $postTypeModel->config;
-
-		// Returning the full collection
-		return response()->json($collection);
 	}
-
 
 }

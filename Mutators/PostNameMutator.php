@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Cms\PostTypes;
+namespace App\Cms\Mutators;
 
 use Niku\Cms\Http\Controllers\MutatorController;
 
