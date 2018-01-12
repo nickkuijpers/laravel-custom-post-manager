@@ -57,6 +57,8 @@ class ListPostsController extends CmsController
 				'post_name',
 				'status',
 				'post_type',
+				'created_at',
+				'updated_at',
 			])
 			->with('postmeta')
 			->orderBy('id', 'desc')

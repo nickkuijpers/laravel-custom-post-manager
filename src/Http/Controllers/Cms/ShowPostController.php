@@ -116,6 +116,14 @@ class ShowPostController extends CmsController
         	$postArraySanitized['post_type'] = $postArray['post_type'];
 		}
 
+		if(array_has($postArray, 'created_at')){
+        	$postArraySanitized['created_at'] = $postArray['created_at'];
+		}
+
+		if(array_has($postArray, 'updated_at')){
+        	$postArraySanitized['updated_at'] = $postArray['updated_at'];
+		}
+
 		// Format the collection
         $collection = [
             'post' => $postArraySanitized,

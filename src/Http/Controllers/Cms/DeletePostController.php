@@ -85,6 +85,8 @@ class DeletePostController extends CmsController
     			'post_name' => $post->post_name,
 				'status' => $post->status,
 				'post_type' => $post->post_type,
+				'created_at' => $post->created_at,
+				'updated_at' => $post->updated_at,
     		],
     	], 200);
     }
