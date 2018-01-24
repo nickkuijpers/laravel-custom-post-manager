@@ -33,6 +33,36 @@ class CreatePostController extends CmsController
     		return $this->abort($errorMessages);
     	}
 
+    	// If we need to skip creation and create a identifier to edit
+    	if($postTypeModel->skipCreation){
+
+    		$request = new Request;
+    		$request->post_type = $postTypeModel->identifier;
+
+    		// Set the status to temp
+    		$postTypeModel->status = 'concept';
+
+    		// Saving the post values to the database
+    		$post = $this->savePostToDatabase(
+    			'create',
+    			$postTypeModel,
+    			$postTypeModel,
+    			$request
+    		);
+
+	    	return response()->json([
+	    		'code' => 'success',
+	    		'action' => 'create',
+	    		'post' => [
+	    			'id' => $post->id,
+	    			'post_title' => $post->post_title,
+	    			'post_name' => $post->post_name,
+					'status' => $post->status,
+					'post_type' => $post->post_type,
+	    		],
+	    	], 200);
+	    }
+
     	// Receive the post meta values
         $postmeta = $request->all();
 
@@ -54,7 +84,7 @@ class CreatePostController extends CmsController
         }
 
         // Saving the post values to the database
-    	$post = $this->savePostToDatabase('create', $post, $postTypeModel, $request, $postType);
+    	$post = $this->savePostToDatabase('create', $post, $postTypeModel, $request);
 
         // Saving the post meta values to the database
         $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);

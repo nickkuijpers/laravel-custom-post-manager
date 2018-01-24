@@ -135,7 +135,7 @@ class CmsController extends Controller
 		return $validationRules;
 	}
 
-	protected function savePostToDatabase($action, $post, $postTypeModel, $request, $postType)
+	protected function savePostToDatabase($action, $post, $postTypeModel, $request)
 	{
 		// Remove unregistrated fields
 		$request = $this->removeUnregistratedFields($request, $postTypeModel);

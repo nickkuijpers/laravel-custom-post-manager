@@ -141,6 +141,13 @@ class ShowPostController extends CmsController
 
         $collection['config'] = $config;
 
+        // Adding public config
+        if($postTypeModel->skipCreation){
+        	$collection['config']['skip_creation'] = $postTypeModel->skipCreation;
+        } else {
+        	$collection['config']['skip_creation'] = false;
+        }
+
         // Lets check if there are any manipulators active
         $collection = $this->showMutator($postTypeModel, $collection);
 
