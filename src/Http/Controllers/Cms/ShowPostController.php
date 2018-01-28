@@ -170,8 +170,15 @@ class ShowPostController extends CmsController
 					if(method_exists(new $customField['mutator'], 'out')){
 						$customField = (new $customField['mutator'])->out($customField, $collection, $key);
 
+						$holdValue = $collection['templates'][$groupKey]['customFields'][$key]['value'];
+
 						// Lets append the new data to the array
 						$collection['templates'][$groupKey]['customFields'][$key] = $customField;
+
+						// Add the holded value back
+						$collection['templates'][$groupKey]['customFields'][$key]['value'] = $holdValue;
+
+
 					}
 				}
 

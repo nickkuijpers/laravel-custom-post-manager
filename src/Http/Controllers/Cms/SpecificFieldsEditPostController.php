@@ -69,8 +69,14 @@ class SpecificFieldsEditPostController extends CmsController
 
 		$this->validatePost($request, $post, $validationRules);
 
+		// Regenerate the request to pass it thru existing code
+		$request = new Request;
+		foreach($postmeta as $postmetaKey => $postmetaValue){
+			$request->$postmetaKey = $postmetaValue;
+		}
+
 		// Saving the post values to the database
-		$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $postmeta, $postType, true);
+		$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $request, $postType, true);
 
 		// Saving the post meta values to the database
 		$this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
