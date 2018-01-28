@@ -13,10 +13,10 @@ class PostNameMutator extends MutatorController
  		return $value;
  	}
 
- 	public function out($value, $collection)
+ 	public function out($customField)
  	{
- 		$value = 'test';
+ 		$customField['value'] = 'test';
 
- 		return $value;
+ 		return $customField;
  	}
 }
