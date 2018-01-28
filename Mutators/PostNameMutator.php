@@ -6,7 +6,7 @@ use Niku\Cms\Http\Controllers\MutatorController;
 
 class PostNameMutator extends MutatorController
 {
- 	public function in($value, $collection)
+ 	public function in($value, $customField)
  	{
  		$value = 'test';
 
