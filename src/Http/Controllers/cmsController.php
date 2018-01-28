@@ -86,7 +86,7 @@ class CmsController extends Controller
 		return $url;
 	}
 
-	protected function validatePostFields($postmeta, $request, $postTypeModel)
+	protected function validatePostFields($postmeta, $request, $postTypeModel, $singleFieldUpdate = false)
 	{
 		// Receive the default validations required for the post
 		$validationRules = [];
@@ -97,7 +97,12 @@ class CmsController extends Controller
 		}
 		$template = $postTypeModel->view[$request->template];
 
-		$validationFields = $this->getValidationsKeys($postTypeModel);
+		// Possibility to update a single field if whitelabeled
+		if($singleFieldUpdate){
+			$validationFields = $postmeta;
+ 		} else {
+ 			$validationFields = $this->getValidationsKeys($postTypeModel);
+ 		}
 
 		// Appending required validations to the default validations of the post
 		foreach($validationFields as $key => $value){
