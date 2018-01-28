@@ -169,7 +169,7 @@ class CmsController extends Controller
 		foreach($request as $key => $value){
 
 			// Lets validate if there is a mutator for this value
-			$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request);
+			$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 
 			switch($key){
 				case 'post_title':
