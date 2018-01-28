@@ -156,10 +156,14 @@ class CmsController extends Controller
 		return $validationsKeys;
 	}
 
-	protected function savePostToDatabase($action, $post, $postTypeModel, $request)
+	protected function savePostToDatabase($action, $post, $postTypeModel, $request, $singleFieldUpdate = false)
 	{
 		// Remove unregistrated fields
-		$request = $this->removeUnregistratedFields($request, $postTypeModel);
+		if($singleFieldUpdate){
+			$request = $request;
+ 		} else {
+ 			$request = $this->removeUnregistratedFields($request, $postTypeModel);
+ 		}
 
 		// Lets mapp all the items
 		foreach($request as $key => $value){

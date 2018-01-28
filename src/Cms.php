@@ -78,7 +78,7 @@ class Cms
 			Route::post('/{post_type}/create', '\Niku\Cms\Http\Controllers\Cms\CreatePostController@init')->name('create');
 
 			// Single custom field updation
-			Route::post('/{post_type}/edit/{identifier}/{customfield}', '\Niku\Cms\Http\Controllers\Cms\SingleFieldEditPostController@init')->name('single');
+			Route::post('/{post_type}/edit-specific-fields/{identifier}', '\Niku\Cms\Http\Controllers\Cms\SpecificFieldsEditPostController@init')->name('single');
 		});
     }
 }

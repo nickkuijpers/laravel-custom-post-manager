@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Niku\Cms\Http\Controllers\CmsController;
 
-class SingleFieldEditPostController extends CmsController
+class SpecificFieldsEditPostController extends CmsController
 {
 	/**
 	 * The manager of the database communication for adding and manipulating posts
 	 */
-	public function init(Request $request, $postType, $id, $customField)
+	public function init(Request $request, $postType, $id)
 	{
 		$postTypeModel = $this->getPostType($postType);
 		if(!$postTypeModel){
@@ -32,36 +32,27 @@ class SingleFieldEditPostController extends CmsController
 			return $this->abort($errorMessages);
 		}
 
-		// Lets check if the custom field exists
-		$customFieldObject = $this->getCustomFieldObject($postTypeModel, $customField);
-		if(!$customFieldObject){
-			$errorMessages = 'The custom field does not exist.';
-			if(array_has($postTypeModel->errorMessages, 'custom_field_does_not_exist')){
-				$errorMessages = $postTypeModel->errorMessages['custom_field_does_not_exist'];
+		$verifiedFields = [];
+
+		// For each custom field given, we need to validate the permission
+		foreach($request->all() as $key => $value){
+
+			// Lets check if the custom field exists and if we got permission
+			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $key);
+			if($customFieldObject){
+				foreach($postTypeModel->singleFieldUpdate as $singleKey => $singleValue){
+					if($key == $singleValue){
+						$verifiedFields[] = $key;
+					}
+				}
 			}
-			return $this->abort($errorMessages);
+
 		}
 
-		// Validate if the field is whitelabeled in the main config
-		$canUpdateField = false;
-		foreach($postTypeModel->singleFieldUpdate as $key => $value){
-			if($value == $customField){
-				$canUpdateField = true;
-			}
-		}
-
-		if(!$canUpdateField){
-			$errorMessages = 'The custom field has no permission.';
-			if(array_has($postTypeModel->errorMessages, 'custom_field_no_permission')){
-				$errorMessages = $postTypeModel->errorMessages['custom_field_no_permission'];
-			}
-			return $this->abort($errorMessages);
-		}
-
-		$postmeta = $request->only($customField);
+		$postmeta = $request->only($verifiedFields);
 
 		// Validating the request
-		$validationRules = $this->validatePostFields($request->only($customField), $request, $postTypeModel, true);
+		$validationRules = $this->validatePostFields($postmeta, $request, $postTypeModel, true);
 
 		// Unset unrequired post meta keys
 		$postmeta = $this->removeUnrequiredMetas($postmeta);
@@ -79,7 +70,7 @@ class SingleFieldEditPostController extends CmsController
 		$this->validatePost($request, $post, $validationRules);
 
 		// Saving the post values to the database
-		$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $request, $postType);
+		$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $postmeta, $postType, true);
 
 		// Saving the post meta values to the database
 		$this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
@@ -106,6 +97,8 @@ class SingleFieldEditPostController extends CmsController
 				'created_at' => $post->created_at,
 				'updated_at' => $post->updated_at,
 			],
+			'fields_updated' => $verifiedFields,
+			'fields_given' => $request->all(),
 		], 200);
 	}
 
