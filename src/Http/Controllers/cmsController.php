@@ -97,8 +97,10 @@ class CmsController extends Controller
 		}
 		$template = $postTypeModel->view[$request->template];
 
+		$validationFields = $this->getValidationsKeys($postTypeModel);
+
 		// Appending required validations to the default validations of the post
-		foreach($postmeta as $key => $value){
+		foreach($validationFields as $key => $value){
 
 			// Resetting the rule variable so no validation rules are resused
 			$rule = '';
@@ -133,6 +135,20 @@ class CmsController extends Controller
 		}
 
 		return $validationRules;
+	}
+
+	protected function getValidationsKeys($postTypeModel)
+	{
+		$validationsKeys = [];
+		foreach($postTypeModel->view as $key => $value){
+
+			foreach($value['customFields'] as $innerKey => $innerValue){
+
+				$validationsKeys[$innerKey] = $innerKey;
+			}
+		}
+
+		return $validationsKeys;
 	}
 
 	protected function savePostToDatabase($action, $post, $postTypeModel, $request)
