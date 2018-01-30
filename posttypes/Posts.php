@@ -74,6 +74,53 @@ class Posts extends NikuPosts
                     'value' => '',
                     'validation' => 'required',
                     'saveable' => true,
+                    'single_field_updateable' => [
+                        'active' => true,
+                        'reload_fields' => [
+                            'kies-een-pakket'
+                        ],
+                    ],
+                ],
+                'conditional' => [
+                    'show_when' => [
+                        [
+                            'custom_field' => 'request',
+                            'operator' => '==',
+                            'value' => 'zakelijk',
+                        ],
+                    ],
+                    'override_when' => [
+                        [
+                            'custom_field' => 'request',
+                            'operator' => '==',
+                            'value' => 'particulier',
+                            'override' => [
+                                'options' => [
+                                    'bewoner-huurder' => [
+                                        'label' => 'Particuluer  huurder',
+                                        'value' => 'bewoner-huurder',
+                                        'image' => '/images/request/users.svg',
+                                        'image_width' => '30px',
+                                    ],
+                                ],
+                            ],
+                        ],
+                        [
+                            'custom_field' => 'request',
+                            'operator' => '==',
+                            'value' => 'zakelijk',
+                            'override' => [
+                                'options' => [
+                                    'bewoner-huurder' => [
+                                        'label' => 'Zakelijke / huurder',
+                                        'value' => 'bewoner-huurder',
+                                        'image' => '/images/request/users.svg',
+                                        'image_width' => '30px',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'mutated_value' => [
                 	'component' => 'niku-cms-text-customfield',

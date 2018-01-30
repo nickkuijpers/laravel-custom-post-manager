@@ -300,7 +300,13 @@ class CmsController extends Controller
 			}
 		}
 
-		$request = $request->only($whitelisted);
+		$newRequest = $request->only($whitelisted);
+
+		$request = new Request;
+
+		foreach($newRequest as $key => $value){
+			$request[$key] = $key;
+		}
 
 		return $request;
 	}
@@ -493,6 +499,117 @@ class CmsController extends Controller
 
 			}
 
+		}
+	}
+
+	public function getAllCustomFieldsKeys($postTypeModel)
+	{
+		$customFieldKeys = [];
+
+		// Processing all other type values
+		foreach($postTypeModel->view as $templateKey => $template){
+
+			foreach($template['customFields'] as $key => $value){
+				if(array_has($template, 'customFields.' . $key)){
+
+					// As soon as we find the custom field object, lets return it.
+					$customFieldKeys[] = $key;
+				}
+
+			}
+
+		}
+
+		return $customFieldKeys;
+	}
+
+	public function getCustomFieldValue($postTypeModel, $collection, $key)
+	{
+		$customField = $this->getCustomFieldObject($postTypeModel, $key);
+		$value = $customField['value'];
+		if(array_has($collection, 'postmeta.' . $key)){
+			$value = $collection['postmeta'][$key]['meta_value'];
+		}
+
+		return $value;
+	}
+
+	public function conditionTest($value, $operator, $conditionValue)
+	{
+		switch($operator) {
+			case '==':
+				if($value == $conditionValue){
+
+				} else {
+					return false;
+				}
+			break;
+			case '===':
+				if($value === $conditionValue){
+
+				} else {
+					return false;
+				}
+			break;
+				case '!=':
+				if($value != $conditionValue){
+
+				} else {
+					return false;
+				}
+			break;
+			case '<>';
+				if($value <> $conditionValue){
+
+				} else {
+					return false;
+				}
+			break;
+			case '!==':
+				if($value !== $conditionValue){
+
+				} else {
+					return false;
+				}
+			break;
+			case '<':
+				if($value < $conditionValue){
+
+				} else {
+					return false;
+				}
+			break;
+			case '>':
+				if($value > $conditionValue){
+
+				} else {
+					return false;
+				}
+			break;
+			case '<=':
+				if($value <= $conditionValue){
+
+				} else {
+					return false;
+				}
+			break;
+			case '>=':
+				if($value >= $conditionValue){
+
+				} else {
+					return false;
+				}
+			break;
+			case '<=>':
+				if($value <=> $conditionValue){
+
+				} else {
+					return false;
+				}
+			break;
+			default:
+				return false;
+			break;
 		}
 	}
 

@@ -149,10 +149,78 @@ class ShowPostController extends CmsController
         }
 
         // Lets check if there are any manipulators active
+        $collection = $this->showConditional($postTypeModel, $collection);
+
+        // Lets check if there are any manipulators active
         $collection = $this->showMutator($postTypeModel, $collection);
 
         // Returning the full collection
     	return response()->json($collection);
+    }
+
+    protected function showConditional($postTypeModel, $collection)
+    {
+    	foreach($collection['templates'] as $groupKey => $groupValue){
+
+			foreach($groupValue['customFields'] as $key => $value){
+
+				// Receiving the custom field
+				$customField = $this->getCustomFieldObject($postTypeModel, $key);
+
+				// First check if we have enabled the 'single_field_updateable'
+				if(array_has($customField, 'single_field_updateable.active')){
+					if($customField['single_field_updateable']['active']){
+
+						// Lets see if we have a mutator registered
+						if(array_has($customField, 'conditional')){
+
+							// Hiding values if operator is not met
+							if(array_has($customField['conditional'], 'show_when')){
+
+								$display = true;
+								foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
+
+									$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+
+									if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) === false){
+										$display = false;
+									}
+
+								}
+
+								if(!$display){
+									$collection['templates'][$groupKey]['customFields'][$key] = [];
+								}
+							}
+
+							// Hiding values if operator is not met
+							if(array_has($customField['conditional'], 'override_when')){
+
+								foreach($customField['conditional']['override_when'] as $conditionKey => $conditionValue){
+
+									$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+
+									if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) === false){
+										foreach($conditionValue['override'] as $overrideKey => $overrideValue){
+											$collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = $overrideValue;
+										}
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+				}
+
+
+			}
+
+		}
+
+		return $collection;
     }
 
     // Lets check if there are any manipulators active for showing the post
@@ -166,7 +234,7 @@ class ShowPostController extends CmsController
 				$customField = $this->getCustomFieldObject($postTypeModel, $key);
 
 				// Lets see if we have a mutator registered
-				if(array_has($customField, 'mutator')){
+				if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
 					if(method_exists(new $customField['mutator'], 'out')){
 						$customField = (new $customField['mutator'])->out($customField, $collection, $key);
 
@@ -177,8 +245,6 @@ class ShowPostController extends CmsController
 
 						// Add the holded value back
 						$collection['templates'][$groupKey]['customFields'][$key]['value'] = $holdValue;
-
-
 					}
 				}
 

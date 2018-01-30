@@ -33,16 +33,26 @@ class SpecificFieldsEditPostController extends CmsController
 		}
 
 		$verifiedFields = [];
+		$reloadFields = [];
+		$reloadFieldsMethod = 'none';
 
 		// For each custom field given, we need to validate the permission
 		foreach($request->all() as $key => $value){
 
 			// Lets check if the custom field exists and if we got permission
 			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $key);
-			if($customFieldObject){
-				foreach($postTypeModel->singleFieldUpdate as $singleKey => $singleValue){
-					if($key == $singleValue){
-						$verifiedFields[] = $key;
+			if(array_has($customFieldObject, 'single_field_updateable.active')){
+				if($customFieldObject['single_field_updateable']['active']){
+					$verifiedFields[] = $key;
+
+					if(array_has($customFieldObject, 'single_field_updateable.reload_fields')){
+						if(is_array($customFieldObject['single_field_updateable']['reload_fields'])){
+							$reloadFieldsMethod = 'specific';
+							$reloadFields[] = $customFieldObject['single_field_updateable']['reload_fields'];
+						} else if ($customFieldObject['single_field_updateable']['reload_fields'] == '*'){
+							$reloadFieldsMethod = 'all';
+							$reloadFields[] = $this->getAllCustomFieldsKeys($postTypeModel);
+						}
 					}
 				}
 			}
@@ -68,6 +78,8 @@ class SpecificFieldsEditPostController extends CmsController
 		}
 
 		$this->validatePost($request, $post, $validationRules);
+
+		$fullRequest = $request;
 
 		// Regenerate the request to pass it thru existing code
 		$request = new Request;
@@ -104,7 +116,9 @@ class SpecificFieldsEditPostController extends CmsController
 				'updated_at' => $post->updated_at,
 			],
 			'fields_updated' => $verifiedFields,
-			'fields_given' => $request->all(),
+			'fields_given' => $fullRequest->all(),
+			'reload_fields_method' => $reloadFieldsMethod,
+			'reload_fields' => $reloadFields,
 		], 200);
 	}
 

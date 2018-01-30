@@ -14,6 +14,8 @@ class CreatePostController extends CmsController
      */
     public function init(Request $request, $postType)
     {
+    	$oldRequest = $request;
+
     	// Lets validate if the post type exists and if so, continue.
     	$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
@@ -47,7 +49,7 @@ class CreatePostController extends CmsController
     			'create',
     			$postTypeModel,
     			$postTypeModel,
-    			$request
+    			$oldRequest
     		);
 
 	    	return response()->json([
@@ -84,7 +86,7 @@ class CreatePostController extends CmsController
         }
 
         // Saving the post values to the database
-    	$post = $this->savePostToDatabase('create', $post, $postTypeModel, $request);
+    	$post = $this->savePostToDatabase('create', $post, $postTypeModel, $oldRequest);
 
         // Saving the post meta values to the database
         $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
