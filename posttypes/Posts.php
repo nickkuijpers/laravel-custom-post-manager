@@ -133,6 +133,9 @@ class Posts extends NikuPosts
                     'validation' => 'required',
                     'saveable' => true,
                 	'mutator' => 'App\Cms\Mutators\PostNameMutator',
+
+                	// Use the value in the backend but dont display it to the front-end
+                	'output' => false,
                 ],
 			],
 		],

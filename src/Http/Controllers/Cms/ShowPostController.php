@@ -409,6 +409,10 @@ class ShowPostController extends CmsController
 	                		$view[$templateKey]['customFields'][$customFieldKey]['value'] = $postmeta[$customFieldKey]['meta_value'];
 	                	}
 	                }
+
+	                if(array_key_exists('output', $customField) && !$customField['output']){
+	                	unset($view[$templateKey]['customFields'][$customFieldKey]);
+	                }
 	            }
 	        }
         }
