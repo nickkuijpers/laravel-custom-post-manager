@@ -25,6 +25,7 @@ class Posts extends NikuPosts
 
     // Enable single field saving, creation must be skipped.
     public $enableAllSpecificFieldsUpdate = false;
+    public $excludeSpecificFieldsFromUpdate = [];
 
 	// Disable post_name requirement, this will random generate a string
     public $disableDefaultPostName = false;

@@ -509,7 +509,7 @@ class CmsController extends Controller
 				if(array_has($template, 'customFields.' . $key)){
 
 					// As soon as we find the custom field object, lets return it.
-					$customFieldKeys[] = $key;
+					$customFieldKeys[$key] = $key;
 				}
 
 			}

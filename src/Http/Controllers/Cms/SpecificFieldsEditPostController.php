@@ -62,8 +62,16 @@ class SpecificFieldsEditPostController extends CmsController
 		// If updating all specific fields is enabled, we override the verified fields
 		if($postTypeModel->enableAllSpecificFieldsUpdate){
 			$whitelistedCustomFields = $this->getWhitelistedCustomFields($postTypeModel, $request->all());
-			$verifiedFields = $whitelistedCustomFields;
-			$reloadFields[] = $this->getAllCustomFieldsKeys($postTypeModel);
+			$reloadFields = $this->getAllCustomFieldsKeys($postTypeModel);
+
+			// If there is a exlusion active, lets progress that
+			if(is_array($postTypeModel->excludeSpecificFieldsFromUpdate)){
+				foreach($postTypeModel->excludeSpecificFieldsFromUpdate as $excludeKey => $excludeValue){
+					unset($whitelistedCustomFields[$excludeValue]);
+					unset($reloadFields[$excludeValue]);
+				}
+			}
+
 		} else {
 			$whitelistedCustomFields = $this->getWhitelistedCustomFields($postTypeModel, $request->only($verifiedFields));
 		}
@@ -125,7 +133,7 @@ class SpecificFieldsEditPostController extends CmsController
 				'created_at' => $post->created_at,
 				'updated_at' => $post->updated_at,
 			],
-			'fields_updated' => $verifiedFields,
+			'fields_updated' => $whitelistedCustomFields,
 			'fields_given' => $fullRequest->all(),
 			'reload_fields_method' => $reloadFieldsMethod,
 			'reload_fields' => $reloadFields,
