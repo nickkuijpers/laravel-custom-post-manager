@@ -196,14 +196,33 @@ class ShowPostController extends CmsController
 							// Hiding values if operator is not met
 							if(array_has($customField['conditional'], 'override_when')){
 
+								// Reset the item
+								foreach($customField['conditional']['override_when'] as $conditionKey => $conditionValue){
+									foreach($conditionValue['override'] as $overrideKey => $overrideValue){
+										$collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = [];
+									}
+								}
+
+								$overrideables = [];
 								foreach($customField['conditional']['override_when'] as $conditionKey => $conditionValue){
 
 									$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
 
-									if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) === false){
+									if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) !== false){
+
+										// Lets foreach the items we need to override
 										foreach($conditionValue['override'] as $overrideKey => $overrideValue){
-											$collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = $overrideValue;
+
+											// TEMP: disabled multi connections of overrideable values in array
+											if(is_array($overrideValue)){
+												$optionKey = key($overrideValue);
+												$collection['templates'][$groupKey]['customFields'][$key][$overrideKey][$optionKey] = $overrideValue[$optionKey];
+											} else {
+												$collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = $overrideValue;
+											}
+
 										}
+
 									}
 
 								}

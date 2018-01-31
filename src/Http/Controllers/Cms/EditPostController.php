@@ -53,6 +53,9 @@ class EditPostController extends CmsController
 
 		$this->validatePost($request, $post, $validationRules);
 
+		// Manipulate the request so we can empty out the values where the conditional field is not shown
+		$postmeta = $this->removeValuesByConditionalLogic($postmeta, $postTypeModel, $post);
+
 		// Saving the post values to the database
     	$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $request, $postType);
 
@@ -114,7 +117,7 @@ class EditPostController extends CmsController
 			}
 		}
 
-		return $postTypeModel::where($where)->first();
+		return $postTypeModel::where($where)->with('postmeta')->first();
     }
 
     /**
@@ -122,6 +125,8 @@ class EditPostController extends CmsController
      */
     protected function validatePost($request, $post, $validationRules)
     {
+    	$validationRules = $this->validateFieldByConditionalLogic($validationRules, $post, $post);
+
     	// Lets receive the current items from the post type validation array
     	if(array_key_exists('post_name', $validationRules) && !is_array($validationRules['post_name'])){
 
@@ -157,4 +162,7 @@ class EditPostController extends CmsController
 
         return $this->validate($request, $validationRules);
     }
+
+
+
 }

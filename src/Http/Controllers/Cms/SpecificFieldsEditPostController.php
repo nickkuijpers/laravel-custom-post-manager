@@ -87,6 +87,9 @@ class SpecificFieldsEditPostController extends CmsController
 			$request->$postmetaKey = $postmetaValue;
 		}
 
+		// Manipulate the request so we can empty out the values where the conditional field is not shown
+		$postmeta = $this->removeValuesByConditionalLogic($postmeta, $postTypeModel, $post);
+
 		// Saving the post values to the database
 		$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $request, $postType, true);
 
@@ -160,6 +163,13 @@ class SpecificFieldsEditPostController extends CmsController
 	 */
 	protected function validatePost($request, $post, $validationRules)
 	{
+		$currentValidationRuleKeys = [];
+		foreach($request->all() as $requestKey => $requestValue){
+			$currentValidationRuleKeys[$requestKey] = $requestKey;
+		}
+
+		$validationRules = $this->validateFieldByConditionalLogic($validationRules, $post, $post);
+
 		// Lets receive the current items from the post type validation array
 		if(array_key_exists('post_name', $validationRules) && !is_array($validationRules['post_name'])){
 
@@ -193,6 +203,11 @@ class SpecificFieldsEditPostController extends CmsController
 
 		}
 
-		return $this->validate($request, $validationRules);
+		$newValidationRules = [];
+		foreach($currentValidationRuleKeys as $finalKeys => $finalValues){
+			$newValidationRules[$finalKeys] = $validationRules[$finalKeys];
+		}
+
+		return $this->validate($request, $newValidationRules);
 	}
 }

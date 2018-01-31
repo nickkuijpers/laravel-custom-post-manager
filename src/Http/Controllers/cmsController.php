@@ -14,11 +14,6 @@ use Niku\Cms\Http\NikuPosts;
 
 class CmsController extends Controller
 {
-	public function __construct()
-	{
-
-	}
-
 	/**
 	 * Validating if the post type exists and returning the model.
 	 */
@@ -139,6 +134,7 @@ class CmsController extends Controller
 
 		}
 
+		// dd($validationRules);
 		return $validationRules;
 	}
 
@@ -165,8 +161,8 @@ class CmsController extends Controller
  			$request = $this->removeUnregistratedFields($request, $postTypeModel);
  		}
 
-		// Lets mapp all the items
-		foreach($request as $key => $value){
+		// Lets map all the items
+		foreach($request->all() as $key => $value){
 
 			// Lets validate if there is a mutator for this value
 			$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
@@ -451,7 +447,7 @@ class CmsController extends Controller
 		if(!empty($customField)){
 
 			// Lets see if we have a mutator registered
-			if(array_has($customField, 'mutator')){
+			if(array_has($customField, 'mutator') && !empty($customFields['mutator'])){
 
 				if(method_exists(new $customField['mutator'], 'in')){
 					$mutatorValue = (new $customField['mutator'])->in($value, $postRequest);
@@ -525,6 +521,7 @@ class CmsController extends Controller
 
 	public function getCustomFieldValue($postTypeModel, $collection, $key)
 	{
+		// Get the custom field
 		$customField = $this->getCustomFieldObject($postTypeModel, $key);
 		$value = $customField['value'];
 		if(array_has($collection, 'postmeta.' . $key)){
@@ -539,70 +536,70 @@ class CmsController extends Controller
 		switch($operator) {
 			case '==':
 				if($value == $conditionValue){
-
+					return true;
 				} else {
 					return false;
 				}
 			break;
 			case '===':
 				if($value === $conditionValue){
-
+					return true;
 				} else {
 					return false;
 				}
 			break;
 				case '!=':
-				if($value != $conditionValue){
-
+				if(!$value != $conditionValue){
+					return true;
 				} else {
 					return false;
 				}
 			break;
 			case '<>';
 				if($value <> $conditionValue){
-
+					return true;
 				} else {
 					return false;
 				}
 			break;
 			case '!==':
 				if($value !== $conditionValue){
-
+					return true;
 				} else {
 					return false;
 				}
 			break;
 			case '<':
 				if($value < $conditionValue){
-
+					return true;
 				} else {
 					return false;
 				}
 			break;
 			case '>':
 				if($value > $conditionValue){
-
+					return true;
 				} else {
 					return false;
 				}
 			break;
 			case '<=':
 				if($value <= $conditionValue){
-
+					return true;
 				} else {
 					return false;
 				}
 			break;
 			case '>=':
 				if($value >= $conditionValue){
-
+					return true;
 				} else {
 					return false;
 				}
 			break;
 			case '<=>':
 				if($value <=> $conditionValue){
-
+					return true;
 				} else {
 					return false;
 				}
@@ -637,4 +634,146 @@ class CmsController extends Controller
 			'status' => $message,
 		], 422);
 	}
+
+	protected function removeValuesByConditionalLogic($postmeta, $postTypeModel, $collection)
+    {
+    	foreach($postTypeModel->view as $groupKey => $groupValue){
+
+			foreach($groupValue['customFields'] as $key => $value){
+
+				// Receiving the custom field
+				$customField = $this->getCustomFieldObject($postTypeModel, $key);
+
+				// First check if we have enabled the 'single_field_updateable'
+				if(array_has($customField, 'single_field_updateable.active')){
+					if($customField['single_field_updateable']['active']){
+
+						// Lets see if we have a mutator registered
+						if(array_has($customField, 'conditional')){
+
+							// Hiding values if operator is not met
+							if(array_has($customField['conditional'], 'show_when')){
+
+								$display = true;
+								foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
+									$conditionStatus = false;
+
+									// Convert structure to new object
+									$postmetaCollection = [
+										'postmeta' => $collection->postmeta->keyBy('meta_key')->toArray()
+									];
+
+									$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $postmetaCollection, $conditionValue['custom_field']);
+
+									// If the condition is met, we need to remove the validation
+									if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) === false){
+										$display = false;
+									}
+
+								}
+
+								if(!$display){
+									$postmeta[$key] = NULL;
+								}
+
+							}
+
+						}
+
+					}
+				}
+
+			}
+
+		}
+
+		return $postmeta;
+    }
+
+    /**
+     *
+     */
+    protected function validateFieldByConditionalLogic($validationRules, $postTypeModel, $collection)
+    {
+    	foreach($postTypeModel->view as $groupKey => $groupValue){
+
+			foreach($groupValue['customFields'] as $key => $value){
+
+				// Receiving the custom field
+				$customField = $this->getCustomFieldObject($postTypeModel, $key);
+
+				// First check if we have enabled the 'single_field_updateable'
+				if(array_has($customField, 'single_field_updateable.active')){
+					if($customField['single_field_updateable']['active']){
+
+						// Lets see if we have a mutator registered
+						if(array_has($customField, 'conditional')){
+
+							// Hiding values if operator is not met
+							if(array_has($customField['conditional'], 'show_when')){
+
+								$display = true;
+								foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
+									$conditionStatus = false;
+
+									// Convert structure to new object
+									$postmetaCollection = [
+										'postmeta' => $collection->postmeta->keyBy('meta_key')->toArray()
+									];
+
+									$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $postmetaCollection, $conditionValue['custom_field']);
+
+									// If the condition is met, we need to remove the validation
+									if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) === false){
+										$display = false;
+									}
+
+								}
+
+								if(!$display){
+									unset($validationRules[$key]);
+								}
+
+							}
+
+							// Hiding values if operator is not met
+							if(array_has($customField['conditional'], 'override_when')){
+
+								$display = true;
+								foreach($customField['conditional']['override_when'] as $conditionKey => $conditionValue){
+									$conditionStatus = false;
+
+									// Convert structure to new object
+									$postmetaCollection = [
+										'postmeta' => $collection->postmeta->keyBy('meta_key')->toArray()
+									];
+
+									$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $postmetaCollection, $conditionValue['custom_field']);
+
+									// If the condition is met, we need to remove the validation
+									if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) !== false){
+										if(array_has($conditionValue, 'override.validation')){
+
+											$validationRule = $conditionValue['override']['validation'];
+											$validationRules[$key] = $validationRule;
+										}
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+				}
+
+			}
+
+		}
+
+		return $validationRules;
+    }
+
+
 }
