@@ -199,7 +199,7 @@ class ShowPostController extends CmsController
 								// Reset the item
 								foreach($customField['conditional']['override_when'] as $conditionKey => $conditionValue){
 									foreach($conditionValue['override'] as $overrideKey => $overrideValue){
-										$collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = [];
+										// $collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = [];
 									}
 								}
 
