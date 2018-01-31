@@ -154,6 +154,9 @@ class ShowPostController extends CmsController
         // Lets check if there are any manipulators active
         $collection = $this->showMutator($postTypeModel, $collection);
 
+        // Cleaning up the output
+        unset($collection['postmeta']);
+
         // Returning the full collection
     	return response()->json($collection);
     }
@@ -410,6 +413,7 @@ class ShowPostController extends CmsController
 	                	}
 	                }
 
+	                // When output is disabled, we need to remove the fields from the arrays
 	                if(array_key_exists('output', $customField) && !$customField['output']){
 	                	unset($view[$templateKey]['customFields'][$customFieldKey]);
 	                }
