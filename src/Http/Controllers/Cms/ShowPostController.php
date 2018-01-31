@@ -170,62 +170,73 @@ class ShowPostController extends CmsController
 				// Receiving the custom field
 				$customField = $this->getCustomFieldObject($postTypeModel, $key);
 
-				// First check if we have enabled the 'single_field_updateable'
-				if(array_has($customField, 'single_field_updateable.active')){
-					if($customField['single_field_updateable']['active']){
+				if($postTypeModel->enableAllSpecificFieldsUpdate){
+					$collection = $this->allFieldsVisibilityManager($collection, $customField, $postTypeModel, $groupKey, $key);
+				} else {
+					$collection = $this->fieldSpecificVisibilityManager($collection, $customField, $postTypeModel, $groupKey, $key);
+				}
 
-						// Lets see if we have a mutator registered
-						if(array_has($customField, 'conditional')){
+			}
 
-							// Hiding values if operator is not met
-							if(array_has($customField['conditional'], 'show_when')){
+		}
 
-								$display = true;
-								foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
+		return $collection;
+    }
 
-									$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+    protected function fieldSpecificVisibilityManager($collection, $customField, $postTypeModel, $groupKey, $key)
+    {
+    	// First check if we have enabled the 'single_field_updateable'
+		if(array_has($customField, 'single_field_updateable.active')){
+			if($customField['single_field_updateable']['active']){
 
-									if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) === false){
-										$display = false;
-									}
+				// Lets see if we have a mutator registered
+				if(array_has($customField, 'conditional')){
 
-								}
+					// Hiding values if operator is not met
+					if(array_has($customField['conditional'], 'show_when')){
 
-								if(!$display){
-									$collection['templates'][$groupKey]['customFields'][$key] = [];
-								}
+						$display = true;
+						foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
+
+							$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+
+							if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) === false){
+								$display = false;
 							}
 
-							// Hiding values if operator is not met
-							if(array_has($customField['conditional'], 'override_when')){
+						}
 
-								// Reset the item
-								foreach($customField['conditional']['override_when'] as $conditionKey => $conditionValue){
-									foreach($conditionValue['override'] as $overrideKey => $overrideValue){
-										// $collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = [];
-									}
-								}
+						if(!$display){
+							$collection['templates'][$groupKey]['customFields'][$key] = [];
+						}
+					}
 
-								$overrideables = [];
-								foreach($customField['conditional']['override_when'] as $conditionKey => $conditionValue){
+					// Hiding values if operator is not met
+					if(array_has($customField['conditional'], 'override_when')){
 
-									$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+						// Reset the item
+						foreach($customField['conditional']['override_when'] as $conditionKey => $conditionValue){
+							foreach($conditionValue['override'] as $overrideKey => $overrideValue){
+								// TEMP $collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = [];
+							}
+						}
 
-									if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) !== false){
+						$overrideables = [];
+						foreach($customField['conditional']['override_when'] as $conditionKey => $conditionValue){
 
-										// Lets foreach the items we need to override
-										foreach($conditionValue['override'] as $overrideKey => $overrideValue){
+							$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
 
-											// TEMP: disabled multi connections of overrideable values in array
-											if(is_array($overrideValue)){
-												$optionKey = key($overrideValue);
-												$collection['templates'][$groupKey]['customFields'][$key][$overrideKey][$optionKey] = $overrideValue[$optionKey];
-											} else {
-												$collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = $overrideValue;
-											}
+							if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) !== false){
 
-										}
+								// Lets foreach the items we need to override
+								foreach($conditionValue['override'] as $overrideKey => $overrideValue){
 
+									// TEMP: disabled multi connections of overrideable values in array
+									if(is_array($overrideValue)){
+										$optionKey = key($overrideValue);
+										$collection['templates'][$groupKey]['customFields'][$key][$overrideKey][$optionKey] = $overrideValue[$optionKey];
+									} else {
+										$collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = $overrideValue;
 									}
 
 								}
@@ -235,8 +246,73 @@ class ShowPostController extends CmsController
 						}
 
 					}
+
 				}
 
+			}
+		}
+
+		return $collection;
+    }
+
+    protected function allFieldsVisibilityManager($collection, $customField, $postTypeModel, $groupKey, $key)
+    {
+		// Lets see if we have a mutator registered
+		if(array_has($customField, 'conditional')){
+
+			// Hiding values if operator is not met
+			if(array_has($customField['conditional'], 'show_when')){
+
+				$display = true;
+				foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
+
+					$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+
+					if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) !== false){
+						$display = false;
+					}
+
+				}
+
+				// dd($display);
+				if(!$display){
+					$collection['templates'][$groupKey]['customFields'][$key] = [];
+				}
+			}
+
+			// Hiding values if operator is not met
+			if(array_has($customField['conditional'], 'override_when')){
+
+				// Reset the item
+				foreach($customField['conditional']['override_when'] as $conditionKey => $conditionValue){
+					foreach($conditionValue['override'] as $overrideKey => $overrideValue){
+						// $collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = [];
+					}
+				}
+
+				$overrideables = [];
+				foreach($customField['conditional']['override_when'] as $conditionKey => $conditionValue){
+
+					$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+
+					if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) !== false){
+
+						// Lets foreach the items we need to override
+						foreach($conditionValue['override'] as $overrideKey => $overrideValue){
+
+							// TEMP: disabled multi connections of overrideable values in array
+							if(is_array($overrideValue)){
+								$optionKey = key($overrideValue);
+								$collection['templates'][$groupKey]['customFields'][$key][$overrideKey][$optionKey] = $overrideValue[$optionKey];
+							} else {
+								$collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = $overrideValue;
+							}
+
+						}
+
+					}
+
+				}
 
 			}
 
