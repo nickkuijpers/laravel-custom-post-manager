@@ -59,13 +59,20 @@ class SpecificFieldsEditPostController extends CmsController
 
 		}
 
-		$postmeta = $request->only($verifiedFields);
+		// If updating all specific fields is enabled, we override the verified fields
+		if($postTypeModel->enableAllSpecificFieldsUpdate){
+			$whitelistedCustomFields = $this->getWhitelistedCustomFields($postTypeModel, $request->all());
+			$verifiedFields = $whitelistedCustomFields;
+			$reloadFields[] = $this->getAllCustomFieldsKeys($postTypeModel);
+		} else {
+			$whitelistedCustomFields = $this->getWhitelistedCustomFields($postTypeModel, $request->only($verifiedFields));
+		}
 
 		// Validating the request
-		$validationRules = $this->validatePostFields($postmeta, $request, $postTypeModel, true);
+		$validationRules = $this->validatePostFields($whitelistedCustomFields, $request, $postTypeModel, true);
 
 		// Unset unrequired post meta keys
-		$postmeta = $this->removeUnrequiredMetas($postmeta);
+		$whitelistedCustomFields = $this->removeUnrequiredMetas($whitelistedCustomFields);
 
 		// Get the post instance
 		$post = $this->findPostInstance($postTypeModel, $request, $postType, $id);
@@ -83,18 +90,18 @@ class SpecificFieldsEditPostController extends CmsController
 
 		// Regenerate the request to pass it thru existing code
 		$request = new Request;
-		foreach($postmeta as $postmetaKey => $postmetaValue){
+		foreach($whitelistedCustomFields as $postmetaKey => $postmetaValue){
 			$request->$postmetaKey = $postmetaValue;
 		}
 
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
-		$postmeta = $this->removeValuesByConditionalLogic($postmeta, $postTypeModel, $post);
+		$whitelistedCustomFields = $this->removeValuesByConditionalLogic($whitelistedCustomFields, $postTypeModel, $post);
 
 		// Saving the post values to the database
 		$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $request, $postType, true);
 
 		// Saving the post meta values to the database
-		$this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
+		$this->savePostMetaToDatabase($whitelistedCustomFields, $postTypeModel, $post);
 
 		// Lets fire events as registered in the post type
 		$this->triggerEvent('on_edit', $postTypeModel, $post->id);
@@ -205,7 +212,9 @@ class SpecificFieldsEditPostController extends CmsController
 
 		$newValidationRules = [];
 		foreach($currentValidationRuleKeys as $finalKeys => $finalValues){
-			$newValidationRules[$finalKeys] = $validationRules[$finalKeys];
+			if(array_key_exists($finalKeys, $validationRules)){
+				$newValidationRules[$finalKeys] = $validationRules[$finalKeys];
+			}
 		}
 
 		return $this->validate($request, $newValidationRules);

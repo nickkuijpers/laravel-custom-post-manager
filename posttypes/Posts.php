@@ -23,6 +23,9 @@ class Posts extends NikuPosts
         ['status', '=', NULL],
     ];
 
+    // Enable single field saving, creation must be skipped.
+    public $enableAllSpecificFieldsUpdate = false;
+
 	// Disable post_name requirement, this will random generate a string
     public $disableDefaultPostName = false;
     public $disableSanitizingPostName = true;

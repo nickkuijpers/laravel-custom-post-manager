@@ -775,5 +775,18 @@ class CmsController extends Controller
 		return $validationRules;
     }
 
+    public function getWhitelistedCustomFields($postTypeModel, $postmeta)
+    {
+    	$whitelistedCustomFields = [];
+    	$allKeys = $this->getAllCustomFieldsKeys($postTypeModel);
+
+    	foreach($postmeta as $key => $value){
+    		if(in_array($key, $allKeys)){
+    			$whitelistedCustomFields[$key] = $value;
+    		}
+    	}
+
+    	return $whitelistedCustomFields;
+    }
 
 }

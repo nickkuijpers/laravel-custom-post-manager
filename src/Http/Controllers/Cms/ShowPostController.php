@@ -255,7 +255,7 @@ class ShowPostController extends CmsController
 				// Lets see if we have a mutator registered
 				if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
 					if(method_exists(new $customField['mutator'], 'out')){
-						$customField = (new $customField['mutator'])->out($customField, $collection, $key);
+						$customField = (new $customField['mutator'])->out($customField, $collection, $key, $postTypeModel);
 
 						$holdValue = $collection['templates'][$groupKey]['customFields'][$key]['value'];
 
