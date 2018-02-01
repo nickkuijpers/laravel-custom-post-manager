@@ -151,6 +151,9 @@ class ShowPostController extends CmsController
         // Lets check if there are any manipulators active
         $collection = $this->showConditional($postTypeModel, $collection);
 
+        // Convert items to array by json decoding them
+        $collection = $this->inArrayMutator($postTypeModel, $collection);
+
         // Lets check if there are any manipulators active
         $collection = $this->showMutator($postTypeModel, $collection);
 
@@ -344,6 +347,35 @@ class ShowPostController extends CmsController
 						// Add the holded value back
 						$collection['templates'][$groupKey]['customFields'][$key]['value'] = $holdValue;
 					}
+				}
+
+			}
+
+		}
+
+		return $collection;
+	}
+
+	// Lets check if there are any manipulators active for showing the post
+	protected function inArrayMutator($postTypeModel, $collection)
+	{
+		foreach($collection['templates'] as $groupKey => $groupValue){
+
+			foreach($groupValue['customFields'] as $key => $value){
+
+				// Receiving the custom field
+				$customField = $this->getCustomFieldObject($postTypeModel, $key);
+
+				// Lets see if we have a mutator registered
+				if(array_has($customField, 'is_array') && $customField['is_array']){
+
+					$holdValue = '';
+					if(array_key_exists('value', $value)){
+						$holdValue = json_decode($value['value']);
+					}
+
+					// Add the holded value back
+					$collection['templates'][$groupKey]['customFields'][$key]['value'] = $holdValue;
 				}
 
 			}

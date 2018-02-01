@@ -414,6 +414,10 @@ class CmsController extends Controller
 							'meta_value' => $value,
 						];
 
+						if(is_array($value)){
+							$object['meta_value'] = json_encode($value);
+						}
+
 						// Update or create the meta key of the post
 						$post->postmeta()->updateOrCreate([
 							'meta_key' => $key
@@ -536,6 +540,13 @@ class CmsController extends Controller
 
 	public function conditionTest($value, $operator, $conditionValue)
 	{
+		// echo $value;
+		// echo '</br>';
+		// echo $operator;
+		// echo '</br>';
+		// echo $conditionValue;
+		// echo '</br>';
+		// dd($value);
 		switch($operator) {
 			case '==':
 				if($value == $conditionValue){
