@@ -301,7 +301,7 @@ class CmsController extends Controller
 		$request = new Request;
 
 		foreach($newRequest as $key => $value){
-			$request[$key] = $key;
+			$request[$key] = $value;
 		}
 
 		return $request;
