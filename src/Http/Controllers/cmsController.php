@@ -540,14 +540,25 @@ class CmsController extends Controller
 
 	public function conditionTest($value, $operator, $conditionValue)
 	{
-		// echo $value;
-		// echo '</br>';
-		// echo $operator;
-		// echo '</br>';
-		// echo $conditionValue;
-		// echo '</br>';
-		// dd($value);
 		switch($operator) {
+			case 'in_array':
+				$conditionValue = json_decode($conditionValue);
+				if(is_array($conditionValue)){
+					if(in_array($value, $conditionValue)){
+						return true;
+					}
+				}
+				return false;
+			break;
+			case 'not_in_array':
+				$conditionValue = json_decode($conditionValue);
+				if(is_array($conditionValue)){
+					if(in_array($value, $conditionValue)){
+						return false;
+					}
+				}
+				return true;
+			break;
 			case '==':
 				if($value == $conditionValue){
 					return true;
