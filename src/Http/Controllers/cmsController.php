@@ -454,7 +454,7 @@ class CmsController extends Controller
 			if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
 
 				if(method_exists(new $customField['mutator'], 'in')){
-					$mutatorValue = (new $customField['mutator'])->in($value, $postRequest);
+					$mutatorValue = (new $customField['mutator'])->in($customField, $postRequest, $key, $postTypeModel);
 
 					// Lets set the new value to the existing value
 					$value = $mutatorValue;
