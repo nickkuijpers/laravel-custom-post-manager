@@ -166,7 +166,7 @@ class CmsController extends Controller
 
 			// Lets validate if there is a mutator for this value
 			$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
-
+			dd($value);
 			switch($key){
 				case 'post_title':
 					$post->$key = $value;
@@ -451,7 +451,7 @@ class CmsController extends Controller
 		if(!empty($customField)){
 
 			// Lets see if we have a mutator registered
-			if(array_has($customField, 'mutator') && !empty($customFields['mutator'])){
+			if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
 
 				if(method_exists(new $customField['mutator'], 'in')){
 					$mutatorValue = (new $customField['mutator'])->in($value, $postRequest);
