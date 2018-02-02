@@ -166,7 +166,7 @@ class CmsController extends Controller
 
 			// Lets validate if there is a mutator for this value
 			$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
-			dd($value);
+
 			switch($key){
 				case 'post_title':
 					$post->$key = $value;
