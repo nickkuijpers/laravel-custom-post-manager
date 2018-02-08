@@ -134,7 +134,6 @@ class CmsController extends Controller
 
 		}
 
-		// dd($validationRules);
 		return $validationRules;
 	}
 
@@ -489,13 +488,16 @@ class CmsController extends Controller
 
 	public function getCustomFieldObject($postTypeModel, $key)
 	{
+	 
 		// Processing all other type values
 		foreach($postTypeModel->view as $templateKey => $template){
 
 			if(array_has($template, 'customFields.' . $key)){
-
+ 
 				// As soon as we find the custom field object, lets return it.
-				return $template['customFields'][$key];
+				$return = $template['customFields'][$key];
+
+				return $return;
 
 			}
 
@@ -525,16 +527,27 @@ class CmsController extends Controller
 
 	public function getCustomFieldValue($postTypeModel, $collection, $key)
 	{
+		if($key != 'postcode'){
+			return;
+		}
 		// Get the custom field
 		$customField = $this->getCustomFieldObject($postTypeModel, $key);
+		
 		$value = '';
 		if(array_key_exists('value', $customField)){
 			$value = $customField['value'];
 		}
-		if(array_has($collection, 'postmeta.' . $key)){
-			$value = $collection['postmeta'][$key]['meta_value'];
-		}
 
+		if(array_key_exists('postmeta', $collection)){
+			foreach($collection['postmeta'] as $collectionKey => $collectionValue){
+				if($key == $collectionValue['meta_key']){
+					if($collectionValue['meta_value']){
+						$value = $collectionValue['meta_value'];
+					}
+				}
+			}
+		}
+		
 		return $value;
 	}
 
