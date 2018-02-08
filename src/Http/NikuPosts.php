@@ -55,7 +55,7 @@ class NikuPosts extends Model
     {
         foreach($metas as $key => $value){
          
-            // Saving it to the database
+            // Saving it to the database based on key value array
             $object = [
                 'meta_key' => $key,
                 'meta_value' => $value,
