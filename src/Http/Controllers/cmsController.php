@@ -526,10 +526,7 @@ class CmsController extends Controller
 	}
 
 	public function getCustomFieldValue($postTypeModel, $collection, $key)
-	{
-		if($key != 'postcode'){
-			return;
-		}
+	{		
 		// Get the custom field
 		$customField = $this->getCustomFieldObject($postTypeModel, $key);
 		
