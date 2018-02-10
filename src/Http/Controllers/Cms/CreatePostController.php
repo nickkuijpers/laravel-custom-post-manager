@@ -89,6 +89,9 @@ class CreatePostController extends CmsController
 			// Unset unrequired post meta keys
 			$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
 
+			 // Getting the post instance where we can add upon
+        	$post = $postTypeModel;
+
 		} else {
 	 
 			$allFieldKeys = $this->getAllCustomFieldsKeys($postTypeModel);
@@ -105,10 +108,11 @@ class CreatePostController extends CmsController
 
 			// Unset unrequired post meta keys
 			$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
-		}
 
-        // Getting the post instance where we can add upon
-        $post = $postTypeModel;
+			// Getting the post instance where we can add upon
+			$post = $postTypeModel;
+			$post->status = 'concept';
+		}
 
         // Lets check if we have configured a custom post type identifer
         if(!empty($post->identifier)){
