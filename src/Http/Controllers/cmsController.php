@@ -552,17 +552,30 @@ class CmsController extends Controller
 	{
 		switch($operator) {
 			case 'in_array':
-				$conditionValue = json_decode($conditionValue);
-				if(is_array($conditionValue)){
+				if(! is_array($conditionValue)){
+					$conditionValue = json_decode($conditionValue);
+					if(is_array($conditionValue)){
+						if(in_array($value, $conditionValue)){
+							return true;
+						}
+					}
+				} else {
 					if(in_array($value, $conditionValue)){
 						return true;
 					}
 				}
+
 				return false;
 			break;
 			case 'not_in_array':
-				$conditionValue = json_decode($conditionValue);
-				if(is_array($conditionValue)){
+				if(! is_array($conditionValue)){
+					$conditionValue = json_decode($conditionValue);
+					if(is_array($conditionValue)){
+						if(in_array($value, $conditionValue)){
+							return false;
+						}
+					}
+				} else {
 					if(in_array($value, $conditionValue)){
 						return false;
 					}
