@@ -39,7 +39,7 @@ class EditPostController extends CmsController
         $validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
 
         // Unset unrequired post meta keys
-        $postmeta = $this->removeUnrequiredMetas($postmeta);
+        $postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
 
         // Get the post instance
         $post = $this->findPostInstance($postTypeModel, $request, $postType, $id);

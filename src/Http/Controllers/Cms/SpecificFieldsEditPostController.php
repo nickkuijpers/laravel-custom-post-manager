@@ -80,7 +80,7 @@ class SpecificFieldsEditPostController extends CmsController
 		$validationRules = $this->validatePostFields($whitelistedCustomFields, $request, $postTypeModel, true);
 
 		// Unset unrequired post meta keys
-		$whitelistedCustomFields = $this->removeUnrequiredMetas($whitelistedCustomFields);
+		$whitelistedCustomFields = $this->removeUnrequiredMetas($whitelistedCustomFields, $postTypeModel);
 
 		// Get the post instance
 		$post = $this->findPostInstance($postTypeModel, $request, $postType, $id);

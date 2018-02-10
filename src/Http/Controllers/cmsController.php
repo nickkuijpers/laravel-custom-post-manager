@@ -306,7 +306,7 @@ class CmsController extends Controller
 		return $request;
 	}
 
-	protected function removeUnrequiredMetas($postmeta, $postTypeModel = null)
+	protected function removeUnrequiredMetas($postmeta, $postTypeModel)
 	{
 		$unsetValues = [
 			'_token',
@@ -495,17 +495,15 @@ class CmsController extends Controller
 
 	public function getCustomFieldObject($postTypeModel, $key)
 	{
-	 
 		// Processing all other type values
 		foreach($postTypeModel->view as $templateKey => $template){
-
+	 
 			if(array_has($template, 'customFields.' . $key)){
  
 				// As soon as we find the custom field object, lets return it.
 				$return = $template['customFields'][$key];
 
 				return $return;
-
 			}
 
 		}
