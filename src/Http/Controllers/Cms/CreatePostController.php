@@ -33,49 +33,79 @@ class CreatePostController extends CmsController
     			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_exist'];
     		}
     		return $this->abort($errorMessages);
-    	}
+		}
+		
+		// dd($request->all());
 
     	// If we need to skip creation and create a identifier to edit
-    	if($postTypeModel->skipCreation){
+    	// if($postTypeModel->skipCreation){
 
-    		$request = new Request;
-    		$request->post_type = $postTypeModel->identifier;
+    		// $request = new Request;
+    		// $request->post_type = $postTypeModel->identifier;
 
     		// Set the status to temp
-    		$postTypeModel->status = 'concept';
+			// $postTypeModel->status = 'concept';
+			
+			// $allFieldKeys = $this->getAllCustomFieldsKeys($postTypeModel);
+ 
+			// $request = new Request;		
+			// foreach($allFieldKeys as $toSaveKey => $toSaveValue){
+				// $post[$toSaveKey] = $this->getCustomFieldValue($postTypeModel, $postTypeModel, $toSaveKey);
+			// }
+   
+    		// // Saving the post values to the database
+    		// $post = $this->savePostToDatabase(
+    		// 	'create',
+    		// 	$post,
+    		// 	$postTypeModel,
+    		// 	$oldRequest
+    		// );
 
-    		// Saving the post values to the database
-    		$post = $this->savePostToDatabase(
-    			'create',
-    			$postTypeModel,
-    			$postTypeModel,
-    			$oldRequest
-    		);
+	    	// return response()->json([
+	    	// 	'code' => 'success',
+	    	// 	'action' => 'create',
+	    	// 	'post' => [
+	    	// 		'id' => $post->id,
+	    	// 		'post_title' => $post->post_title,
+	    	// 		'post_name' => $post->post_name,
+			// 		'status' => $post->status,
+			// 		'post_type' => $post->post_type,
+	    	// 	],
+	    	// ], 200);
+	    // }		
 
-	    	return response()->json([
-	    		'code' => 'success',
-	    		'action' => 'create',
-	    		'post' => [
-	    			'id' => $post->id,
-	    			'post_title' => $post->post_title,
-	    			'post_name' => $post->post_name,
-					'status' => $post->status,
-					'post_type' => $post->post_type,
-	    		],
-	    	], 200);
-	    }
+		// Override post meta when we need to skip creation
+		if(!$postTypeModel->skipCreation){
 
-    	// Receive the post meta values
-        $postmeta = $request->all();
+			// Receive the post meta values
+			$postmeta = $request->all();		
 
-        // Validating the request
-        $validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
+			// Validating the request
+			$validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
 
-        // Validate the post
-        $this->validatePost($postTypeModel, $request, $validationRules);
+			// Validate the post
+			$this->validatePost($postTypeModel, $request, $validationRules);
 
-        // Unset unrequired post meta keys
-        $postmeta = $this->removeUnrequiredMetas($postmeta);
+			// Unset unrequired post meta keys
+			$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
+
+		} else {
+	 
+			$allFieldKeys = $this->getAllCustomFieldsKeys($postTypeModel);
+ 
+			$request = new Request;		
+			foreach($allFieldKeys as $toSaveKey => $toSaveValue){
+				$configValue = $this->getCustomFieldValue($postTypeModel, $postTypeModel, $toSaveKey);
+				if(!empty($configValue)){
+					$request[$toSaveKey] = $configValue;
+				}
+			}
+
+			$postmeta = $request->all();
+
+			// Unset unrequired post meta keys
+			$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
+		}
 
         // Getting the post instance where we can add upon
         $post = $postTypeModel;

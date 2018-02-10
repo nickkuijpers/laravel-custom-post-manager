@@ -238,7 +238,7 @@ class CmsController extends Controller
 				$post->post_name = $this->randomUniqueString();
 			}
 		}
-
+ 
 		// Setting some global settings
 		$post->post_type = $postTypeModel->identifier;
 
@@ -306,7 +306,7 @@ class CmsController extends Controller
 		return $request;
 	}
 
-	protected function removeUnrequiredMetas($postmeta)
+	protected function removeUnrequiredMetas($postmeta, $postTypeModel = null)
 	{
 		$unsetValues = [
 			'_token',
@@ -323,6 +323,13 @@ class CmsController extends Controller
 
 		foreach($unsetValues as $value){
 			unset($postmeta[$value]);
+		}
+
+		foreach($postmeta as $key => $value){
+			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $key);
+			if(array_key_exists('saveable', $customFieldObject) && $customFieldObject['saveable'] === false){
+				unset($postmeta[$key]);
+			}
 		}
 
 		return $postmeta;
