@@ -2,6 +2,7 @@
 
 namespace Niku\Cms\Http\Controllers\Cms;
 
+use Illuminate\Http\Request;
 use Niku\Cms\Http\Controllers\CmsController;
 
 class ShowPostController extends CmsController
@@ -9,7 +10,7 @@ class ShowPostController extends CmsController
 	/**
      * Display a single post
      */
-    public function init($postType, $id)
+    public function init(Request $request, $postType, $id)
     {
         // Lets validate if the post type exists and if so, continue.
 		$postTypeModel = $this->getPostType($postType);
@@ -28,7 +29,14 @@ class ShowPostController extends CmsController
     			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_exist'];
     		}
     		return $this->abort($errorMessages);
-    	}
+		}
+		
+		// Validate if we need to validate a other post type before showing this post type
+		$validateBefore = $this->validatePostTypeBefore($request, $postTypeModel, $id);
+		if($validateBefore['status'] === false){
+			$errorMessages = $validateBefore['message'];
+    		return $this->abort($errorMessages, $validateBefore['config']);
+		}
 
         // If the user can only see his own posts
         if($postTypeModel->userCanOnlySeeHisOwnPosts){

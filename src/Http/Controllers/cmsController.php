@@ -1,16 +1,17 @@
 <?php
 namespace Niku\Cms\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-
 use Carbon\Carbon;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Niku\Cms\Http\NikuPosts;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
-use Niku\Cms\Http\NikuPosts;
+use Niku\Cms\Http\Controllers\Cms\CheckPostController;
 
 class CmsController extends Controller
 {
@@ -567,6 +568,32 @@ class CmsController extends Controller
 		return $value;
 	}
 
+	public function getCustomFieldValueWithoutConfig($postTypeModel, $collection, $key)
+	{		
+		$value = '';
+
+		if(is_object($collection)){
+			$collection = $collection->toArray();
+		} else {
+			$collection = $collection;
+		}
+
+		// Get the custom field
+		$customField = $this->getCustomFieldObject($postTypeModel, $key);
+	
+		if(array_key_exists('postmeta', $collection)){
+			foreach($collection['postmeta'] as $collectionKey => $collectionValue){
+				if($key == $collectionValue['meta_key']){
+					if($collectionValue['meta_value']){
+						$value = $collectionValue['meta_value'];
+					}
+				}
+			}
+		}
+		
+		return $value;
+	}
+
 	public function conditionTest($value, $operator, $conditionValue)
 	{
 		switch($operator) {
@@ -691,14 +718,60 @@ class CmsController extends Controller
 		}
 	}
 
+	public function validatePostTypeBefore($request, $postTypeModel, $id)
+	{
+		if($postTypeModel->validatePostTypeBefore){
+			if(count($postTypeModel->validatePostTypeBefore) > 0){
+				$i = 0;
+				foreach($postTypeModel->validatePostTypeBefore as $key => $value){
+					$i++;
+
+					// Does the before post type exist?
+					$postTypeModelBefore = $this->getPostType($key);
+					if(!$postTypeModelBefore){
+						return [
+							'status' => false,
+							'message' => 'Validation of post type does not exist',	
+						];
+					}
+	 
+					$validationResult = (new CheckPostController)->init($request, $key, $id);
+					$validationResult = json_decode($validationResult->getContent(), true);			
+					
+					if(array_key_exists('code', $validationResult) && $validationResult['code'] == 'success'){
+						continue;
+					}
+					
+					if(count($validationResult) > 0){
+						return [
+							'status' => false,
+							'message' => 'Validation of post type does not exist',	
+							'config' => [
+								'return_to' => $value['return_to'],
+								'errors' => $validationResult,
+							],
+						];
+					}
+				}
+			}
+
+		}
+
+		return [
+			'status' => true,
+			'message' => ''
+		];
+	}
+
 	/**
 	 * Abort the request
 	 */
-	public function abort($message = 'Not authorized.')
+	public function abort($message = 'Not authorized.', $config = '')
 	{
 		return response()->json([
 			'code' => 'error',
 			'status' => $message,
+			'config' => $config,
 		], 422);
 	}
 

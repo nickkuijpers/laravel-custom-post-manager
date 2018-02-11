@@ -34,7 +34,13 @@ class Pages extends NikuPosts
     // Enable single field saving, creation must be skipped.
     public $enableAllSpecificFieldsUpdate = true;    
     public $excludeSpecificFieldsFromUpdate = ['aanvullende_informatie'];
-    public $disableEditOnlyCheck = false;
+	public $disableEditOnlyCheck = false;
+	
+	public $validatePostTypeBefore = [
+        'step1' => [
+            'return_to' => 'step1',
+        ],
+    ];
 
     public $errorMessages = [
         'post_type_does_not_exist' => 'The post type does not exist.',

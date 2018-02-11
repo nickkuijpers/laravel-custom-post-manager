@@ -32,6 +32,13 @@ class SpecificFieldsEditPostController extends CmsController
 			return $this->abort($errorMessages);
 		}
 
+		// Validate if we need to validate a other post type before showing this post type
+		$validateBefore = $this->validatePostTypeBefore($request, $postTypeModel, $id);
+		if($validateBefore['status'] === false){
+			$errorMessages = $validateBefore['message'];
+    		return $this->abort($errorMessages, $validateBefore['config']);
+		}
+
 		$verifiedFields = [];
 		$reloadFields = [];
 		$reloadFieldsMethod = 'none';

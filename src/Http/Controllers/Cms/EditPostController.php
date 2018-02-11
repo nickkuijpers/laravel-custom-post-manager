@@ -28,6 +28,13 @@ class EditPostController extends CmsController
     		}
     		return $this->abort($errorMessages);
 		}
+
+		// Validate if we need to validate a other post type before showing this post type
+		$validateBefore = $this->validatePostTypeBefore($request, $postTypeModel, $id);
+		if($validateBefore['status'] === false){
+			$errorMessages = $validateBefore['message'];
+    		return $this->abort($errorMessages, $validateBefore['config']);
+		}
 		
 		// Disable editting of form
 		if($postTypeModel->disableEditOnlyCheck){
@@ -36,7 +43,8 @@ class EditPostController extends CmsController
     			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_support_edit'];
     		}
     		return $this->abort($errorMessages);
-        }
+		}
+		
 
     	// Receive the post meta values
         $postmeta = $request->all();

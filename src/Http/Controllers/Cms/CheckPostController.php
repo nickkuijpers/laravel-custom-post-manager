@@ -3,8 +3,9 @@
 namespace Niku\Cms\Http\Controllers\Cms;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Niku\Cms\Http\Controllers\CmsController;
 
 class CheckPostController extends CmsController
@@ -47,7 +48,7 @@ class CheckPostController extends CmsController
 		}
  
         foreach($allFieldKeys as $toSaveKey => $toSaveValue){
-            $configValue = $this->getCustomFieldValue($postTypeModel, $post, $toSaveKey);
+            $configValue = $this->getCustomFieldValueWithoutConfig($postTypeModel, $post, $toSaveKey);
             $request[$toSaveKey] = $configValue;
         }
 
@@ -59,8 +60,12 @@ class CheckPostController extends CmsController
 
         // Unset unrequired post meta keys
         $postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
-
-		$this->validatePost($request, $post, $validationRules);
+ 
+		$validatedFields = $this->validatePost($request, $post, $validationRules);		
+		if($validatedFields['status'] === false){
+			$errors = $validatedFields['errors'];
+			return response()->json($errors->messages(), 422);
+		}
 
         // Lets fire events as registered in the post type
         $this->triggerEvent('on_check', $postTypeModel, $post->id);
@@ -126,8 +131,16 @@ class CheckPostController extends CmsController
 		    }
 
 		}
-
-        return $this->validate($request, $validationRules);
+		 
+		$validator = Validator::make($request->all(), $validationRules);
+        if ($validator->fails()) {
+			return [
+				'status' => false,	
+				'errors' => $validator->errors()
+			];
+        } else {
+			return true;
+		}
     }
 
 }
