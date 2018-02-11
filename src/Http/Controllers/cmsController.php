@@ -327,8 +327,14 @@ class CmsController extends Controller
 
 		foreach($postmeta as $key => $value){
 			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $key);
-			if(array_key_exists('saveable', $customFieldObject) && $customFieldObject['saveable'] === false){
-				unset($postmeta[$key]);
+			if($customFieldObject){
+				if(array_key_exists('saveable', $customFieldObject)){
+					if($customFieldObject['saveable'] === false){
+						unset($postmeta[$key]);
+					}
+				}
+			} else {
+				return false;
 			}
 		}
 
@@ -504,6 +510,8 @@ class CmsController extends Controller
 				$return = $template['customFields'][$key];
 
 				return $return;
+			} else {
+				return false;
 			}
 
 		}
@@ -532,6 +540,12 @@ class CmsController extends Controller
 
 	public function getCustomFieldValue($postTypeModel, $collection, $key)
 	{		
+		if(is_object($collection)){
+			$collection = $collection->toArray();
+		} else {
+			$collection = $collection;
+		}
+
 		// Get the custom field
 		$customField = $this->getCustomFieldObject($postTypeModel, $key);
 		

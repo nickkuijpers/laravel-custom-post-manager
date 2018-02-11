@@ -9,7 +9,7 @@ use Niku\Cms\Http\Controllers\CmsController;
 
 class CheckPostController extends CmsController
 {
-    public function init($postType, $id)
+    public function init(Request $request, $postType, $id)
     {
         $postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
@@ -28,25 +28,6 @@ class CheckPostController extends CmsController
     		}
     		return $this->abort($errorMessages);
     	}
-        
-        $allFieldKeys = $this->getAllCustomFieldsKeys($postTypeModel);
- 
-        $request = new Request;		
-        foreach($allFieldKeys as $toSaveKey => $toSaveValue){
-            $configValue = $this->getCustomFieldValue($postTypeModel, $postTypeModel, $toSaveKey);
-            if(!empty($configValue)){
-                $request[$toSaveKey] = $configValue;
-            }
-        }
-
-        // Receive the post meta values
-        $postmeta = $request->all();
-
-        // Validating the request
-        $validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
-
-        // Unset unrequired post meta keys
-        $postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
 
         // Get the post instance
         $post = $this->findPostInstance($postTypeModel, $request, $postType, $id);
@@ -57,6 +38,29 @@ class CheckPostController extends CmsController
     		}
     		return $this->abort($errorMessages);
 		}
+ 
+		$allFieldKeys = $this->getAllCustomFieldsKeys($postTypeModel);
+  
+		// Unsetting all given values but keeping the request headers
+		foreach($request->all() as $unsetKey => $unsetValue){
+			unset($request[$unsetKey]);
+		}
+ 
+        foreach($allFieldKeys as $toSaveKey => $toSaveValue){
+            $configValue = $this->getCustomFieldValue($postTypeModel, $post, $toSaveKey);
+            if(!empty($configValue)){
+                $request[$toSaveKey] = $configValue;
+            }
+        }
+
+        // Receive the post meta values
+        $postmeta = $request->all();
+ 
+        // Validating the request
+        $validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
+
+        // Unset unrequired post meta keys
+        $postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
 
 		$this->validatePost($request, $post, $validationRules);
 

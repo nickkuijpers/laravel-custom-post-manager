@@ -146,6 +146,13 @@ class ShowPostController extends CmsController
         	$collection['config']['skip_creation'] = $postTypeModel->skipCreation;
         } else {
         	$collection['config']['skip_creation'] = false;
+		}
+		
+		// Adding public config
+        if($postTypeModel->disableEditOnlyCheck){
+        	$collection['config']['disable_edit_only_check'] = $postTypeModel->disableEditOnlyCheck;
+        } else {
+        	$collection['config']['disable_edit_only_check'] = false;
         }
 
         // Lets check if there are any manipulators active

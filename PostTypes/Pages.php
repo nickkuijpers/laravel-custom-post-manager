@@ -28,6 +28,14 @@ class Pages extends NikuPosts
     public $disableSanitizingPostName = true;
     public $makePostNameRandom = true;
 
+	// Skip creationg and create identifier to edit    
+    public $skipCreation = true;
+
+    // Enable single field saving, creation must be skipped.
+    public $enableAllSpecificFieldsUpdate = true;    
+    public $excludeSpecificFieldsFromUpdate = ['aanvullende_informatie'];
+    public $disableEditOnlyCheck = false;
+
     public $errorMessages = [
         'post_type_does_not_exist' => 'The post type does not exist.',
         'post_type_identifier_does_not_exist' => 'The post type identifier does not exist.',

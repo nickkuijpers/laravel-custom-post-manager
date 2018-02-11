@@ -27,7 +27,16 @@ class EditPostController extends CmsController
     			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_exist'];
     		}
     		return $this->abort($errorMessages);
-    	}
+		}
+		
+		// Disable editting of form
+		if($postTypeModel->disableEditOnlyCheck){
+        	$errorMessages = 'The post type does not support editting.';
+    		if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_support_edit')){
+    			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_support_edit'];
+    		}
+    		return $this->abort($errorMessages);
+        }
 
     	// Receive the post meta values
         $postmeta = $request->all();
