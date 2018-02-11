@@ -48,9 +48,7 @@ class CheckPostController extends CmsController
  
         foreach($allFieldKeys as $toSaveKey => $toSaveValue){
             $configValue = $this->getCustomFieldValue($postTypeModel, $post, $toSaveKey);
-            if(!empty($configValue)){
-                $request[$toSaveKey] = $configValue;
-            }
+            $request[$toSaveKey] = $configValue;
         }
 
         // Receive the post meta values
