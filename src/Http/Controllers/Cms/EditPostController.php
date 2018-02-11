@@ -9,9 +9,6 @@ use Niku\Cms\Http\Controllers\CmsController;
 
 class EditPostController extends CmsController
 {
-	/**
-     * The manager of the database communication for adding and manipulating posts
-     */
     public function init(Request $request, $postType, $id)
     {
         $postTypeModel = $this->getPostType($postType);
@@ -87,39 +84,6 @@ class EditPostController extends CmsController
     	], 200);
     }
 
-    protected function findPostInstance($postTypeModel, $request, $postType, $id)
-    {
-    	// Validating the postname of the given ID to make sure it can be
-        // updated and it is not overriding a other duplicated postname.
-        // If the user can only see his own posts
-        if($postTypeModel->userCanOnlySeeHisOwnPosts){
-            $where[] = ['post_author', '=', Auth::user()->id];
-        }
-
-        // Lets check if we have configured a custom post type identifer
-        if(!empty($postTypeModel->identifier)){
-        	$postType = $postTypeModel->identifier;
-        }
-
-        // Finding the post with the post_name instead of the id
-        if($postTypeModel->getPostByPostName){
-        	$where[] = ['post_name', '=', $id];
-        } else {
-        	$where[] = ['id', '=', $id];
-        }
-
-		$where[] = ['post_type', '=', $postType];
-
-		// Adding a custom query functionality so we can manipulate the find by the config
-		if($postTypeModel->appendCustomWhereQueryToCmsPosts){
-			foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
-				$where[] = [$value[0], $value[1], $value[2]];
-			}
-		}
-
-		return $postTypeModel::where($where)->with('postmeta')->first();
-    }
-
     /**
      * Validating the creation and change of a post
      */
@@ -162,7 +126,5 @@ class EditPostController extends CmsController
 
         return $this->validate($request, $validationRules);
     }
-
-
 
 }
