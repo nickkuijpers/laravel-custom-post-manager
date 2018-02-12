@@ -748,6 +748,7 @@ class CmsController extends Controller
 							'message' => 'Validation of post type does not exist',	
 							'config' => [
 								'return_to' => $value['return_to'],
+								'route_identifier' => $value['route_identifier'],
 								'errors' => $validationResult,
 							],
 						];
@@ -766,10 +767,10 @@ class CmsController extends Controller
 	/**
 	 * Abort the request
 	 */
-	public function abort($message = 'Not authorized.', $config = '')
+	public function abort($message = 'Not authorized.', $config = '', $code = 'error')
 	{
 		return response()->json([
-			'code' => 'error',
+			'code' => $code,
 			'status' => $message,
 			'config' => $config,
 		], 422);

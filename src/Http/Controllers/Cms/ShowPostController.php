@@ -35,7 +35,7 @@ class ShowPostController extends CmsController
 		$validateBefore = $this->validatePostTypeBefore($request, $postTypeModel, $id);
 		if($validateBefore['status'] === false){
 			$errorMessages = $validateBefore['message'];
-    		return $this->abort($errorMessages, $validateBefore['config']);
+    		return $this->abort($errorMessages, $validateBefore['config'], 'post_validation_error');
 		}
 
         // If the user can only see his own posts
