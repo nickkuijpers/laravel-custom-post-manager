@@ -758,7 +758,7 @@ class CmsController extends Controller
 								}
 
 							}
-
+							
 							if($display === false){					
 								$postmeta[$key] = null;
 							}
@@ -781,6 +781,80 @@ class CmsController extends Controller
 
 							if($display === false){
 								$postmeta[$key] = null;
+							}
+
+						break;
+					}
+
+				}
+			}
+		}
+
+		return $postmeta;
+	}
+	
+	protected function removeValidationsByConditionalLogic($postmeta, $postTypeModel, $collection)
+    {
+		$allKeys = $this->getValidationsKeys($postTypeModel);
+		 
+		foreach($allKeys as $key => $customField){
+
+			// Hiding values if operator is not met
+			if(array_key_exists('conditional', $customField)){
+
+				if(array_key_exists('show_when', $customField['conditional'])){
+					
+					$type = 'AND';
+					if(array_key_exists('type', $customField['conditional'])){
+						if($customField['conditional']['type'] == 'AND'){
+							$type = 'AND';
+						} else if($customField['conditional']['type'] == 'OR'){
+							$type = 'OR';
+						}
+					}
+
+					switch($type){
+						case 'AND':
+
+							$display = true;
+				
+							foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
+
+								$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+								$conditionCheck = $this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue);
+
+								if($conditionCheck === false){
+									$display = false;
+								}
+
+							}
+							
+							if($display === false){					
+								$postmeta[$key] = false;
+							} else {
+								$postmeta[$key] = true;
+							}
+						
+						break;
+						case 'OR':
+
+							$display = false;
+
+							foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
+
+								$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+								$conditionCheck = $this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue);
+
+								if($conditionCheck === true){
+									$display = true;
+								}
+
+							}
+
+							if($display === false){					
+								$postmeta[$key] = false;
+							} else {
+								$postmeta[$key] = true;
 							}
 
 						break;

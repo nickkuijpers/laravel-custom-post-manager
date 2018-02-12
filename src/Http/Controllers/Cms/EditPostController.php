@@ -60,14 +60,20 @@ class EditPostController extends CmsController
     		}
     		return $this->abort($errorMessages);
 		}
+
+		// Unset unrequired post meta keys
+		$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
 		
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
 		$postmeta = $this->removeValuesByConditionalLogic($postmeta, $postTypeModel, $post);
+		$logicValidations = $this->removeValidationsByConditionalLogic($postmeta, $postTypeModel, $post);
 		
 		$newValidations = [];
-		foreach($postmeta as $postmetaKey => $postmetaValue){
-			if(!empty($postmetaValue)){
-				$newValidations[$postmetaKey] = $validationRules[$postmetaKey];
+		foreach($logicValidations as $postmetaKey => $postmetaValue){
+			if($postmetaValue === true){
+				if(array_key_exists($postmetaKey, $validationRules)){
+					$newValidations[$postmetaKey] = $validationRules[$postmetaKey];
+				}
 			}
 		}
 
