@@ -17,11 +17,8 @@ class CreatePostController extends CmsController
     	$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
     		$errorMessages = 'You are not authorized to do this.';
-    		if(array_has($postTypeModel->errorMessages, 'post_type_does_not_exist')){
-    			$errorMessages = $postTypeModel->errorMessages['post_type_does_not_exist'];
-    		}
     		return $this->abort($errorMessages);
-        }
+    	}
 
         // Check if the post type has a identifier
     	if(empty($postTypeModel->identifier)){
@@ -31,24 +28,22 @@ class CreatePostController extends CmsController
     		}
     		return $this->abort($errorMessages);
 		}
-	 
+		
 		// Override post meta when we need to skip creation
-		if(!$postTypeModel->skipCreation){
-
+		if($postTypeModel->skipCreation === false){
 			// Receive the post meta values
 			$postmeta = $request->all();		
-
 			// Validating the request
 			$validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
 
 			// Validate the post
 			$this->validatePost($postTypeModel, $request, $validationRules);
-
+ 
 			// Unset unrequired post meta keys
 			$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
 
 			 // Getting the post instance where we can add upon
-        	$post = $postTypeModel;
+			$post = $postTypeModel;
 
 		} else {
 	 
@@ -79,7 +74,7 @@ class CreatePostController extends CmsController
 
         // Saving the post values to the database
     	$post = $this->savePostToDatabase('create', $post, $postTypeModel, $oldRequest);
-
+ 
         // Saving the post meta values to the database
         $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
 

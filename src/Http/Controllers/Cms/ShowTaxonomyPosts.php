@@ -14,12 +14,9 @@ class ShowTaxonomyPosts extends CmsController
 		// Lets validate if the post type exists and if so, continue.
 		$postTypeModel = $this->getPostType($postType);
 		if(!$postTypeModel){
-			$errorMessages = 'You are not authorized to do this.';
-    		if(array_has($postTypeModel->errorMessages, 'post_type_does_not_exist')){
-    			$errorMessages = $postTypeModel->errorMessages['post_type_does_not_exist'];
-    		}
+    		$errorMessages = 'You are not authorized to do this.';
     		return $this->abort($errorMessages);
-		}
+    	}
 
 		// Check if the post type has a identifier
     	if(empty($postTypeModel->identifier)){
@@ -30,11 +27,13 @@ class ShowTaxonomyPosts extends CmsController
     		return $this->abort($errorMessages);
     	}
 
+		$where = [];
+
 		// If the user can only see his own posts
 		if($postTypeModel->userCanOnlySeeHisOwnPosts){
 			$where[] = ['post_author', '=', Auth::user()->id];
 		}
-
+		
 		// Finding the post with the post_name instead of the id
         if($postTypeModel->getPostByPostName){
         	$where[] = ['post_name', '=', $id];
@@ -52,6 +51,7 @@ class ShowTaxonomyPosts extends CmsController
 			}
 		}
 
+		// dd($where);
 		$post = $postTypeModel::where($where)->first();
 		if(!$post){
 			$errorMessages = 'No posts connected to this taxonomy.';

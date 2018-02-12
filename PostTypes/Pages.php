@@ -87,6 +87,10 @@ class Pages extends NikuPosts
 					'label' => 'Text',
 					'value' => '',
 					'validation' => 'required',
+					'single_field_updateable' => [
+						'active' => true,
+						'reload_fields' => '*',
+					],
 				],
 				'PostMultiselect' => [
 					'component' => 'niku-cms-posttype-multiselect',

@@ -16,12 +16,9 @@ class EditConfigController extends ConfigController
 		// Lets validate if the post type exists and if so, continue.
 		$postTypeModel = $this->getPostType($group);
 		if(!$postTypeModel){
-			$errorMessages = 'You are not authorized to do this.';
-    		if(array_has($postTypeModel->errorMessages, 'post_type_does_not_exist')){
-    			$errorMessages = $postTypeModel->errorMessages['post_type_does_not_exist'];
-    		}
+    		$errorMessages = 'You are not authorized to do this.';
     		return $this->abort($errorMessages);
-		}
+    	}
 
 		// Recieving the values
 		$configMeta = $request->all();

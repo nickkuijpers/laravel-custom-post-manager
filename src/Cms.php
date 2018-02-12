@@ -37,15 +37,6 @@ class Cms
 		});
     }
 
-    public static function mediaManagerRoutes($route, $name = 'niku-cms')
-    {
-       Route::group($route, function ($object) use ($name) {
-
-			// Custom media post creation
-			Route::post('/media', '\Niku\Cms\Http\Controllers\MediaController@post')->name('mediamanagerpost');
-		});
-    }
-
     public static function postTypeRoutes($postTypeConfig = [])
     {
     	$postTypes = '';

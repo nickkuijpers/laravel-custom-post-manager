@@ -55,6 +55,10 @@ class NikuPosts extends Model
     {
         foreach($metas as $key => $value){
          
+            if(is_array($value)){
+            	$value = json_encode($value);
+            }
+
             // Saving it to the database based on key value array
             $object = [
                 'meta_key' => $key,

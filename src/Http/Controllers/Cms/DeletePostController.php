@@ -2,6 +2,7 @@
 
 namespace Niku\Cms\Http\Controllers\Cms;
 
+use Illuminate\Support\Facades\Auth;
 use Niku\Cms\Http\Controllers\CmsController;
 
 class DeletePostController extends CmsController
@@ -15,9 +16,6 @@ class DeletePostController extends CmsController
     	$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
     		$errorMessages = 'You are not authorized to do this.';
-    		if(array_has($postTypeModel->errorMessages, 'post_type_does_not_exist')){
-    			$errorMessages = $postTypeModel->errorMessages['post_type_does_not_exist'];
-    		}
     		return $this->abort($errorMessages);
     	}
 

@@ -92,45 +92,19 @@ class CmsController extends Controller
 			$request->template = 'default';
 		}
 		$template = $postTypeModel->view[$request->template];
-
+		
 		// Possibility to update a single field if whitelabeled
 		if($singleFieldUpdate){
 			$validationFields = $postmeta;
  		} else {
  			$validationFields = $this->getValidationsKeys($postTypeModel);
- 		}
+		 }
 
 		// Appending required validations to the default validations of the post
 		foreach($validationFields as $key => $value){
-
-			// Resetting the rule variable so no validation rules are resused
-			$rule = '';
-
-			// Setting the path to get the validation rules
-			if(strpos($key, '_repeater_') !== false) {
-				$explodedValue = explode('_', $key);
-
-				// For each all groups to get the validation
-				foreach($postTypeModel->view as $templateKey => $template){
-					if(array_has($template, 'customFields.' . $explodedValue[0] . '.customFields.' . $explodedValue[3] . '.validation')){
-						$rule = $template['customFields'][$explodedValue[0]]['customFields'][$explodedValue[3]]['validation'];
-					}
-				}
-
-			} else {
-
-				// For each all groups to get the validation
-				foreach($postTypeModel->view as $templateKey => $template){
-					if(array_has($template, 'customFields.' . $key . '.validation')){
-						$rule = $template['customFields'][$key]['validation'];
-					}
-				}
-
-			}
-
-			// Appending the validation rules to the validation array
-			if(!empty($rule)){
-				$validationRules[$key] = $rule;
+			
+			if(array_key_exists('validation', $value) && !empty($value['validation'])){
+				$validationRules[$key] = $value['validation'];
 			}
 
 		}
@@ -141,14 +115,39 @@ class CmsController extends Controller
 	protected function getValidationsKeys($postTypeModel)
 	{
 		$validationsKeys = [];
-		foreach($postTypeModel->view as $key => $value){
 
-			foreach($value['customFields'] as $innerKey => $innerValue){
+		// Processing all other type values
+		foreach($postTypeModel->view as $viewKey => $viewValue){
 
-				$validationsKeys[$innerKey] = $innerKey;
+			// For each custom field
+			foreach($viewValue['customFields'] as $customfieldKey => $customfieldValue){
+
+				$validationsKeys[$customfieldKey] = $customfieldValue;
+		
+				if(array_key_exists('customFields', $customfieldValue)){
+
+					foreach($customfieldValue['customFields'] as $innerKey => $innerValue){
+
+						$validationsKeys[$innerKey] = $innerValue;
+
+						if(array_key_exists('customFields', $innerValue)){
+
+							foreach($innerValue['customFields'] as $innerKey => $innerValue){
+ 
+								$validationsKeys[$innerKey] = $innerValue;
+								
+							}
+
+						}
+
+					}
+
+				}
+
 			}
-		}
 
+		}
+	
 		return $validationsKeys;
 	}
 
@@ -159,8 +158,8 @@ class CmsController extends Controller
 			$request = $request;
  		} else {
  			$request = $this->removeUnregistratedFields($request, $postTypeModel);
- 		}
-
+		 }
+		 
 		// Lets map all the items
 		foreach($request->all() as $key => $value){
 
@@ -278,28 +277,34 @@ class CmsController extends Controller
         return $uniqueIdentifier;
 	}
 
+	public function resetRequestValues($request)
+	{
+		foreach($request->all() as $key => $value){
+			unset($request[$key]);
+		}
+		return $request;
+	}
+
+	// Removing request values, based on input when they are not saveable
 	protected function removeUnregistratedFields($request, $postTypeModel)
 	{
 		$whitelisted = [];
 		$whitelisted[] = 'template';
 
-		// Lets foreach all the customfields so we can add it to the save array
-		foreach($postTypeModel->view as $group){
-			foreach($group['customFields'] as $key => $value){
-
-				// Validating if this field can be saved
-				if(array_key_exists('saveable', $value) && $value['saveable'] == false){
-
+		foreach($request->all() as $requestKey => $requestValue){
+			$customField = $this->getCustomFieldObject($postTypeModel, $requestKey);
+			if($customField){
+				if(array_key_exists('saveable', $customField) && $customField['saveable'] == false){
+				
 				} else {
-					$whitelisted[] = $key;
+					$whitelisted[] = $requestKey;
 				}
 			}
 		}
-
+    
 		$newRequest = $request->only($whitelisted);
 
-		$request = new Request;
-
+		$request = $this->resetRequestValues($request);
 		foreach($newRequest as $key => $value){
 			$request[$key] = $value;
 		}
@@ -321,7 +326,7 @@ class CmsController extends Controller
 			'created_at',
 			'updated_at',
 		];
-
+ 
 		foreach($unsetValues as $value){
 			unset($postmeta[$value]);
 		}
@@ -342,112 +347,85 @@ class CmsController extends Controller
 		return $postmeta;
 	}
 
+	// Saving the post meta to the database
 	protected function savePostMetaToDatabase($postmeta, $postTypeModel, $post)
 	{
 		// Presetting a empty array so we can append pivot values to the sync function.
 		$pivotValue = [];
-
+		$object = [];
+ 
 		// Saving the meta values to the database
 		foreach($postmeta as $key => $value){
 
 			// Lets validate if there is a mutator for this value
 			$value = $this->saveMutator($postTypeModel, $key, $value, $post, $postmeta);
 
-			// Processing the repeater type values
-			if((strpos($key, '_repeater_') !== false)){
+			if(empty($value)){
+				continue;
+			}
 
-				// Explode the value
-				$explodedValue = explode('_', $key);
+			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $key);
 
-				// Foreaching all templates to validate if the key exists somewhere in a group
-				foreach($postTypeModel->view as $templateKey => $template){
+			$type = 'simple';
+			if(array_key_exists('type', $customFieldObject)){
+				$type = $customFieldObject['type'];
+			}
+			switch($type){
+				case 'taxonomy':
+	
+					if(!array_key_exists('post_type', $customFieldObject) && empty($customFieldObject['post_type'])){
+						continue;
+					}
+					
+					$customfieldPostTypes = $this->getPostTypeIdentifiers($customFieldObject['post_type']);
 
-					if(array_has($template, 'customFields.' . $explodedValue[0] . '.customFields.' . $explodedValue[3])){
-
-						// Saving it to the database
-						$object = [
-							'meta_key' => $key,
-							'meta_value' => $value,
-						];
-
-						$post->postmeta()->create($object);
-
-						// Unsetting the value
-						unset($postmeta[$key]);
+					if(!is_array($customfieldPostTypes)){
 						continue;
 					}
 
-				}
+					if(!is_array($value)){
+						$value = json_decode($value, true);
+					}
+					
+					// Yes, double. 
+					if(!is_array($value)){
+						continue;
+					}
+					
+					foreach($value as $valueKey => $valueItem){
 
-			}
+						$where = [];
 
-			// Processing all other type values
-			foreach($postTypeModel->view as $templateKey => $template){
-
-				if(array_has($template, 'customFields.' . $key)){
-
-					// Lets get the custom field object from our niku-cms config
-					$customFieldObject = $template['customFields'][$key];
-
-					// When the custom field is marked as taxonomy, we need to
-					// attach and sync the connections in the pivot table.
-					if(isset($customFieldObject['type']) && $customFieldObject['type'] == 'taxonomy'){
-
-						// Validate if there is any value given
-						if(!empty($value)){
-
-							// In the config of this custom field we have defined which post types this post
-							// can be connected too. We need to add this to the where query to validate.
-							$customfieldPostTypes = $this->getPostTypeIdentifiers($customFieldObject['post_type']);
-
-							// Lets decode the json array with all the taxonomy id's
-							foreach(json_decode($value) as $valueItem){
-
-								// For each post id give, we need to query the database and validate if this
-								// taxonomie of the connect post does exist and we got permission to it.
-								$taxonomyPost = NikuPosts::where('id', '=', $valueItem)
-									->whereIn('post_type', $customfieldPostTypes)
-									->first();
-
-								// If there is a taxonomy result, we can safely add it to the pivot.
-								if($taxonomyPost) {
-									$pivotValue[$valueItem] = ['taxonomy' => $key];
-								}
-
-							}
-
+						if($postTypeModel->userCanOnlySeeHisOwnPosts){
+							$where[] = ['post_author', '=', Auth::user()->id];
 						}
 
-					// Lets save the post meta to the database if it is not a taxonomy
-					} else {
+						$where[] = ['id', '=', $valueItem];
+						
+						// For each post id give, we need to query the database and validate if this
+						// taxonomie of the connect post does exist and we got permission to it.
+						$taxonomyPost = NikuPosts::where($where)
+							->whereIn('post_type', $customfieldPostTypes)
+							->first();
 
-						// Saving it to the database
-						$object = [
-							'meta_key' => $key,
-							'meta_value' => $value,
-						];
-
-						if(is_array($value)){
-							$object['meta_value'] = json_encode($value);
+						// If there is a taxonomy result, we can safely add it to the pivot.
+						if($taxonomyPost) {
+							$pivotValue[$valueItem] = ['taxonomy' => $key];
 						}
 
-						// Update or create the meta key of the post
-						$post->postmeta()->updateOrCreate([
-							'meta_key' => $key
-						], $object);
 					}
 
-					// Unsetting the value
-					unset($postmeta[$key]);
-					continue;
-				}
+				break;
+				default:
 
+					$object[$key] = $value;
+
+				break;
 			}
-
+   
 		}
 
-		// Saving the sync to the database, if we do this inside the loop
-		// it will delete the old ones so we need to prepare the array.
+		$post->saveMetas($object);
 		$post->taxonomies()->sync($pivotValue);
 	}
 
@@ -460,7 +438,7 @@ class CmsController extends Controller
 
 		// Receiving the custom field
 		$customField = $this->getCustomFieldObject($postTypeModel, $key);
-
+		
 		if(!empty($customField)){
 
 			// Lets see if we have a mutator registered
@@ -500,43 +478,16 @@ class CmsController extends Controller
 		return $postTypeIdentifiers;
 	}
 
+	// Return the custom field object based on the identifier
 	public function getCustomFieldObject($postTypeModel, $key)
 	{
-		// Processing all other type values
-		foreach($postTypeModel->view as $templateKey => $template){
-	 
-			if(array_has($template, 'customFields.' . $key)){
- 
-				// As soon as we find the custom field object, lets return it.
-				$return = $template['customFields'][$key];
+		$allKeys = $this->getValidationsKeys($postTypeModel);
 
-				return $return;
-			} else {
-				return false;
-			}
-
+		if(array_key_exists($key, $allKeys)){
+			return $allKeys[$key];
 		}
-	}
-
-	public function getAllCustomFieldsKeys($postTypeModel)
-	{
-		$customFieldKeys = [];
-
-		// Processing all other type values
-		foreach($postTypeModel->view as $templateKey => $template){
-
-			foreach($template['customFields'] as $key => $value){
-				if(array_has($template, 'customFields.' . $key)){
-
-					// As soon as we find the custom field object, lets return it.
-					$customFieldKeys[$key] = $key;
-				}
-
-			}
-
-		}
-
-		return $customFieldKeys;
+		
+		return false;
 	}
 
 	public function getCustomFieldValue($postTypeModel, $collection, $key)
@@ -919,11 +870,14 @@ class CmsController extends Controller
     public function getWhitelistedCustomFields($postTypeModel, $postmeta)
     {
     	$whitelistedCustomFields = [];
-    	$allKeys = $this->getAllCustomFieldsKeys($postTypeModel);
-
-    	foreach($postmeta as $key => $value){
-    		if(in_array($key, $allKeys)){
-    			$whitelistedCustomFields[$key] = $value;
+    	$allKeys = $this->getValidationsKeys($postTypeModel);
+		
+		foreach($postmeta as $key => $value){
+    		if(array_key_exists($key, $allKeys)){
+				$customFieldObject = $this->getCustomFieldObject($postTypeModel, $key);
+				if(!empty($customFieldObject)){
+					$whitelistedCustomFields[$key] = $value;
+				}
     		}
     	}
 
@@ -932,6 +886,8 @@ class CmsController extends Controller
 
 	protected function findPostInstance($postTypeModel, $request, $postType, $id)
     {
+		$where = [];
+
     	// Validating the postname of the given ID to make sure it can be
         // updated and it is not overriding a other duplicated postname.
         // If the user can only see his own posts

@@ -15,9 +15,6 @@ class CheckPostController extends CmsController
         $postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
     		$errorMessages = 'You are not authorized to do this.';
-    		if(array_has($postTypeModel->errorMessages, 'post_type_does_not_exist')){
-    			$errorMessages = $postTypeModel->errorMessages['post_type_does_not_exist'];
-    		}
     		return $this->abort($errorMessages);
     	}
 
@@ -40,8 +37,8 @@ class CheckPostController extends CmsController
     		return $this->abort($errorMessages);
 		}
  
-		$allFieldKeys = $this->getAllCustomFieldsKeys($postTypeModel);
-  
+		$allFieldKeys = $this->getValidationsKeys($postTypeModel);
+
 		// Unsetting all given values but keeping the request headers
 		foreach($request->all() as $unsetKey => $unsetValue){
 			unset($request[$unsetKey]);

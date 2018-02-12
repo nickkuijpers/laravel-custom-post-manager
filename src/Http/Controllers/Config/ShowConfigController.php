@@ -16,12 +16,9 @@ class ShowConfigController extends ConfigController
 		// Lets validate if the post type exists and if so, continue.
 		$postTypeModel = $this->getPostType($group);
 		if(!$postTypeModel){
-			$errorMessages = 'You are not authorized to do this.';
-    		if(array_has($postTypeModel->errorMessages, 'config_type_does_not_exist')){
-    			$errorMessages = $postTypeModel->errorMessages['config_type_does_not_exist'];
-    		}
+    		$errorMessages = 'You are not authorized to do this.';
     		return $this->abort($errorMessages);
-		}
+    	}
 
 		// Receiving the current data of the group
 		$config = NikuConfig::where('group', '=', $group)

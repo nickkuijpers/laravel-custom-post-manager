@@ -16,12 +16,9 @@ class SpecificFieldsEditPostController extends CmsController
 	{
 		$postTypeModel = $this->getPostType($postType);
 		if(!$postTypeModel){
-			$errorMessages = 'You are not authorized to do this.';
-			if(array_has($postTypeModel->errorMessages, 'post_type_does_not_exist')){
-				$errorMessages = $postTypeModel->errorMessages['post_type_does_not_exist'];
-			}
-			return $this->abort($errorMessages);
-		}
+    		$errorMessages = 'You are not authorized to do this.';
+    		return $this->abort($errorMessages);
+    	}
 
 		// Check if the post type has a identifier
 		if(empty($postTypeModel->identifier)){
@@ -37,6 +34,11 @@ class SpecificFieldsEditPostController extends CmsController
 		if($validateBefore['status'] === false){
 			$errorMessages = $validateBefore['message'];
     		return $this->abort($errorMessages, $validateBefore['config']);
+		}
+
+		$sanitizedKeys = $this->getValidationsKeys($postTypeModel);
+		foreach($sanitizedKeys as $saniKey => $saniValue){
+			$sanitizedKeys[$saniKey] = '';
 		}
 
 		$verifiedFields = [];
@@ -57,8 +59,8 @@ class SpecificFieldsEditPostController extends CmsController
 							$reloadFieldsMethod = 'specific';
 							$reloadFields[] = $customFieldObject['single_field_updateable']['reload_fields'];
 						} else if ($customFieldObject['single_field_updateable']['reload_fields'] == '*'){
-							$reloadFieldsMethod = 'all';
-							$reloadFields[] = $this->getAllCustomFieldsKeys($postTypeModel);
+							$reloadFieldsMethod = 'all';							
+							$reloadFields[] = $sanitizedKeys;
 						}
 					}
 				}
@@ -69,7 +71,8 @@ class SpecificFieldsEditPostController extends CmsController
 		// If updating all specific fields is enabled, we override the verified fields
 		if($postTypeModel->enableAllSpecificFieldsUpdate){
 			$whitelistedCustomFields = $this->getWhitelistedCustomFields($postTypeModel, $request->all());
-			$reloadFields = $this->getAllCustomFieldsKeys($postTypeModel);
+	
+			$reloadFields = $sanitizedKeys;
 
 			// If there is a exlusion active, lets progress that
 			if(is_array($postTypeModel->excludeSpecificFieldsFromUpdate)){
@@ -83,8 +86,13 @@ class SpecificFieldsEditPostController extends CmsController
 			$whitelistedCustomFields = $this->getWhitelistedCustomFields($postTypeModel, $request->only($verifiedFields));
 		}
 
+		$toValidateKeys = [];
+		foreach($whitelistedCustomFields as $whiteKey => $whiteValue){
+			$toValidateKeys[$whiteKey] = $this->getCustomFieldObject($postTypeModel, $whiteKey);
+		}
+
 		// Validating the request
-		$validationRules = $this->validatePostFields($whitelistedCustomFields, $request, $postTypeModel, true);
+		$validationRules = $this->validatePostFields($toValidateKeys, $request, $postTypeModel, true);
 
 		// Unset unrequired post meta keys
 		$whitelistedCustomFields = $this->removeUnrequiredMetas($whitelistedCustomFields, $postTypeModel);
@@ -98,7 +106,7 @@ class SpecificFieldsEditPostController extends CmsController
 			}
 			return $this->abort($errorMessages);
 		}
-
+		
 		$this->validatePost($request, $post, $validationRules);
 
 		$fullRequest = $request;
