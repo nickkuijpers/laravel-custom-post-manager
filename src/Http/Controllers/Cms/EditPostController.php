@@ -42,7 +42,6 @@ class EditPostController extends CmsController
     		return $this->abort($errorMessages);
 		}
 		
-
     	// Receive the post meta values
         $postmeta = $request->all();
 
@@ -61,15 +60,22 @@ class EditPostController extends CmsController
     		}
     		return $this->abort($errorMessages);
 		}
-
-		$this->validatePost($request, $post, $validationRules);
-
+		
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
 		$postmeta = $this->removeValuesByConditionalLogic($postmeta, $postTypeModel, $post);
+		
+		$newValidations = [];
+		foreach($postmeta as $postmetaKey => $postmetaValue){
+			if(!empty($postmetaValue)){
+				$newValidations[$postmetaKey] = $validationRules[$postmetaKey];
+			}
+		}
+
+		$this->validatePost($request, $post, $newValidations);
 
 		// Saving the post values to the database
     	$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $request, $postType);
-
+		
         // Saving the post meta values to the database
         $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
 

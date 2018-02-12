@@ -40,25 +40,36 @@ class CheckPostController extends CmsController
 		$allFieldKeys = $this->getValidationsKeys($postTypeModel);
 
 		// Unsetting all given values but keeping the request headers
-		foreach($request->all() as $unsetKey => $unsetValue){
-			unset($request[$unsetKey]);
-		}
+		$request = $this->resetRequestValues($request);
  
         foreach($allFieldKeys as $toSaveKey => $toSaveValue){
             $configValue = $this->getCustomFieldValueWithoutConfig($postTypeModel, $post, $toSaveKey);
             $request[$toSaveKey] = $configValue;
-        }
-
+		}
+		
         // Receive the post meta values
-        $postmeta = $request->all();
- 
-        // Validating the request
-        $validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
+		$postmeta = $request->all();
 
+        // Validating the request
+		$validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
+	
         // Unset unrequired post meta keys
-        $postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
+		$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
+		
+		// Manipulate the request so we can empty out the values where the conditional field is not shown
+		$postmeta = $this->removeValuesByConditionalLogic($request->toArray(), $postTypeModel, $post);
+		 
+		// dd($postmeta);
+		$newValidations = [];
+		foreach($postmeta as $postmetaKey => $postmetaValue){
+			if($postmetaValue !== null){
+				if(array_key_exists($postmetaKey, $validationRules)){
+					$newValidations[$postmetaKey] = $validationRules[$postmetaKey];
+				}
+			}
+		}
  
-		$validatedFields = $this->validatePost($request, $post, $validationRules);		
+		$validatedFields = $this->validatePost($request, $post, $newValidations);		
 		if($validatedFields['status'] === false){
 			$errors = $validatedFields['errors'];
 			return response()->json($errors->messages(), 422);
