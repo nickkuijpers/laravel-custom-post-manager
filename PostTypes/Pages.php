@@ -124,6 +124,15 @@ class Pages extends NikuPosts
 							'label' => 'Boolean button',
 							'value' => '',
 							'validation' => '',
+							'conditional' => [                       
+								'show_when' => [
+									[
+										'custom_field' => 'text',
+										'operator' => '==',
+										'value' => 'YES',                                
+									],                            
+								],                                                
+							],   
 						],
 
 					]

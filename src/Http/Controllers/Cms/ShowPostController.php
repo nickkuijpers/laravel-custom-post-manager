@@ -133,10 +133,10 @@ class ShowPostController extends CmsController
         $collection = [
             'post' => $postArraySanitized,
             'postmeta' => $postmeta,
-        ];
+		];
 
         // Mergin the collection with the data and custom fields
-        $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->view, $collection);
+        $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->view, $collection, $postTypeModel);
 
 		// Merge the configuration values
 		$config = [];
@@ -163,9 +163,6 @@ class ShowPostController extends CmsController
         // Lets check if there are any manipulators active
         $collection = $this->showConditional($postTypeModel, $collection);
 
-        // Convert items to array by json decoding them
-        $collection = $this->inArrayMutator($postTypeModel, $collection);
-
         // Lets check if there are any manipulators active
         $collection = $this->showMutator($postTypeModel, $collection);
 
@@ -185,12 +182,34 @@ class ShowPostController extends CmsController
 				// Receiving the custom field
 				$customField = $this->getCustomFieldObject($postTypeModel, $key);
 
-				// if($postTypeModel->enableAllSpecificFieldsUpdate){
-					$collection = $this->fieldSpecificVisibilityManager($collection, $customField, $postTypeModel, $groupKey, $key);
-				// } else if(array_has($customField, 'single_field_updateable.active') && $customField['single_field_updateable']['active']){
-					// dd('dasd');
-					// $collection = $this->fieldSpecificVisibilityManager($collection, $customField, $postTypeModel, $groupKey, $key);
-				// }
+				$collection = $this->fieldSpecificVisibilityManager($collection, $customField, $postTypeModel, $groupKey, $key, 1);
+
+				if(array_key_exists('customFields', $value)){
+
+					foreach($value['customFields'] as $innerKey => $innerValue){
+
+						// Receiving the custom field
+						$customField = $this->getCustomFieldObject($postTypeModel, $innerKey);
+
+						$collection = $this->fieldSpecificVisibilityManager($collection, $customField, $postTypeModel, $groupKey, $key, 2, $innerKey);
+
+						if(array_key_exists('customFields', $innerValue)){
+
+							foreach($innerValue['customFields'] as $innerInnerKey => $innerInnerValue){
+ 
+								// Receiving the custom field
+								$customField = $this->getCustomFieldObject($postTypeModel, $innerInnerKey);
+
+								$collection = $this->fieldSpecificVisibilityManager($collection, $customField, $postTypeModel, $groupKey, $key, 3, $innerKey, $innerInnerKey);
+								
+							}
+
+						}
+
+					}
+
+				}
+
 
 			}
 
@@ -199,7 +218,7 @@ class ShowPostController extends CmsController
 		return $collection;
     }
 
-    protected function fieldSpecificVisibilityManager($collection, $customField, $postTypeModel, $groupKey, $key)
+    protected function fieldSpecificVisibilityManager($collection, $customField, $postTypeModel, $groupKey, $key, $level, $innerKey = null, $innerInnerKey = null)
     {
 		// Lets see if we have a mutator registered
 		if(array_has($customField, 'conditional')){
@@ -233,7 +252,17 @@ class ShowPostController extends CmsController
 						}
 
 						if($display === false){
-							$collection['templates'][$groupKey]['customFields'][$key] = [];
+							switch($level){
+								case 1:
+									$collection['templates'][$groupKey]['customFields'][$key] = [];
+								break;
+								case 2:
+									$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey] = [];
+								break;
+								case 3:
+									$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey] = [];
+								break;
+							}
 						}
 
 					break;
@@ -253,7 +282,17 @@ class ShowPostController extends CmsController
 						}
 
 						if($display === false){
-							$collection['templates'][$groupKey]['customFields'][$key] = [];
+							switch($level){
+								case 1:
+									$collection['templates'][$groupKey]['customFields'][$key] = [];
+								break;
+								case 2:
+									$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey] = [];
+								break;
+								case 3:
+									$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey] = [];
+								break;
+							}
 						}
 
 					break;
@@ -271,7 +310,17 @@ class ShowPostController extends CmsController
 
 					if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) !== false){
 						foreach($conditionValue['override'] as $overrideKey => $overrideValue){
-							$collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = [];
+							switch($level){
+								case 1:
+									$collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = [];
+								break;
+								case 2:
+									$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey][$overrideKey] = [];
+								break;
+								case 3:
+									$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey][$overrideKey] = [];
+								break;
+							}
 						}
 					}
 				}
@@ -291,11 +340,31 @@ class ShowPostController extends CmsController
 
 								// Foreaching all the overrideables of the inner array
 								foreach($overrideValue as $innerKey => $innerValue){
-									$collection['templates'][$groupKey]['customFields'][$key][$overrideKey][$innerKey] = $overrideValue[$innerKey];
+									switch($level){
+										case 1:
+											$collection['templates'][$groupKey]['customFields'][$key][$overrideKey][$innerKey] = $overrideValue[$innerKey];
+										break;
+										case 2:
+											$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey][$overrideKey][$innerKey] = $overrideValue[$innerKey];
+										break;
+										case 3:
+											$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey][$overrideKey][$innerKey] = $overrideValue[$innerKey];
+										break;
+									}
 								}
 
 							} else {
-								$collection['templates'][$groupKey]['customFields'][$key][$overrideKey] = $overrideValue;
+								switch($level){
+									case 1:
+										$collection['templates'][$groupKey]['customFields'][$key][$overrideKey][$innerKey] = $overrideValue;
+									break;
+									case 2:
+										$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey][$overrideKey][$innerKey] = $overrideValue;
+									break;
+									case 3:
+										$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey][$overrideKey][$innerKey] = $overrideValue;
+									break;
+								}
 							}
 
 						}
@@ -318,51 +387,51 @@ class ShowPostController extends CmsController
 
 			foreach($groupValue['customFields'] as $key => $value){
 
-				// Receiving the custom field
 				$customField = $this->getCustomFieldObject($postTypeModel, $key);
 
-				// Lets see if we have a mutator registered
 				if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
 					if(method_exists(new $customField['mutator'], 'out')){
 						$customField = (new $customField['mutator'])->out($customField, $collection, $key, $postTypeModel);
-
 						$holdValue = $collection['templates'][$groupKey]['customFields'][$key]['value'];
-
-						// Lets append the new data to the array
 						$collection['templates'][$groupKey]['customFields'][$key] = $customField;
-
-						// Add the holded value back
 						$collection['templates'][$groupKey]['customFields'][$key]['value'] = $holdValue;
 					}
 				}
 
-			}
+				if(array_key_exists('customFields', $value)){
+					foreach($value['customFields'] as $innerKey => $innerValue){
 
-		}
+						$customField = $this->getCustomFieldObject($postTypeModel, $innerKey);
 
-		return $collection;
-	}
+						if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
+							if(method_exists(new $customField['mutator'], 'out')){
+								$customField = (new $customField['mutator'])->out($customField, $collection, $innerKey, $postTypeModel);
 
-	// Lets check if there are any manipulators active for showing the post
-	protected function inArrayMutator($postTypeModel, $collection)
-	{
-		foreach($collection['templates'] as $groupKey => $groupValue){
+								$holdValue = $collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['value'];
+								$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey] = $customField;
+								$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['value'] = $holdValue;
+							}
+						}
 
-			foreach($groupValue['customFields'] as $key => $value){
+						if(array_key_exists('customFields', $innerValue)){
+							foreach($innerValue['customFields'] as $innerInnerKey => $innerInnerValue){
 
-				// Receiving the custom field
-				$customField = $this->getCustomFieldObject($postTypeModel, $key);
+								$customField = $this->getCustomFieldObject($postTypeModel, $innerInnerKey);
 
-				// Lets see if we have a mutator registered
-				if(array_has($customField, 'is_array') && $customField['is_array']){
+								if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
+									if(method_exists(new $customField['mutator'], 'out')){
+										$customField = (new $customField['mutator'])->out($customField, $collection, $innerInnerKey, $postTypeModel);
 
-					$holdValue = '';
-					if(array_key_exists('value', $value)){
-						$holdValue = json_decode($value['value']);
+										$holdValue = $collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey]['value'];
+										$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey] = $customField;
+										$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey]['value'] = $holdValue;
+									}
+								}
+
+							}
+						}
+
 					}
-
-					// Add the holded value back
-					$collection['templates'][$groupKey]['customFields'][$key]['value'] = $holdValue;
 				}
 
 			}
@@ -380,48 +449,43 @@ class ShowPostController extends CmsController
 		$metaKeys = [];
 		$metaTaxonomies = [];
 
-		// Lets foreach all the views so we can make a big array of all the required post meta's to show
-		foreach($postTypeModel->view as $template => $value){
+		$allKeys = $this->getValidationsKeys($postTypeModel);
+		foreach($allKeys as $key => $value){
 
-			// Lets foreach all the custom fields
-			foreach($value['customFields'] as $customFieldIdentifer => $customField) {
+			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $key);
 
-				// When the custom field is marked as taxonomy, we need to
-				// attach and sync the connections in the pivot table.
-				if(isset($customField['type']) && $customField['type'] == 'taxonomy'){
+			if(isset($customFieldObject['type']) && $customFieldObject['type'] == 'taxonomy'){
 
-					// We need to get the values from the taxonomy table
-					$customfieldPostTypes = $this->getPostTypeIdentifiers($customField['post_type']);
+				// We need to get the values from the taxonomy table
+				$customfieldPostTypes = $this->getPostTypeIdentifiers($customFieldObject['post_type']);
 
-					// Lets query the post to retrieve all the connected ids
-					$taxonomyIds = $post->taxonomies()->whereIn('post_type', $customfieldPostTypes)
-						->get();
+				// Lets query the post to retrieve all the connected ids
+				$taxonomyIds = $post->taxonomies()->whereIn('post_type', $customfieldPostTypes)
+					->get();
 
-					// Lets foreach all the posts because we only need the id
-					$ids = [];
-					foreach($taxonomyIds as $value){
-						array_push($ids, $value->id);
-					}
-
-					$ids = json_encode($ids);
-
-					$metaTaxonomies[$customFieldIdentifer] = [
-						'meta_key' => $customFieldIdentifer,
-						'meta_value' => $ids,
-					];
-
-				// The other items are default
-				} else {
-
-					// Register it to the main array so we can query it later
-					array_push($metaKeys, $customFieldIdentifer);
-
+				// Lets foreach all the posts because we only need the id
+				$ids = [];
+				foreach($taxonomyIds as $value){
+					array_push($ids, $value->id);
 				}
+
+				$ids = json_encode($ids);
+
+				$metaTaxonomies[$key] = [
+					'meta_key' => $key,
+					'meta_value' => $ids,
+				];
+
+			// The other items are default
+			} else {
+
+				// Register it to the main array so we can query it later
+				array_push($metaKeys, $key);
 
 			}
 
 		}
-
+ 
 		// Lets query the database to get only the values where we have registered the meta keys
 		$postmetaSimple = $post->postmeta()
 			->whereIn('meta_key', $metaKeys)
@@ -429,7 +493,7 @@ class ShowPostController extends CmsController
 			->get()
 			->keyBy('meta_key')
 			->toArray();
-
+ 
 		// Lets attach the default post columns
 		$defaultPostData = [];
 
@@ -445,7 +509,7 @@ class ShowPostController extends CmsController
 
 		// Lets merge all the types of configs
 		$postmeta = array_merge($postmetaSimple, $metaTaxonomies, $defaultPostData);
-
+		
 		// Return the post meta's
 		return $postmeta;
 	}
@@ -454,7 +518,7 @@ class ShowPostController extends CmsController
      * Appending the key added in the config to the array
      * so we can use it very easliy in the component.
      */
-    protected function mergeCollectionWithView($view, $collection)
+    protected function mergeCollectionWithView($view, $collection, $postTypeModel)
     {
     	$post = $collection['post'];
 		$postmeta = $collection['postmeta'];
@@ -496,26 +560,61 @@ class ShowPostController extends CmsController
 
 	            	// Lets set the key to the array
 	                $view[$templateKey]['customFields'][$customFieldKey]['id'] = $customFieldKey;
-
-	                // If the post is not empty
-	                if(!empty($post)){
-
-	                	// We will validate if the post meta is not empty
-	                	if(!empty($postmeta[$customFieldKey])){
-
-	                		// So we can add it to the value
-	                		$view[$templateKey]['customFields'][$customFieldKey]['value'] = $postmeta[$customFieldKey]['meta_value'];
-	                	}
-	                }
+			  
+					if(array_key_exists($customFieldKey, $postmeta)){
+						$view[$templateKey]['customFields'][$customFieldKey]['value'] = $postmeta[$customFieldKey]['meta_value'];
+					}
 
 	                // When output is disabled, we need to remove the fields from the arrays
 	                if(array_key_exists('output', $customField) && !$customField['output']){
 	                	unset($view[$templateKey]['customFields'][$customFieldKey]);
-	                }
+					}
+					
+					// If the array custom fields is not empty
+					if(!empty($customField['customFields'])){
+
+						// We foreach all custom fields in this template section
+						foreach($customField['customFields'] as $innerCustomFieldKey => $innerCustomField){
+					
+							// Lets set the key to the array
+							$view[$templateKey]['customFields'][$customFieldKey]['customFields'][$innerCustomFieldKey]['id'] = $innerCustomFieldKey;
+					
+							if(array_key_exists($innerCustomFieldKey, $postmeta)){
+								$view[$templateKey]['customFields'][$customFieldKey]['customFields'][$innerCustomFieldKey]['value'] = $postmeta[$innerCustomFieldKey]['meta_value'];
+							}
+
+							// When output is disabled, we need to remove the fields from the arrays
+							if(array_key_exists('output', $innerCustomField) && !$innerCustomField['output']){
+								unset($view[$templateKey]['customFields'][$customFieldKey]['customFields'][$innerCustomFieldKey]);
+							}
+					
+						}
+
+						// If the array custom fields is not empty
+						if(!empty($innerCustomField['customFields'])){
+
+							// We foreach all custom fields in this template section
+							foreach($innerCustomField['customFields'] as $innerInnerCustomFieldKey => $innerInnerCustomField){
+						
+								// Lets set the key to the array
+								$view[$templateKey]['customFields'][$customFieldKey]['customFields'][$innerCustomFieldKey]['customFields'][$innerInnerCustomFieldKey]['id'] = $innerInnerCustomFieldKey;
+						
+								if(array_key_exists($innerInnerCustomFieldKey, $postmeta)){
+									$view[$templateKey]['customFields'][$customFieldKey]['customFields'][$innerCustomFieldKey]['customFields'][$innerInnerCustomFieldKey]['value'] = $postmeta[$innerInnerCustomFieldKey]['meta_value'];
+								}
+
+								// When output is disabled, we need to remove the fields from the arrays
+								if(array_key_exists('output', $innerInnerCustomField) && !$innerInnerCustomField['output']){
+									unset($view[$templateKey]['customFields'][$customFieldKey]['customFields'][$innerCustomFieldKey]['customFields'][$innerInnerCustomFieldKey]);
+								}
+						
+							}
+						}
+					}
 	            }
 	        }
-        }
-
+		}
+ 
         return $view;
     }
 }
