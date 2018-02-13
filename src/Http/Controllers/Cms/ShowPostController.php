@@ -148,9 +148,13 @@ class ShowPostController extends CmsController
 
         // Adding public config
         if($postTypeModel->skipCreation){
-        	$collection['config']['skip_creation'] = $postTypeModel->skipCreation;
+			$collection['config']['skip_creation'] = $postTypeModel->skipCreation;
+			if($postTypeModel->skipToRouteName){
+				$collection['config']['skip_to_route_name'] = $postTypeModel->skipToRouteName;
+			}
         } else {
-        	$collection['config']['skip_creation'] = false;
+			$collection['config']['skip_creation'] = false;
+			$collection['config']['skip_to_route_name'] = '';
 		}
 		
 		// Adding public config
