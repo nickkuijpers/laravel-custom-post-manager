@@ -31,8 +31,20 @@ class CreatePostController extends CmsController
 		
 		// Override post meta when we need to skip creation
 		if($postTypeModel->skipCreation === false){
+			
+			$allFieldKeys = collect($this->getValidationsKeys($postTypeModel))->map(function($value, $key){
+				return '';
+			})->toArray();
+ 
 			// Receive the post meta values
 			$postmeta = $request->all();		
+
+			foreach($postmeta as $postmetaKey => $postmetaValue){
+				$allFieldKeys[$postmetaKey] = $postmeta[$postmetaKey];
+			}
+			
+			$postmeta = $allFieldKeys;
+ 
 			// Validating the request
 			$validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
 
@@ -47,14 +59,14 @@ class CreatePostController extends CmsController
 
 		} else {
 	 
-			$allFieldKeys = $this->getValidationsKeys($postTypeModel);
- 
-			$request = new Request;		
+			$allFieldKeys = collect($this->getValidationsKeys($postTypeModel))->map(function($value, $key){
+				return '';
+			})->toArray();
+
+			$request = $this->resetRequestValues($request);	
 			foreach($allFieldKeys as $toSaveKey => $toSaveValue){
 				$configValue = $this->getCustomFieldValue($postTypeModel, $postTypeModel, $toSaveKey);
-				if(!empty($configValue)){
-					$request[$toSaveKey] = $configValue;
-				}
+				$request[$toSaveKey] = $configValue;
 			}
 
 			$postmeta = $request->all();

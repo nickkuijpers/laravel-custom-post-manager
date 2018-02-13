@@ -42,15 +42,25 @@ class EditPostController extends CmsController
     		return $this->abort($errorMessages);
 		}
 		
+		$allFieldKeys = collect($this->getValidationsKeys($postTypeModel))->map(function($value, $key){
+			return '';
+		})->toArray();
+
     	// Receive the post meta values
-        $postmeta = $request->all();
+		$postmeta = $request->all();
+		
+		foreach($postmeta as $postmetaKey => $postmetaValue){
+			$allFieldKeys[$postmetaKey] = $postmeta[$postmetaKey];
+		}
+		
+		$postmeta = $allFieldKeys;
 
         // Validating the request
         $validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
 		
 		// Unset unrequired post meta keys
-        $postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
-
+		$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
+		
         // Get the post instance
         $post = $this->findPostInstance($postTypeModel, $request, $postType, $id);
         if(!$post){
