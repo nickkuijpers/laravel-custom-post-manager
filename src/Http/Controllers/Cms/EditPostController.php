@@ -47,8 +47,8 @@ class EditPostController extends CmsController
 
         // Validating the request
         $validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
-
-        // Unset unrequired post meta keys
+		
+		// Unset unrequired post meta keys
         $postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
 
         // Get the post instance
@@ -67,17 +67,16 @@ class EditPostController extends CmsController
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
 		$postmeta = $this->removeValuesByConditionalLogic($postmeta, $postTypeModel, $post);
 		$logicValidations = $this->removeValidationsByConditionalLogic($postmeta, $postTypeModel, $post);
-		
-		$newValidations = [];
+
 		foreach($logicValidations as $postmetaKey => $postmetaValue){
-			if($postmetaValue === true){
+			if($postmetaValue === false){
 				if(array_key_exists($postmetaKey, $validationRules)){
-					$newValidations[$postmetaKey] = $validationRules[$postmetaKey];
+					unset($validationRules[$postmetaKey]);
 				}
 			}
 		}
 
-		$this->validatePost($request, $post, $newValidations);
+		$this->validatePost($request, $post, $validationRules);
 
 		// Saving the post values to the database
     	$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $request, $postType);

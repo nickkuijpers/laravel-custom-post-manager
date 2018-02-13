@@ -333,16 +333,20 @@ class CmsController extends Controller
 
 		foreach($postmeta as $key => $value){
 			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $key);
+			
 			if($customFieldObject){
 				if(array_key_exists('saveable', $customFieldObject)){
 					if($customFieldObject['saveable'] === false){
 						unset($postmeta[$key]);
 					}
 				}
-			} else {
-				// return false;
+			}
+			
+			if(!is_array($customFieldObject)){
+				unset($postmeta[$key]);
 			}
 		}
+ 
 
 		return $postmeta;
 	}
@@ -354,13 +358,17 @@ class CmsController extends Controller
 		$pivotValue = [];
 		$object = [];
  
-		// Saving the meta values to the database
+		// Saving the meta values to the database.
 		foreach($postmeta as $key => $value){
 
-			// Lets validate if there is a mutator for this value
+			// Lets validate if there is a mutator for this value.
 			$value = $this->saveMutator($postTypeModel, $key, $value, $post, $postmeta);
 
+			// If the custom field does not exist, we may not save it.
 			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $key);
+			if(!is_array($customFieldObject)){
+				continue;
+			}
 
 			$type = 'simple';
 			if(array_key_exists('type', $customFieldObject)){
@@ -793,11 +801,16 @@ class CmsController extends Controller
 		return $postmeta;
 	}
 	
+	// Returning false values by array keys of the items which we need to exclude out of the validation array
 	protected function removeValidationsByConditionalLogic($postmeta, $postTypeModel, $collection)
     {
 		$allKeys = $this->getValidationsKeys($postTypeModel);
-		 
+ 
 		foreach($allKeys as $key => $customField){
+
+			if(array_key_exists($key, $postmeta)){
+				$postmeta[$key] = true;
+			}
 
 			// Hiding values if operator is not met
 			if(array_key_exists('conditional', $customField)){
@@ -821,6 +834,7 @@ class CmsController extends Controller
 							foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
 
 								$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+
 								$conditionCheck = $this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue);
 
 								if($conditionCheck === false){

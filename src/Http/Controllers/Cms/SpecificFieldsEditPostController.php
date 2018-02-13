@@ -88,12 +88,15 @@ class SpecificFieldsEditPostController extends CmsController
 
 		$toValidateKeys = [];
 		foreach($whitelistedCustomFields as $whiteKey => $whiteValue){
-			$toValidateKeys[$whiteKey] = $this->getCustomFieldObject($postTypeModel, $whiteKey);
+			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $whiteKey);
+			if(is_array($customFieldObject)){
+				$toValidateKeys[$whiteKey] = $customFieldObject;
+			}
 		}
 
 		// Validating the request
 		$validationRules = $this->validatePostFields($toValidateKeys, $request, $postTypeModel, true);
-
+		
 		// Unset unrequired post meta keys
 		$whitelistedCustomFields = $this->removeUnrequiredMetas($whitelistedCustomFields, $postTypeModel);
 
@@ -106,7 +109,18 @@ class SpecificFieldsEditPostController extends CmsController
 			}
 			return $this->abort($errorMessages);
 		}
-		
+
+		// Need to remove validations if the logic is false
+		$logicValidations = $this->removeValidationsByConditionalLogic($whitelistedCustomFields, $postTypeModel, $post);
+		foreach($logicValidations as $postmetaKey => $postmetaValue){
+			if($postmetaValue === false){
+				if(array_key_exists($postmetaKey, $validationRules)){
+					unset($validationRules[$postmetaKey]);
+					unset($whitelistedCustomFields[$postmetaKey]);
+				}
+			}
+		}
+
 		$this->validatePost($request, $post, $validationRules);
 
 		$fullRequest = $request;
@@ -114,7 +128,7 @@ class SpecificFieldsEditPostController extends CmsController
 		// Regenerate the request to pass it thru existing code
 		$request = new Request;
 		foreach($whitelistedCustomFields as $postmetaKey => $postmetaValue){
-			$request->$postmetaKey = $postmetaValue;
+			$request[$postmetaKey] = $postmetaValue;
 		}
 
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
@@ -153,39 +167,6 @@ class SpecificFieldsEditPostController extends CmsController
 			'reload_fields_method' => $reloadFieldsMethod,
 			'reload_fields' => $reloadFields,
 		], 200);
-	}
-
-	protected function findPostInstance($postTypeModel, $request, $postType, $id)
-	{
-		// Validating the postname of the given ID to make sure it can be
-		// updated and it is not overriding a other duplicated postname.
-		// If the user can only see his own posts
-		if($postTypeModel->userCanOnlySeeHisOwnPosts){
-			$where[] = ['post_author', '=', Auth::user()->id];
-		}
-
-		// Lets check if we have configured a custom post type identifer
-		if(!empty($postTypeModel->identifier)){
-			$postType = $postTypeModel->identifier;
-		}
-
-		// Finding the post with the post_name instead of the id
-		if($postTypeModel->getPostByPostName){
-			$where[] = ['post_name', '=', $id];
-		} else {
-			$where[] = ['id', '=', $id];
-		}
-
-		$where[] = ['post_type', '=', $postType];
-
-		// Adding a custom query functionality so we can manipulate the find by the config
-		if($postTypeModel->appendCustomWhereQueryToCmsPosts){
-			foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
-				$where[] = [$value[0], $value[1], $value[2]];
-			}
-		}
-
-		return $postTypeModel::where($where)->first();
 	}
 
 	/**

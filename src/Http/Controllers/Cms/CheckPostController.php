@@ -60,16 +60,15 @@ class CheckPostController extends CmsController
 		$postmeta = $this->removeValuesByConditionalLogic($postmeta, $postTypeModel, $post);
 		$logicValidations = $this->removeValidationsByConditionalLogic($postmeta, $postTypeModel, $post);
 		
-		$newValidations = [];
 		foreach($logicValidations as $postmetaKey => $postmetaValue){
-			if($postmetaValue === true){
+			if($postmetaValue === false){
 				if(array_key_exists($postmetaKey, $validationRules)){
-					$newValidations[$postmetaKey] = $validationRules[$postmetaKey];
+					unset($validationRules[$postmetaKey]);
 				}
 			}
 		}
  
-		$validatedFields = $this->validatePost($request, $post, $newValidations);		
+		$validatedFields = $this->validatePost($request, $post, $validationRules);		
 		if($validatedFields['status'] === false){
 			$errors = $validatedFields['errors'];
 			return response()->json($errors->messages(), 422);
