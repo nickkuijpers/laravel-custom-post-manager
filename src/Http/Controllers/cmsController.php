@@ -1224,6 +1224,19 @@ class CmsController extends Controller
 		}
 
 		return $collection;
-    }
+	}
+	
+	public function getMetaValueOutPostMetaArray($post, $key)
+	{
+		if(array_key_exists('postmeta', $post)){
+			foreach($post['postmeta'] as $metaKey => $metaValue){
+				if($metaValue['meta_key'] == $key){
+					return $metaValue['meta_value'];
+				}
+			}
+		}
+
+		return '';
+	}
 
 }
