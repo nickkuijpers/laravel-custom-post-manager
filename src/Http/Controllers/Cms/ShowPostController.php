@@ -158,8 +158,21 @@ class ShowPostController extends CmsController
         	$collection['config']['disable_edit_only_check'] = $postTypeModel->disableEditOnlyCheck;
         } else {
         	$collection['config']['disable_edit_only_check'] = false;
-        }
+		}
 
+		$allKeys = collect($this->getValidationsKeys($postTypeModel));
+
+		// Adding public config
+        if($postTypeModel->enableAllSpecificFieldsUpdate){
+        	$collection['config']['specific_fields']['enable_all'] = $postTypeModel->enableAllSpecificFieldsUpdate;
+			$collection['config']['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;			
+			$collection['config']['specific_fields']['enabled_fields'] = $allKeys->keys();
+        } else {
+        	$collection['config']['specific_fields']['enable_all'] = $postTypeModel->enableAllSpecificFieldsUpdate;
+			$collection['config']['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;			
+			$collection['config']['specific_fields']['enabled_fields'] = $allKeys->where('single_field_updateable.active', 'true')->keys();
+		}
+		
         // Lets check if there are any manipulators active
         $collection = $this->showConditional($postTypeModel, $collection);
 

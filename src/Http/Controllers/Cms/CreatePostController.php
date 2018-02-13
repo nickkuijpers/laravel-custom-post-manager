@@ -47,7 +47,7 @@ class CreatePostController extends CmsController
 
 		} else {
 	 
-			$allFieldKeys = $this->getAllCustomFieldsKeys($postTypeModel);
+			$allFieldKeys = $this->getValidationsKeys($postTypeModel);
  
 			$request = new Request;		
 			foreach($allFieldKeys as $toSaveKey => $toSaveValue){
