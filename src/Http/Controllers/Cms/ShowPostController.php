@@ -3,6 +3,7 @@
 namespace Niku\Cms\Http\Controllers\Cms;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Niku\Cms\Http\Controllers\CmsController;
 
 class ShowPostController extends CmsController
