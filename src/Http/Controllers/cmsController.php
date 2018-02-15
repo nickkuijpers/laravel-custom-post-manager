@@ -1023,7 +1023,7 @@ class CmsController extends Controller
 			$post = $postTypeModel;
 		} else {
 			if(method_exists($postTypeModel, 'override_get_post')){
-				$post = $postTypeModel->override_get_post($postTypeModel, $id, $request);
+				$post = $postTypeModel->override_get_post($postTypeModel, $request, $id);
 			} else {
 				$post = $postTypeModel::where($where)->with('postmeta')->first();
 			}
