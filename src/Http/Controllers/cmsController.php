@@ -664,12 +664,8 @@ class CmsController extends Controller
 	 */
 	public function triggerEvent($action, $postTypeModel, $post)
 	{
-		if(!empty($postTypeModel->events)){
-			if(array_key_exists($action, $postTypeModel->events)){
-				foreach($postTypeModel->events[$action] as $event) {
-					event(new $event($post));
-				}
-			}
+		if(method_exists($postTypeModel, $action)){
+			$postTypeModel->$action($post);
 		}
 	}
 
