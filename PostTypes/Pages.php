@@ -75,70 +75,115 @@ class Pages extends NikuPosts
         ],
     ];
 
+	public $view = [];
+
+	public function __construct()
+    {
+        $this->view();
+    }
+
 	// Setting up the template structure
-	public $templates = [
-		'default' => [
+	public function view()
+    {    
+		$this->view = [
+			'default' => [
 
-			'label' => 'Default',
+				'label' => 'Default',
 
-			'customFields' => [
-				'text' => [
-					'component' => 'niku-cms-text-customfield',
-					'label' => 'Text',
-					'value' => '',
-					'validation' => 'required',
-					'single_field_updateable' => [
-						'active' => true,
-						'reload_fields' => '*',
+				'customFields' => [
+					'text' => [
+						'component' => 'niku-cms-text-customfield',
+						'label' => 'Text',
+						'value' => '',
+						'validation' => 'required',
+						'single_field_updateable' => [
+							'active' => true,
+							'reload_fields' => '*',
+						],
+					],
+					'PostMultiselect' => [
+						'component' => 'niku-cms-posttype-multiselect',
+						'label' => 'Post multiselect',
+						'post_type' => ['page'],
+						'validation' => 'required',
+					],
+					'mutated_value' => [
+						'component' => 'niku-cms-text-customfield',
+						'label' => 'Text',
+						'value' => '',
+						'validation' => 'required',
+						'saveable' => true,
+						'mutator' => 'App\Cms\Mutators\PostNameMutator',
+					],
+					'periods' => [
+						'component' => 'niku-cms-repeater-customfield',
+						'label' => 'Perioden',
+						'validation' => 'required',
+						'customFields' => [
+
+							'label' => [
+								'component' => 'niku-cms-text-customfield',
+								'label' => 'Label',
+								'value' => '',
+								'validation' => '',
+							],
+
+							'boolean' => [
+								'component' => 'niku-cms-boolean-customfield',
+								'label' => 'Boolean button',
+								'value' => '',
+								'validation' => '',
+								'conditional' => [                       
+									'show_when' => [
+										[
+											'custom_field' => 'text',
+											'operator' => '==',
+											'value' => 'YES',                                
+										],                            
+									],                                                
+								],   
+							],
+
+						]
 					],
 				],
-				'PostMultiselect' => [
-					'component' => 'niku-cms-posttype-multiselect',
-					'label' => 'Post multiselect',
-					'post_type' => ['page'],
-					'validation' => 'required',
-				],
-				'mutated_value' => [
-                	'component' => 'niku-cms-text-customfield',
-                    'label' => 'Text',
-                    'value' => '',
-                    'validation' => 'required',
-                    'saveable' => true,
-                	'mutator' => 'App\Cms\Mutators\PostNameMutator',
-                ],
-				'periods' => [
-					'component' => 'niku-cms-repeater-customfield',
-					'label' => 'Perioden',
-					'validation' => 'required',
-					'customFields' => [
-
-						'label' => [
-							'component' => 'niku-cms-text-customfield',
-							'label' => 'Label',
-							'value' => '',
-							'validation' => '',
-						],
-
-						'boolean' => [
-							'component' => 'niku-cms-boolean-customfield',
-							'label' => 'Boolean button',
-							'value' => '',
-							'validation' => '',
-							'conditional' => [                       
-								'show_when' => [
-									[
-										'custom_field' => 'text',
-										'operator' => '==',
-										'value' => 'YES',                                
-									],                            
-								],                                                
-							],   
-						],
-
-					]
-				],
 			],
-		],
-	];
+		];
+	}
+
+	public function append_list_query($query, $postTypeModel, $request)
+    {
+        
+    }
+    
+    public function append_show_get_query($query, $postTypeModel, $request)
+    {
+        return $query->where('post_title', 'test');
+    }
+    
+    public function append_show_edit_query($query, $postTypeModel, $request)
+    {
+
+    }
+    
+    public function append_show_delete_query($query, $postTypeModel, $request)
+    {
+
+    }
+    
+    public function append_show_check_query($query, $postTypeModel, $request)
+    {
+
+    }
+
+    public function append_show_specific_field_query($query, $postTypeModel, $request)
+    {
+
+    }
+
+    public function append_show_crud_query($query, $postTypeModel, $request)
+    {
+
+    }
 
 }

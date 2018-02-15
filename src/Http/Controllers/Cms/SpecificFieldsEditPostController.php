@@ -116,7 +116,7 @@ class SpecificFieldsEditPostController extends CmsController
 		$whitelistedCustomFields = $this->removeUnrequiredMetas($whitelistedCustomFields, $postTypeModel);
 
 		// Get the post instance
-		$post = $this->findPostInstance($postTypeModel, $request, $postType, $id);
+		$post = $this->findPostInstance($postTypeModel, $request, $postType, $id, 'specific_field_post');
 		if(!$post){
 			$errorMessages = 'Post does not exist.';
 			if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){

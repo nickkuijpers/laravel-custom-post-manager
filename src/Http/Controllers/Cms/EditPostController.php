@@ -71,7 +71,7 @@ class EditPostController extends CmsController
 		$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
 		
         // Get the post instance
-        $post = $this->findPostInstance($postTypeModel, $request, $postType, $id);
+        $post = $this->findPostInstance($postTypeModel, $request, $postType, $id, 'edit_post');
         if(!$post){
         	$errorMessages = 'Post does not exist.';
     		if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){

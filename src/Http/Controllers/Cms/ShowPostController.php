@@ -36,7 +36,7 @@ class ShowPostController extends CmsController
     		return $this->abort($errorMessages, $validateBefore['config'], 'post_validation_error');
 		}
 
-	    $post = $this->findPostInstance($postTypeModel, $request, $postType, $id);
+	    $post = $this->findPostInstance($postTypeModel, $request, $postType, $id, 'show_post');
 		if(!$post){
 			$errorMessages = 'Post does not exist.';
 			if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){

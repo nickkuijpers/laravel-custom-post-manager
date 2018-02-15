@@ -987,7 +987,7 @@ class CmsController extends Controller
     	return $whitelistedCustomFields;
     }
 
-	protected function findPostInstance($postTypeModel, $request, $postType, $id)
+	protected function findPostInstance($postTypeModel, $request, $postType, $id, $action = '')
     {
 		if($id == "0"){
 			$post = $postTypeModel;
@@ -998,6 +998,13 @@ class CmsController extends Controller
 			// If the user can only see his own posts
 			if($postTypeModel->userCanOnlySeeHisOwnPosts){
 				$where[] = ['post_author', '=', Auth::user()->id];
+			}
+
+			// Adding a custom query functionality so we can manipulate the find by the config
+			if($postTypeModel->appendCustomWhereQueryToCmsPosts){
+				foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
+					$where[] = [$value[0], $value[1], $value[2]];
+				}
 			}
 
 			// Lets check if we have configured a custom post type identifer
@@ -1028,22 +1035,64 @@ class CmsController extends Controller
 				}
 			}
 
-			// Adding a custom query functionality so we can manipulate the find by the config
-			if($postTypeModel->appendCustomWhereQueryToCmsPosts){
-				foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
-					$where[] = [$value[0], $value[1], $value[2]];
-				}
-			}
-
 			$appendQuery = false;
-			if(method_exists($postTypeModel, 'append_show_query')){
-				$appendQuery = true;
-			}
 
+			switch($action){
+				case 'check_post':
+					if(method_exists($postTypeModel, 'append_show_check_query')){
+						$appendQuery = true;
+					}
+				break;
+				case 'delete_post':
+					if(method_exists($postTypeModel, 'append_show_delete_query')){
+						$appendQuery = true;
+					}
+				break;
+				case 'edit_post':
+					if(method_exists($postTypeModel, 'append_show_edit_query')){
+						$appendQuery = true;
+					}
+				break;
+				case 'show_post':
+					if(method_exists($postTypeModel, 'append_show_get_query')){
+						$appendQuery = true;
+					}
+				break;
+				case 'specific_field_post':
+					if(method_exists($postTypeModel, 'append_show_specific_field_query')){
+						$appendQuery = true;
+					}
+				break;
+				default:
+					if(method_exists($postTypeModel, 'append_show_crud_query')){
+						$appendQuery = true;
+					}
+				break;
+			}
+				
 			// Query the database
 			$post = $postTypeModel::where($where)
-				->when($appendQuery, function ($query) use ($postTypeModel, $request){
-					return $postTypeModel->append_show_query($query, $postTypeModel, $request);
+				->when($appendQuery, function ($query) use ($postTypeModel, $request, $action){
+					switch($action){
+						case 'check_post':
+							return $postTypeModel->append_show_check_query($query, $postTypeModel, $request);		
+						break;
+						case 'delete_post':
+							return $postTypeModel->append_show_delete_query($query, $postTypeModel, $request);		
+						break;
+						case 'edit_post':
+							return $postTypeModel->append_show_edit_query($query, $postTypeModel, $request);		
+						break;
+						case 'show_post':
+							return $postTypeModel->append_show_get_query($query, $postTypeModel, $request);		
+						break;
+						case 'specific_field_post':
+							return $postTypeModel->append_show_specific_field_query($query, $postTypeModel, $request);	
+						break;
+						default:
+							return $postTypeModel->append_show_crud_query($query, $postTypeModel, $request);		
+						break;
+					}
 				})
 
 				// When there are multiple post types
