@@ -433,6 +433,8 @@ class CmsController extends Controller
 
 		$post->saveMetas($object);
 		$post->taxonomies()->sync($pivotValue);
+
+		return $post;
 	}
 
 	// Lets check if there are any manipulators active for showing the post
@@ -724,7 +726,9 @@ class CmsController extends Controller
 	{
 		return response()->json([
 			'code' => $code,
-			'status' => $message,
+			'errors' => [
+				0 => $message,
+			],
 			'config' => $config,
 		], 422);
 	}
