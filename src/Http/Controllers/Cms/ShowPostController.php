@@ -110,68 +110,8 @@ class ShowPostController extends CmsController
         // Mergin the collection with the data and custom fields
         $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->view, $collection, $postTypeModel);
 
-		// Merge the configuration values
-		$config = [];
-		if($postTypeModel->config){
-			$config = $postTypeModel->config;
-		}
-
-        $collection['config'] = $config;
-
-        // Adding public config
-        if($postTypeModel->skipCreation){
-			$collection['config']['skip_creation'] = $postTypeModel->skipCreation;
-			if($postTypeModel->skipToRouteName){
-				$collection['config']['skip_to_route_name'] = $postTypeModel->skipToRouteName;
-			}
-        } else {
-			$collection['config']['skip_creation'] = false;
-			$collection['config']['skip_to_route_name'] = '';
-		}
-		
-		// Adding public config
-        if($postTypeModel->disableEditOnlyCheck){
-        	$collection['config']['disable_edit_only_check'] = $postTypeModel->disableEditOnlyCheck;
-        } else {
-        	$collection['config']['disable_edit_only_check'] = false;
-		}
-
-		if($postTypeModel->disableEdit){
-        	$collection['config']['disable_edit'] = $postTypeModel->disableEdit;
-        } else {
-        	$collection['config']['disable_edit'] = false;
-		}
-
-		if($postTypeModel->disableDelete){
-        	$collection['config']['disable_delete'] = $postTypeModel->disableDelete;
-        } else {
-        	$collection['config']['disable_delete'] = false;
-		}
-
-		if($postTypeModel->disableCreate){
-        	$collection['config']['disable_create'] = $postTypeModel->disableCreate;
-        } else {
-        	$collection['config']['disable_create'] = false;
-		}
-		
-		if($postTypeModel->getPostByPostName){
-        	$collection['config']['get_post_by_postname'] = $postTypeModel->getPostByPostName;
-        } else {
-        	$collection['config']['get_post_by_postname'] = false;
-		}
-
-		$allKeys = collect($this->getValidationsKeys($postTypeModel));
-
-		// Adding public config
-        if($postTypeModel->enableAllSpecificFieldsUpdate){
-        	$collection['config']['specific_fields']['enable_all'] = $postTypeModel->enableAllSpecificFieldsUpdate;
-			$collection['config']['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;			
-			$collection['config']['specific_fields']['enabled_fields'] = $allKeys->keys();
-        } else {
-        	$collection['config']['specific_fields']['enable_all'] = $postTypeModel->enableAllSpecificFieldsUpdate;
-			$collection['config']['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;			
-			$collection['config']['specific_fields']['enabled_fields'] = $allKeys->where('single_field_updateable.active', 'true')->keys();
-		}
+		// Setting the config
+		$collection['config'] = $this->getConfig($postTypeModel);
 		
         // Lets check if there are any manipulators active
         $collection = $this->showConditional($postTypeModel, $collection);
@@ -184,7 +124,75 @@ class ShowPostController extends CmsController
 
         // Returning the full collection
     	return response()->json($collection);
-    }
+	}
+	
+	public function getConfig($postTypeModel)
+	{
+		// Merge the configuration values
+		$config = [];
+		if($postTypeModel->config){
+			$config = $postTypeModel->config;
+		}
+
+        $config = $config;
+
+        // Adding public config
+        if($postTypeModel->skipCreation){
+			$config['skip_creation'] = $postTypeModel->skipCreation;
+			if($postTypeModel->skipToRouteName){
+				$config['skip_to_route_name'] = $postTypeModel->skipToRouteName;
+			}
+        } else {
+			$config['skip_creation'] = false;
+			$config['skip_to_route_name'] = '';
+		}
+		
+		// Adding public config
+        if($postTypeModel->disableEditOnlyCheck){
+        	$config['disable_edit_only_check'] = $postTypeModel->disableEditOnlyCheck;
+        } else {
+        	$config['disable_edit_only_check'] = false;
+		}
+
+		if($postTypeModel->disableEdit){
+        	$config['disable_edit'] = $postTypeModel->disableEdit;
+        } else {
+        	$config['disable_edit'] = false;
+		}
+
+		if($postTypeModel->disableDelete){
+        	$config['disable_delete'] = $postTypeModel->disableDelete;
+        } else {
+        	$config['disable_delete'] = false;
+		}
+
+		if($postTypeModel->disableCreate){
+        	$config['disable_create'] = $postTypeModel->disableCreate;
+        } else {
+        	$config['disable_create'] = false;
+		}
+		
+		if($postTypeModel->getPostByPostName){
+        	$config['get_post_by_postname'] = $postTypeModel->getPostByPostName;
+        } else {
+        	$config['get_post_by_postname'] = false;
+		}
+
+		$allKeys = collect($this->getValidationsKeys($postTypeModel));
+
+		// Adding public config
+        if($postTypeModel->enableAllSpecificFieldsUpdate){
+        	$config['specific_fields']['enable_all'] = $postTypeModel->enableAllSpecificFieldsUpdate;
+			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;			
+			$config['specific_fields']['enabled_fields'] = $allKeys->keys();
+        } else {
+        	$config['specific_fields']['enable_all'] = $postTypeModel->enableAllSpecificFieldsUpdate;
+			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;			
+			$config['specific_fields']['enabled_fields'] = $allKeys->where('single_field_updateable.active', 'true')->keys();
+		}
+
+		return $config;
+	}
 
     // Lets check if there are any manipulators active for showing the post
 	protected function showMutator($postTypeModel, $collection)
