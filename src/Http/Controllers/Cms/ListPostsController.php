@@ -68,10 +68,37 @@ class ListPostsController extends CmsController
 		// Lets fire events as registered in the post type
         $this->triggerEvent('on_browse', $postTypeModel, $posts, []);
 
+		// Merge the configuration values
+		$config = [];
+		if($postTypeModel->config){
+			$config = $postTypeModel->config;
+		}
+
+        $config = $config;
+
+        // Adding public config
+        if($postTypeModel->skipCreation){
+			$config['skip_creation'] = $postTypeModel->skipCreation;
+			if($postTypeModel->skipToRouteName){
+				$config['skip_to_route_name'] = $postTypeModel->skipToRouteName;
+			}
+        } else {
+			$config['skip_creation'] = false;
+			$config['skip_to_route_name'] = '';
+		}
+		
+		// Adding public config
+        if($postTypeModel->disableEditOnlyCheck){
+        	$config['disable_edit_only_check'] = $postTypeModel->disableEditOnlyCheck;
+        } else {
+        	$config['disable_edit_only_check'] = false;
+		}
+  
 		// Return the response
     	return response()->json([
+			'config' => $config,
 			'label' => $postTypeModel->label,
-			'objects' => $posts
+			'objects' => $posts,
 		]);
     }
 }
