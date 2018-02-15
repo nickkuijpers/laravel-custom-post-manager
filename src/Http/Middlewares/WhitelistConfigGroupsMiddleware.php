@@ -20,11 +20,17 @@ class WhitelistConfigGroupsMiddleware
         
 		// Lets verify that we are authorized to use this post type
         if(!in_array($request->route('group'), $acceptedGroups)){
-            return response()->json([
-                'error' => 'unsupported_config_group',
-                'hint' => 'Verify if you are authorized to use this config group.',
-                'message' => $request->route('post_type') . ' config group is not supported.'
-            ], 400);
+			$message = $request->route('post_type') . ' config group is not supported. ';
+			$hint = 'Verify if you are authorized to use this config group.';
+			return response()->json([
+				'code' => 'unsupported_config_group',
+				'errors' => [
+					'unsupported_config_group' => [
+						0 => $message . $hint,
+					],
+				],
+				'hint' => $hint,
+			], 400);
         }
 
         return $next($request);

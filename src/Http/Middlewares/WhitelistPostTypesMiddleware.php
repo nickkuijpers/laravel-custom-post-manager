@@ -46,10 +46,15 @@ class WhitelistPostTypesMiddleware
 		}
 		
 		if(!$authorized){
+			$hint = 'Verify if you are authorized to use this post type.';
 			return response()->json([
-				'error' => 'unsupported_post_type',
-				'hint' => 'Verify if you are authorized to use this post type.',
-				'message' => $message,
+				'code' => 'unsupported_post_type',
+				'errors' => [
+					'unsupported_post_type' => [
+						0 => $message . $hint,
+					],
+				],
+				'hint' => $hint,
 			], 400);
 		}
 
