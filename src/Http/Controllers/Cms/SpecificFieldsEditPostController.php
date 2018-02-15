@@ -77,6 +77,8 @@ class SpecificFieldsEditPostController extends CmsController
 
 		}
 
+		// dd($verifiedFields);
+
 		// If updating all specific fields is enabled, we override the verified fields
 		if($postTypeModel->enableAllSpecificFieldsUpdate){
 			$whitelistedCustomFields = $this->getWhitelistedCustomFields($postTypeModel, $request->all());
@@ -99,13 +101,11 @@ class SpecificFieldsEditPostController extends CmsController
 		foreach($whitelistedCustomFields as $whiteKey => $whiteValue){
 			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $whiteKey);
 			if(is_array($customFieldObject)){
-				if(array_key_exists('saveable', $customFieldObject)){
-					if($customFieldObject['saveable'] === false){
-
-					} else {
-						$toValidateKeys[$whiteKey] = $customFieldObject;
-					}
-				}	 
+				if(array_key_exists('saveable', $customFieldObject) && $customFieldObject['saveable'] == false){
+				
+				} else {
+					$toValidateKeys[$whiteKey] = $customFieldObject;
+				}
 			}
 		}
 
