@@ -159,6 +159,12 @@ class ShowPostController extends CmsController
         } else {
         	$collection['config']['get_post_by_postname'] = false;
 		}
+
+		if($postTypeModel->apiUrlPrefix){
+        	$collection['config']['api_url_prefix'] = $postTypeModel->apiUrlPrefix;
+        } else {
+        	$collection['config']['api_url_prefix'] = '';
+		}
 		
 
 		$allKeys = collect($this->getValidationsKeys($postTypeModel));
