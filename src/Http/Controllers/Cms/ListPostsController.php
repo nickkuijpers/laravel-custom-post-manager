@@ -141,12 +141,6 @@ class ListPostsController extends CmsController
         	$config['get_post_by_postname'] = false;
 		}
 
-		if($postTypeModel->apiUrlPrefix){
-        	$config['api_url_prefix'] = $postTypeModel->apiUrlPrefix;
-        } else {
-        	$config['api_url_prefix'] = '';
-		}
-
 		// Return the response
     	return response()->json([
 			'config' => $config,
