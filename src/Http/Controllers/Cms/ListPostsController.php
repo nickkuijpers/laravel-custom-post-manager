@@ -112,6 +112,12 @@ class ListPostsController extends CmsController
         	$config['disable_create'] = false;
 		}
 
+		if($postTypeModel->getPostByPostName){
+        	$config['get_post_by_postname'] = $postTypeModel->getPostByPostName;
+        } else {
+        	$config['get_post_by_postname'] = false;
+		}
+
 		// Return the response
     	return response()->json([
 			'config' => $config,

@@ -154,6 +154,12 @@ class ShowPostController extends CmsController
         	$collection['config']['disable_create'] = false;
 		}
 		
+		if($postTypeModel->getPostByPostName){
+        	$collection['config']['get_post_by_postname'] = $postTypeModel->getPostByPostName;
+        } else {
+        	$collection['config']['get_post_by_postname'] = false;
+		}
+		
 
 		$allKeys = collect($this->getValidationsKeys($postTypeModel));
 
