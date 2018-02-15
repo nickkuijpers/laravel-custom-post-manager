@@ -38,6 +38,14 @@ class DeletePostController extends CmsController
 			return $this->abort($errorMessages);
 		}
 
+		if($postTypeModel->disableDelete){
+        	$errorMessages = 'The post type does not support deleting.';
+    		if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_support_deleting')){
+    			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_support_deleting'];
+    		}
+    		return $this->abort($errorMessages);
+		}
+
     	// Delete the post
     	$post->delete();
 

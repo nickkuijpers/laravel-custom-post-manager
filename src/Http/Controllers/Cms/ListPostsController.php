@@ -94,6 +94,24 @@ class ListPostsController extends CmsController
         	$config['disable_edit_only_check'] = false;
 		}
   
+		if($postTypeModel->disableEdit){
+        	$config['disable_edit'] = $postTypeModel->disableEdit;
+        } else {
+        	$config['disable_edit'] = false;
+		}
+
+		if($postTypeModel->disableDelete){
+        	$config['disable_delete'] = $postTypeModel->disableDelete;
+        } else {
+        	$config['disable_delete'] = false;
+		}
+
+		if($postTypeModel->disableCreate){
+        	$config['disable_create'] = $postTypeModel->disableCreate;
+        } else {
+        	$config['disable_create'] = false;
+		}
+
 		// Return the response
     	return response()->json([
 			'config' => $config,

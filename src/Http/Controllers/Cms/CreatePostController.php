@@ -28,6 +28,14 @@ class CreatePostController extends CmsController
     		}
     		return $this->abort($errorMessages);
 		}
+
+		if($postTypeModel->disableCreate){
+        	$errorMessages = 'The post type does not support creating.';
+    		if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_support_create')){
+    			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_support_create'];
+    		}
+    		return $this->abort($errorMessages);
+		}
 		
 		// Override post meta when we need to skip creation
 		if($postTypeModel->skipCreation === false){

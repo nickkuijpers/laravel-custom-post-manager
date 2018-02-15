@@ -136,6 +136,25 @@ class ShowPostController extends CmsController
         	$collection['config']['disable_edit_only_check'] = false;
 		}
 
+		if($postTypeModel->disableEdit){
+        	$collection['config']['disable_edit'] = $postTypeModel->disableEdit;
+        } else {
+        	$collection['config']['disable_edit'] = false;
+		}
+
+		if($postTypeModel->disableDelete){
+        	$collection['config']['disable_delete'] = $postTypeModel->disableDelete;
+        } else {
+        	$collection['config']['disable_delete'] = false;
+		}
+
+		if($postTypeModel->disableCreate){
+        	$collection['config']['disable_create'] = $postTypeModel->disableCreate;
+        } else {
+        	$collection['config']['disable_create'] = false;
+		}
+		
+
 		$allKeys = collect($this->getValidationsKeys($postTypeModel));
 
 		// Adding public config

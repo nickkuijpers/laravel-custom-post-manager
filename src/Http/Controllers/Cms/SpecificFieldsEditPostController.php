@@ -29,6 +29,15 @@ class SpecificFieldsEditPostController extends CmsController
 			return $this->abort($errorMessages);
 		}
 
+		// Disable editting of form
+		if($postTypeModel->disableEdit){
+        	$errorMessages = 'The post type does not support editting.';
+    		if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_support_edit')){
+    			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_support_edit'];
+    		}
+    		return $this->abort($errorMessages);
+		}
+
 		// Validate if we need to validate a other post type before showing this post type
 		$validateBefore = $this->validatePostTypeBefore($request, $postTypeModel, $id);
 		if($validateBefore['status'] === false){
