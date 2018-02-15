@@ -46,6 +46,25 @@ class ListPostsController extends CmsController
 			}
 		}
 
+		if(method_exists($postTypeModel, 'override_list_posts')){
+			$post = $postTypeModel->override_list_posts($postTypeModel, $request);
+		} else {
+			// Query the database
+			$posts = $postTypeModel::where($where)
+				->select([
+					'id',
+					'post_title',
+					'post_name',
+					'status',
+					'post_type',
+					'created_at',
+					'updated_at',
+				])
+				->with('postmeta')
+				->orderBy('id', 'desc')
+				->get();
+		}
+
         // Query the database
 		$posts = $postTypeModel::where($where)
 			->select([
