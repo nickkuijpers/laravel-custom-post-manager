@@ -95,7 +95,7 @@ class EditPostController extends CmsController
         $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
 
         // Lets fire events as registered in the post type
-        $this->triggerEvent('on_edit', $postTypeModel, $post->id);
+        $this->triggerEvent('on_edit', $postTypeModel, $post->id, $postmeta);
 
         $successMessage = 'Post succesfully updated.';
 		if(array_has($postTypeModel->successMessage, 'post_updated')){

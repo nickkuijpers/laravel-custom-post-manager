@@ -333,15 +333,7 @@ class CmsController extends Controller
 
 		foreach($postmeta as $key => $value){
 			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $key);
-			
-			if($customFieldObject){
-				if(array_key_exists('saveable', $customFieldObject)){
-					if($customFieldObject['saveable'] === false){
-						unset($postmeta[$key]);
-					}
-				}
-			}
-			
+
 			if(!is_array($customFieldObject)){
 				unset($postmeta[$key]);
 			}
@@ -360,6 +352,16 @@ class CmsController extends Controller
  
 		// Saving the meta values to the database.
 		foreach($postmeta as $key => $value){
+
+			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $key);
+
+			if($customFieldObject){
+				if(array_key_exists('saveable', $customFieldObject)){
+					if($customFieldObject['saveable'] === false){
+						continue;
+					}
+				}
+			}
 
 			// Lets validate if there is a mutator for this value.
 			$value = $this->saveMutator($postTypeModel, $key, $value, $post, $postmeta);
@@ -662,10 +664,10 @@ class CmsController extends Controller
 	/**
 	 * Integrate events based on the action
 	 */
-	public function triggerEvent($action, $postTypeModel, $post)
+	public function triggerEvent($action, $postTypeModel, $post, $postmeta)
 	{
 		if(method_exists($postTypeModel, $action)){
-			$postTypeModel->$action($post);
+			$postTypeModel->$action($postTypeModel, $post, $postmeta);
 		}
 	}
 

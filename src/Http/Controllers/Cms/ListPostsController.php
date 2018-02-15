@@ -62,7 +62,7 @@ class ListPostsController extends CmsController
 			->get();
 
 		// Lets fire events as registered in the post type
-        $this->triggerEvent('on_browse', $postTypeModel, $posts);
+        $this->triggerEvent('on_browse', $postTypeModel, $posts, []);
 
 		// Return the response
     	return response()->json([

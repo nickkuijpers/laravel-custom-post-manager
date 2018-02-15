@@ -88,10 +88,10 @@ class CreatePostController extends CmsController
     	$post = $this->savePostToDatabase('create', $post, $postTypeModel, $oldRequest);
  
         // Saving the post meta values to the database
-        $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
-
+		$this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
+		
         // Lets fire events as registered in the post type
-        $this->triggerEvent('on_create', $postTypeModel, $post->id);
+        $this->triggerEvent('on_create', $postTypeModel, $post->id, $postmeta);
 
         $successMessage = 'Post succesfully created.';
 		if(array_has($postTypeModel->successMessage, 'post_created')){

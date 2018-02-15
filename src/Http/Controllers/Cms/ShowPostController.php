@@ -96,7 +96,7 @@ class ShowPostController extends CmsController
 		$postmeta = $this->retrieveConfigPostMetas($post, $postTypeModel);
 
 		// Lets fire events as registered in the post type
-        $this->triggerEvent('on_read', $postTypeModel, $post->id);
+        $this->triggerEvent('on_read', $postTypeModel, $post->id, $postmeta);
 
         $postArray = $post->toArray();
 
