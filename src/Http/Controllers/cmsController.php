@@ -989,44 +989,72 @@ class CmsController extends Controller
 
 	protected function findPostInstance($postTypeModel, $request, $postType, $id)
     {
-		$where = [];
-
-    	// Validating the postname of the given ID to make sure it can be
-        // updated and it is not overriding a other duplicated postname.
-        // If the user can only see his own posts
-        if($postTypeModel->userCanOnlySeeHisOwnPosts){
-            $where[] = ['post_author', '=', Auth::user()->id];
-        }
-
-        // Lets check if we have configured a custom post type identifer
-        if(!empty($postTypeModel->identifier)){
-        	$postType = $postTypeModel->identifier;
-        }
-
-        // Finding the post with the post_name instead of the id
-        if($postTypeModel->getPostByPostName){
-        	$where[] = ['post_name', '=', $id];
-        } else {
-        	$where[] = ['id', '=', $id];
-        }
-
-		$where[] = ['post_type', '=', $postType];
-
-		// Adding a custom query functionality so we can manipulate the find by the config
-		if($postTypeModel->appendCustomWhereQueryToCmsPosts){
-			foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
-				$where[] = [$value[0], $value[1], $value[2]];
-			}
-		}
-
-		 if($id == "0"){
+		if($id == "0"){
 			$post = $postTypeModel;
 		} else {
-			if(method_exists($postTypeModel, 'override_get_post')){
-				$post = $postTypeModel->override_get_post($postTypeModel, $request, $id);
-			} else {
-				$post = $postTypeModel::where($where)->with('postmeta')->first();
+
+			$where = [];
+
+			// If the user can only see his own posts
+			if($postTypeModel->userCanOnlySeeHisOwnPosts){
+				$where[] = ['post_author', '=', Auth::user()->id];
 			}
+
+			// Lets check if we have configured a custom post type identifer
+			if(!empty($postTypeModel->identifier)){
+				$postType = $postTypeModel->identifier;
+			}
+			
+			// Finding the post with the post_name instead of the id
+			if(!empty($postTypeModel->getPostByCustom)){
+				$where[] = [$postTypeModel->getPostByCustom, '=', $id];
+			} else {
+				if($postTypeModel->getPostByPostName){
+					$where[] = ['post_name', '=', $id];
+				} else {
+					$where[] = ['id', '=', $id];
+				}
+			}
+
+			$postTypeAliases = [];
+			$postTypeIsArray = false;
+			if(!empty($postTypeModel->postTypeAliases)){
+				if(is_array($postTypeModel->postTypeAliases)){
+					if(count($postTypeModel->postTypeAliases) > 0){
+						$postTypeIsArray = true;
+						$postTypeAliases = $postTypeModel->postTypeAliases;
+						$postTypeAliases[] = $postType;
+					}
+				}
+			}
+
+			// Adding a custom query functionality so we can manipulate the find by the config
+			if($postTypeModel->appendCustomWhereQueryToCmsPosts){
+				foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
+					$where[] = [$value[0], $value[1], $value[2]];
+				}
+			}
+
+			$appendQuery = false;
+			if(method_exists($postTypeModel, 'append_show_query')){
+				$appendQuery = true;
+			}
+
+			// Query the database
+			$post = $postTypeModel::where($where)
+				->when($appendQuery, function ($query) use ($postTypeModel, $request){
+					return $postTypeModel->append_show_query($query, $postTypeModel, $request);
+				})
+
+				// When there are multiple post types
+				->when($postTypeIsArray, function ($query) use ($postTypeAliases){
+					return $query->whereIn('post_type', $postTypeAliases);
+				}, function($query) use ($postType) {
+					return $query->where('post_type', $postType);
+				})
+				
+				->with('postmeta')
+				->first();
 		}
 
 		return $post;

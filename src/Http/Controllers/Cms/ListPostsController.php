@@ -26,6 +26,8 @@ class ListPostsController extends CmsController
     		return $this->abort($errorMessages);
     	}
 
+		$where = [];
+
         // If the user can only see his own posts
         if($postTypeModel->userCanOnlySeeHisOwnPosts){
             $where[] = ['post_author', '=', Auth::user()->id];
@@ -35,9 +37,18 @@ class ListPostsController extends CmsController
         if(!empty($postTypeModel->identifier)){
         	$postType = $postTypeModel->identifier;
         }
-
-        // Where sql to get all posts by post_Type
-        $where[] = ['post_type', '=', $postType];
+		
+		$postTypeAliases = [];
+		$postTypeIsArray = false;
+		if(!empty($postTypeModel->postTypeAliases)){
+			if(is_array($postTypeModel->postTypeAliases)){
+				if(count($postTypeModel->postTypeAliases) > 0){
+					$postTypeIsArray = true;
+					$postTypeAliases = $postTypeModel->postTypeAliases;
+					$postTypeAliases[] = $postType;
+				}
+			}
+		}
 
         // Adding a custom query functionality so we can manipulate the find by the config
 		if($postTypeModel->appendCustomWhereQueryToCmsPosts){
@@ -46,25 +57,37 @@ class ListPostsController extends CmsController
 			}
 		}
 
-		if(method_exists($postTypeModel, 'override_list_posts')){
-			$posts = $postTypeModel->override_list_posts($postTypeModel, $request);
-		} else {
-			// Query the database
-			$posts = $postTypeModel::where($where)
-				->select([
-					'id',
-					'post_title',
-					'post_name',
-					'status',
-					'post_type',
-					'created_at',
-					'updated_at',
-				])
-				->with('postmeta')
-				->orderBy('id', 'desc')
-				->get();
+		$appendQuery = false;
+		if(method_exists($postTypeModel, 'append_list_query')){
+			$appendQuery = true;
 		}
+		
+		// Query the database
+		$posts = $postTypeModel::where($where)
+			->when($appendQuery, function ($query) use ($postTypeModel, $request){
+				return $postTypeModel->append_list_query($query, $postTypeModel, $request);
+			})
 
+			// When there are multiple post types
+			->when($postTypeIsArray, function ($query) use ($postTypeAliases){
+				return $query->whereIn('post_type', $postTypeAliases);
+			}, function($query) use ($postType) {
+				return $query->where('post_type', $postType);
+			})
+			
+			->select([
+				'id',
+				'post_title',
+				'post_name',
+				'status',
+				'post_type',
+				'created_at',
+				'updated_at',
+			])
+			->with('postmeta')
+			->orderBy('id', 'desc')
+			->get();
+	
 		// Lets fire events as registered in the post type
         $this->triggerEvent('on_browse', $postTypeModel, $posts, []);
 
