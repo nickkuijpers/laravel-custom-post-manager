@@ -2,6 +2,7 @@
 
 namespace Niku\Cms\Http\Controllers\Cms;
 
+use Illuminate\Http\Request;
 use Niku\Cms\Http\Controllers\CmsController;
 
 class ShowPostTaxonomies extends CmsController
@@ -9,7 +10,7 @@ class ShowPostTaxonomies extends CmsController
 	/**
 	 * Display a single post
 	 */
-	public function init($postType, $id, $subPostType)
+	public function init(Request $request, $postType, $id, $subPostType)
 	{
 		// Lets validate if the post type exists and if so, continue.
 		$postTypeModel = $this->getPostType($postType);
@@ -27,35 +28,13 @@ class ShowPostTaxonomies extends CmsController
     		return $this->abort($errorMessages);
     	}
 
-		// If the user can only see his own posts
-		if($postTypeModel->userCanOnlySeeHisOwnPosts){
-			$where[] = ['post_author', '=', Auth::user()->id];
-		}
-
-		// Finding the post with the post_name instead of the id
-        if($postTypeModel->getPostByPostName){
-        	$where[] = ['post_name', '=', $id];
-        } else {
-        	$where[] = ['id', '=', $id];
-        }
-
-		// Query only the post type requested
-        $where[] = ['post_type', '=', $postTypeModel->identifier];
-
-		// Adding a custom query functionality so we can manipulate the find by the config
-		if($postTypeModel->appendCustomWhereQueryToCmsPosts){
-			foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
-				$where[] = [$value[0], $value[1], $value[2]];
-			}
-		}
-
-		$post = $postTypeModel::where($where)->first();
+		$post = $this->findPostInstance($postTypeModel, $request, $postType, $id);
 		if(!$post){
-			$errorMessages = 'No posts connected to this taxonomy.';
-    		if(array_has($postTypeModel->errorMessages, 'no_taxonomy_posts_connected')){
-    			$errorMessages = $postTypeModel->errorMessages['no_taxonomy_posts_connected'];
-    		}
-    		return $this->abort($errorMessages);
+			$errorMessages = 'Post does not exist.';
+			if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){
+				$errorMessages = $postTypeModel->errorMessages['post_does_not_exist'];
+			}
+			return $this->abort($errorMessages);
 		}
 
 		// Lets get the post type of the sub post type object

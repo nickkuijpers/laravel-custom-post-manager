@@ -1013,7 +1013,17 @@ class CmsController extends Controller
 			}
 		}
 
-		return $postTypeModel::where($where)->with('postmeta')->first();
+		 if($id == "0"){
+			$post = $postTypeModel;
+		} else {
+			if(method_exists($postTypeModel, 'override_get_post')){
+				$post = $postTypeModel->override_get_post($postTypeModel, $id, $request);
+			} else {
+				$post = $postTypeModel::where($where)->with('postmeta')->first();
+			}
+		}
+
+		return $post;
 	}
 	
 	public function showConditional($postTypeModel, $collection)

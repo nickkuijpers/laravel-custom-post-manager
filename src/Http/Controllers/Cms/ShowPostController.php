@@ -36,43 +36,14 @@ class ShowPostController extends CmsController
     		return $this->abort($errorMessages, $validateBefore['config'], 'post_validation_error');
 		}
 
-        // If the user can only see his own posts
-        if($postTypeModel->userCanOnlySeeHisOwnPosts){
-            $where[] = ['post_author', '=', Auth::user()->id];
-        }
-
-        // Finding the post with the post_name instead of the id
-        if($postTypeModel->getPostByPostName){
-        	$where[] = ['post_name', '=', $id];
-        } else {
-        	$where[] = ['id', '=', $id];
-        }
-
-        // Query only the post type requested
-        $where[] = ['post_type', '=', $postTypeModel->identifier];
-
-        // Adding a custom query functionality so we can manipulate the find by the config
-		if($postTypeModel->appendCustomWhereQueryToCmsPosts){
-			foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
-				$where[] = [$value[0], $value[1], $value[2]];
+	    $post = $this->findPostInstance($postTypeModel, $request, $postType, $id);
+		if(!$post){
+			$errorMessages = 'Post does not exist.';
+			if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){
+				$errorMessages = $postTypeModel->errorMessages['post_does_not_exist'];
 			}
+			return $this->abort($errorMessages);
 		}
-
-        // If the ID is empty, that means we are returning the frame to create a new post.
-        if($id == '0'){
-	        $post = $postTypeModel;
-	    } else {
-	    	$post = $postTypeModel::where($where)->first();
-	    }
-
-	    // Validate if the post exists
-	    if(!$post){
-        	$errorMessages = 'Post does not exist.';
-    		if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){
-    			$errorMessages = $postTypeModel->errorMessages['post_does_not_exist'];
-    		}
-    		return $this->abort($errorMessages);
-        }
 
 		// Converting the updated_at to the input picker in the front-end
         $updatedAtCustomField = $this->getCustomFieldObject($postTypeModel, 'updated_at');

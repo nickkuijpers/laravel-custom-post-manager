@@ -90,7 +90,13 @@ class SpecificFieldsEditPostController extends CmsController
 		foreach($whitelistedCustomFields as $whiteKey => $whiteValue){
 			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $whiteKey);
 			if(is_array($customFieldObject)){
-				$toValidateKeys[$whiteKey] = $customFieldObject;
+				if(array_key_exists('saveable', $customFieldObject)){
+					if($customFieldObject['saveable'] === false){
+
+					} else {
+						$toValidateKeys[$whiteKey] = $customFieldObject;
+					}
+				}	 
 			}
 		}
 

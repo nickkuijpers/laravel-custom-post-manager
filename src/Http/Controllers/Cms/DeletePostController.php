@@ -2,6 +2,7 @@
 
 namespace Niku\Cms\Http\Controllers\Cms;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Niku\Cms\Http\Controllers\CmsController;
 
@@ -10,7 +11,7 @@ class DeletePostController extends CmsController
 	/**
      * Delete a single post
      */
-    public function init($postType, $id)
+    public function init(Request $request, $postType, $id)
     {
     	// Lets validate if the post type exists and if so, continue.
     	$postTypeModel = $this->getPostType($postType);
@@ -28,39 +29,14 @@ class DeletePostController extends CmsController
     		return $this->abort($errorMessages);
     	}
 
-        // If the user can only see his own posts
-        if($postTypeModel->userCanOnlySeeHisOwnPosts){
-            $where[] = ['post_author', '=', Auth::user()->id];
-        }
-
-    	// Finding the post with the post_name instead of the id
-        if($postTypeModel->getPostByPostName){
-        	$where[] = ['post_name', '=', $id];
-        } else {
-        	$where[] = ['id', '=', $id];
-        }
-
-        // Query only the post type requested
-        $where[] = ['post_type', '=', $postTypeModel->identifier];
-
-    	// Adding a custom query functionality so we can manipulate the find by the config
-		if($postTypeModel->appendCustomWhereQueryToCmsPosts){
-			foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
-				$where[] = [$value[0], $value[1], $value[2]];
+		$post = $this->findPostInstance($postTypeModel, $request, $postType, $id);
+		if(!$post){
+			$errorMessages = 'Post does not exist.';
+			if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){
+				$errorMessages = $postTypeModel->errorMessages['post_does_not_exist'];
 			}
+			return $this->abort($errorMessages);
 		}
-
-    	// Find the post
-    	$post = $postTypeModel::where($where)->first();
-
-    	// Lets validate if the post exist
-    	if(!$post){
-	    	$errorMessages = 'Post does not exist.';
-    		if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){
-    			$errorMessages = $postTypeModel->errorMessages['post_does_not_exist'];
-    		}
-    		return $this->abort($errorMessages);
-    	}
 
     	// Delete the post
     	$post->delete();
