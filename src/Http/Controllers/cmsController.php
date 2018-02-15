@@ -727,7 +727,9 @@ class CmsController extends Controller
 		return response()->json([
 			'code' => $code,
 			'errors' => [
-				0 => $message,
+				$code => [
+					0 => $message,
+				],
 			],
 			'config' => $config,
 		], 422);
