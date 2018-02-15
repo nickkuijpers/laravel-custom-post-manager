@@ -1001,7 +1001,7 @@ class CmsController extends Controller
 			}
 
 			// Adding a custom query functionality so we can manipulate the find by the config
-			if($postTypeModel->appendCustomWhereQueryToCmsPosts){
+			if(!$postTypeModel->appendCustomWhereQueryToCmsPosts){
 				foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
 					$where[] = [$value[0], $value[1], $value[2]];
 				}
@@ -1071,6 +1071,7 @@ class CmsController extends Controller
 			}
 				
 			// Query the database
+			$appendQuery = false;
 			$post = $postTypeModel::where($where)
 				->when($appendQuery, function ($query) use ($postTypeModel, $request, $action){
 					switch($action){
@@ -1096,16 +1097,22 @@ class CmsController extends Controller
 				})
 
 				// When there are multiple post types
-				->when($postTypeIsArray, function ($query) use ($postTypeAliases){
-					return $query->whereIn('post_type', $postTypeAliases);
-				}, function($query) use ($postType) {
-					return $query->where('post_type', $postType);
+				->when($postTypeIsArray, function ($query) use ($postTypeAliases, $postTypeModel){
+					if($postTypeModel->disableDefaultSettings !== true){
+						return $query->whereIn('post_type', $postTypeAliases);
+					}
+				}, function($query) use ($postType, $postTypeModel) {
+					if($postTypeModel->disableDefaultSettings !== true){
+						if(!empty($postType)){
+							return $query->where('post_type', $postType);
+						}
+					}
 				})
 				
 				->with('postmeta')
 				->first();
 		}
-
+		
 		return $post;
 	}
 	
