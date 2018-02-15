@@ -350,6 +350,8 @@ class CmsController extends Controller
 		$pivotValue = [];
 		$object = [];
  
+		$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
+
 		// Saving the meta values to the database.
 		foreach($postmeta as $key => $value){
 

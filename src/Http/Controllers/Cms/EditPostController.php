@@ -79,9 +79,6 @@ class EditPostController extends CmsController
     		}
     		return $this->abort($errorMessages);
 		}
-
-		// Unset unrequired post meta keys
-		$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
 		
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
 		$postmeta = $this->removeValuesByConditionalLogic($postmeta, $postTypeModel, $post);

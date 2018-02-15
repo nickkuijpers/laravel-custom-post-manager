@@ -77,8 +77,6 @@ class SpecificFieldsEditPostController extends CmsController
 
 		}
 
-		// dd($verifiedFields);
-
 		// If updating all specific fields is enabled, we override the verified fields
 		if($postTypeModel->enableAllSpecificFieldsUpdate){
 			$whitelistedCustomFields = $this->getWhitelistedCustomFields($postTypeModel, $request->all());
@@ -96,7 +94,7 @@ class SpecificFieldsEditPostController extends CmsController
 		} else {
 			$whitelistedCustomFields = $this->getWhitelistedCustomFields($postTypeModel, $request->only($verifiedFields));
 		}
-
+		
 		$toValidateKeys = [];
 		foreach($whitelistedCustomFields as $whiteKey => $whiteValue){
 			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $whiteKey);
@@ -111,9 +109,6 @@ class SpecificFieldsEditPostController extends CmsController
 
 		// Validating the request
 		$validationRules = $this->validatePostFields($toValidateKeys, $request, $postTypeModel, true);
-		
-		// Unset unrequired post meta keys
-		$whitelistedCustomFields = $this->removeUnrequiredMetas($whitelistedCustomFields, $postTypeModel);
 
 		// Get the post instance
 		$post = $this->findPostInstance($postTypeModel, $request, $postType, $id, 'specific_field_post');
@@ -138,10 +133,11 @@ class SpecificFieldsEditPostController extends CmsController
 
 		$this->validatePost($request, $post, $validationRules);
 
+		// Setting a full request so we can show to the front-end what values were given
 		$fullRequest = $request;
 
 		// Regenerate the request to pass it thru existing code
-		$request = new Request;
+		$request = $this->resetRequestValues($request);
 		foreach($whitelistedCustomFields as $postmetaKey => $postmetaValue){
 			$request[$postmetaKey] = $postmetaValue;
 		}

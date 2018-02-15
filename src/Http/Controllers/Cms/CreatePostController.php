@@ -58,9 +58,6 @@ class CreatePostController extends CmsController
 
 			// Validate the post
 			$this->validatePost($postTypeModel, $request, $validationRules);
- 
-			// Unset unrequired post meta keys
-			$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
 
 			 // Getting the post instance where we can add upon
 			$post = $postTypeModel;
@@ -78,9 +75,6 @@ class CreatePostController extends CmsController
 			}
 
 			$postmeta = $request->all();
-
-			// Unset unrequired post meta keys
-			$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
 
 			// Getting the post instance where we can add upon
 			$post = $postTypeModel;
