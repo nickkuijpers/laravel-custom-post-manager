@@ -703,20 +703,22 @@ class CmsController extends Controller
 					}
 
 					$validationResult = (new CheckPostController)->internal($postmeta, $key, $id, 'array');
-					if(array_key_exists('code', $validationResult) && $validationResult['code'] == 'success'){
+					if($validationResult->code && $validationResult->code == 'success'){
 						continue;
 					}
 
-					if(count($validationResult) > 0){
-						return [
-							'status' => false,
-							'message' => 'Validation of post type does not exist',	
-							'config' => [
-								'return_to' => $value['return_to'],
-								'route_identifier' => $value['route_identifier'],
-								'errors' => $validationResult['errors'],
-							],
-						];
+					if($validationResult->errors){
+						if(count($validationResult->errors) > 0){
+							return [
+								'status' => false,
+								'message' => 'Validation of post type does not exist',	
+								'config' => [
+									'return_to' => $value['return_to'],
+									'route_identifier' => $value['route_identifier'],
+									'errors' => $validationResult->errors,
+								],
+							];
+						}
 					}
 				}
 			}
