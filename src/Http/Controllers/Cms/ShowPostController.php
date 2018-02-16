@@ -218,11 +218,10 @@ class ShowPostController extends CmsController
 
 				if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
 					if(method_exists(new $customField['mutator'], 'out')){
-						$customField = (new $customField['mutator'])->out($customField, $collection, $key, $postTypeModel);
 						if(array_key_exists('value', $collection['templates'][$groupKey]['customFields'][$key])){
 							$holdValue = $collection['templates'][$groupKey]['customFields'][$key]['value'];
+							$customField = (new $customField['mutator'])->out($customField, $collection, $key, $postTypeModel, $holdValue);
 							$collection['templates'][$groupKey]['customFields'][$key] = $customField;
-							$collection['templates'][$groupKey]['customFields'][$key]['value'] = $holdValue;
 						}
 					}
 				}
@@ -234,11 +233,9 @@ class ShowPostController extends CmsController
 
 						if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
 							if(method_exists(new $customField['mutator'], 'out')){
-								$customField = (new $customField['mutator'])->out($customField, $collection, $innerKey, $postTypeModel);
-
 								$holdValue = $collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['value'];
+								$customField = (new $customField['mutator'])->out($customField, $collection, $innerKey, $postTypeModel, $holdValue);
 								$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey] = $customField;
-								$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['value'] = $holdValue;
 							}
 						}
 
@@ -249,11 +246,9 @@ class ShowPostController extends CmsController
 
 								if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
 									if(method_exists(new $customField['mutator'], 'out')){
-										$customField = (new $customField['mutator'])->out($customField, $collection, $innerInnerKey, $postTypeModel);
-
 										$holdValue = $collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey]['value'];
+										$customField = (new $customField['mutator'])->out($customField, $collection, $innerInnerKey, $postTypeModel, $holdValue);
 										$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey] = $customField;
-										$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey]['value'] = $holdValue;
 									}
 								}
 
