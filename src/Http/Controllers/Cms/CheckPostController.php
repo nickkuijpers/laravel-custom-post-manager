@@ -14,7 +14,7 @@ class CheckPostController extends CmsController
     {
 		$result = $this->execute($request, $postType, $id);
 
-		if($result['code'] == 'failure'){
+		if($result->code == 'failure'){
 			return $result;
 		}
    
@@ -38,7 +38,7 @@ class CheckPostController extends CmsController
 	{
 		$result = $this->execute($request, $postType, $id);
 
-		if($result['code'] == 'failure'){
+		if($result->code == 'failure'){
 			return $result;
 		}
 
@@ -63,13 +63,12 @@ class CheckPostController extends CmsController
 		$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
     		$errorMessages = 'You are not authorized to do this.';
-    		return [
+    		return (object) [
 				'code' => 'failure',
 				'validation' => false,
 				'errors' => $errorMessages,	
 			];
 		}
-		
 		
     	// Check if the post type has a identifier
     	if(empty($postTypeModel->identifier)){
@@ -77,7 +76,7 @@ class CheckPostController extends CmsController
     		if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_exist')){
 				$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_exist'];
     		}
-    		return [
+    		return (object) [
 				'code' => 'failure',
 				'validation' => false,
 				'errors' => $errorMessages,	
@@ -91,7 +90,7 @@ class CheckPostController extends CmsController
     		if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){
 				$errorMessages = $postTypeModel->errorMessages['post_does_not_exist'];
 			}
-			return [
+			return (object) [
 				'code' => 'failure',
 				'validation' => false,
 				'errors' => $errorMessages,	
@@ -128,7 +127,7 @@ class CheckPostController extends CmsController
 		$validatedFields = $this->validatePost($secondRequest, $post, $validationRules);		
 		if($validatedFields['status'] === false){
 			$errors = $validatedFields['errors'];
-			return [
+			return (object) [
 				'code' => 'failure',
 				'validation' => true,
 				'errors' => $errors->messages(),	
@@ -159,6 +158,7 @@ class CheckPostController extends CmsController
 		}
 
 		return (object) [
+			'code' => 'success',
 			'post' => $post,
 			'message' => $successMessage	
 		];
