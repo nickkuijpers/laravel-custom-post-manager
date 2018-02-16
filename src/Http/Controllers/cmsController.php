@@ -510,6 +510,9 @@ class CmsController extends Controller
 
 		// Get the custom field
 		$customField = $this->getCustomFieldObject($postTypeModel, $key);
+		if(empty($customField)){
+			return '';
+		}
 		
 		$value = '';
 		if(array_key_exists('value', $customField)){
