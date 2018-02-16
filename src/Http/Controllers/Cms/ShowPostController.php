@@ -369,6 +369,17 @@ class ShowPostController extends CmsController
 								$view[$templateKey]['customFields'][$customFieldKey]['value'] = $post['updated_at'];
 							}
 
+						break;
+						
+						// If we find the customFieldKey updated_at, we know it is in the config file
+	            		case 'status':
+
+							// Because of that we will add the post status value to the custom field
+							if(!empty($post['status'])){
+	            				$view[$templateKey]['customFields'][$customFieldKey]['id'] = $customFieldKey;
+								$view[$templateKey]['customFields'][$customFieldKey]['value'] = $post['status'];
+							}
+
 	            		break;
 	            	}
 
