@@ -18,7 +18,9 @@ class ShowPostController extends CmsController
     	if(!$postTypeModel){
     		$errorMessages = 'You are not authorized to do this.';
     		return $this->abort($errorMessages);
-    	}
+		}
+		
+		$config = $this->getConfig($postTypeModel);
 
     	// Check if the post type has a identifier
     	if(empty($postTypeModel->identifier)){
@@ -26,7 +28,7 @@ class ShowPostController extends CmsController
     		if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_exist')){
     			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_exist'];
     		}
-    		return $this->abort($errorMessages);
+    		return $this->abort($errorMessages, config);
 		}
 		
 		// Validate if we need to validate a other post type before showing this post type
@@ -42,7 +44,7 @@ class ShowPostController extends CmsController
 			if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){
 				$errorMessages = $postTypeModel->errorMessages['post_does_not_exist'];
 			}
-			return $this->abort($errorMessages);
+			return $this->abort($errorMessages, $config);
 		}
 
 		// Converting the updated_at to the input picker in the front-end
@@ -108,7 +110,7 @@ class ShowPostController extends CmsController
         $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->view, $collection, $postTypeModel);
 
 		// Setting the config
-		$collection['config'] = $this->getConfig($postTypeModel);
+		$collection['config'] = $config;
 		
         // Lets check if there are any manipulators active
         $collection = $this->showConditional($postTypeModel, $collection);
@@ -126,7 +128,7 @@ class ShowPostController extends CmsController
 				if(array_key_exists('message', $onShowCheck)){
 					$errorMessages = $onShowCheck['message'];
 				}
-				return $this->abort($errorMessages);
+				return $this->abort($errorMessages, $config);
 			}
 		}
 
