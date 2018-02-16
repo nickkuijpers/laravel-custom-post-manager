@@ -53,9 +53,6 @@ class CheckPostController extends CmsController
         // Validating the request
 		$validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
 	
-        // Unset unrequired post meta keys
-		$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
-		
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
 		$postmeta = $this->removeValuesByConditionalLogic($postmeta, $postTypeModel, $post);
 		$logicValidations = $this->removeValidationsByConditionalLogic($postmeta, $postTypeModel, $post);
@@ -67,7 +64,7 @@ class CheckPostController extends CmsController
 				}
 			}
 		}
- 
+
 		$validatedFields = $this->validatePost($request, $post, $validationRules);		
 		if($validatedFields['status'] === false){
 			$errors = $validatedFields['errors'];

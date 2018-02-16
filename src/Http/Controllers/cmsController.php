@@ -541,17 +541,24 @@ class CmsController extends Controller
 
 		// Get the custom field
 		$customField = $this->getCustomFieldObject($postTypeModel, $key);
-	
-		if(array_key_exists('postmeta', $collection)){
-			foreach($collection['postmeta'] as $collectionKey => $collectionValue){
-				if($key == $collectionValue['meta_key']){
-					if($collectionValue['meta_value']){
-						$value = $collectionValue['meta_value'];
+		foreach($collection as $collectionKey => $collectionValue){
+			if($collectionKey == 'postmeta'){
+				if(is_array($collectionValue)){
+					foreach($collectionValue as $metaKey => $metaValue){
+						if($key == $metaValue['meta_key']){
+							if($metaValue['meta_value']){
+								$value = $metaValue['meta_value'];
+							}
+						}
 					}
+				}
+			} else {
+				if($key == $collectionKey){
+					$value = $collectionValue;
 				}
 			}
 		}
-		
+  
 		return $value;
 	}
 
