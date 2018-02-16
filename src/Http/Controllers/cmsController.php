@@ -866,11 +866,13 @@ class CmsController extends Controller
 										'postmeta' => $collection->postmeta->keyBy('meta_key')->toArray()
 									];
 
-									$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $postmetaCollection, $conditionValue['custom_field']);
+									if(array_key_exists('custom_field', $conditionValue)){
+										$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $postmetaCollection, $conditionValue['custom_field']);
 
-									// If the condition is met, we need to remove the validation
-									if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) === false){
-										$display = false;
+										// If the condition is met, we need to remove the validation
+										if($this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue) === false){
+											$display = false;
+										}
 									}
 
 								}
