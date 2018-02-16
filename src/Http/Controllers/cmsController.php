@@ -751,70 +751,65 @@ class CmsController extends Controller
 		 
 		foreach($allKeys as $key => $customField){
 			
-			// Hiding values if operator is not met
-			if(array_key_exists('conditional', $customField)){
+			$display = $this->validateValueForLogic($customField, $postTypeModel, $collection);
 
-				if(array_key_exists('show_when', $customField['conditional'])){
-					
-					$type = 'AND';
-					if(array_key_exists('type', $customField['conditional'])){
-						if($customField['conditional']['type'] == 'AND'){
-							$type = 'AND';
-						} else if($customField['conditional']['type'] == 'OR'){
-							$type = 'OR';
-						}
-					}
-
-					switch($type){
-						case 'AND':
-
-							$display = true;
-				
-							foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
-
-								$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
-								$conditionCheck = $this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue);
-
-								if($conditionCheck === false){
-									$display = false;
-								}
-
-							}
-							
-							if($display === false){				
-								unset($postmeta[$key]);
-								// $postmeta[$key] = null;
-							}
-						
-						break;
-						case 'OR':
-
-							$display = false;
-
-							foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
-
-								$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
-								$conditionCheck = $this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue);
-
-								if($conditionCheck === true){
-									$display = true;
-								}
-
-							}
-
-							if($display === false){
-								unset($postmeta[$key]);								
-								// $postmeta[$key] = null;
-							}
-
-						break;
-					}
-
-				}
+			if($display === false){
+				unset($postmeta[$key]);								
+				// $postmeta[$key] = null;
 			}
+
 		}
 		
 		return $postmeta;
+	}
+
+	public function validateValueForLogic($customField, $postTypeModel, $collection)
+	{
+		$display = true;
+
+		if(array_key_exists('conditional', $customField) && array_key_exists('show_when', $customField['conditional'])){
+			
+			if(array_key_exists('AND', $customField['conditional']['show_when'])){
+			
+				foreach($customField['conditional']['show_when']['AND'] as $conditionKey => $conditionValue){
+
+					$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+					$conditionCheck = $this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue);
+
+					if($conditionCheck === false){
+						$display = false;
+					}
+
+				}
+
+			}
+			
+			if($display === true){
+				
+				$displayOr = false;
+				if(array_key_exists('OR', $customField['conditional']['show_when'])){
+					
+					foreach($customField['conditional']['show_when']['OR'] as $conditionKey => $conditionValue){
+
+						$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+						$conditionCheck = $this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue);
+						if($conditionCheck === true){
+							$displayOr = true;
+						}
+
+					}
+
+					if($displayOr === false){
+						$display = false;
+					}
+					
+				}
+
+			}
+
+		}
+
+		return $display;
 	}
 	
 	// Returning false values by array keys of the items which we need to exclude out of the validation array
@@ -828,69 +823,12 @@ class CmsController extends Controller
 				$postmeta[$key] = true;
 			}
 
-			// Hiding values if operator is not met
-			if(array_key_exists('conditional', $customField)){
+			$display = $this->validateValueForLogic($customField, $postTypeModel, $collection);
 
-				if(array_key_exists('show_when', $customField['conditional'])){
-					
-					$type = 'AND';
-					if(array_key_exists('type', $customField['conditional'])){
-						if($customField['conditional']['type'] == 'AND'){
-							$type = 'AND';
-						} else if($customField['conditional']['type'] == 'OR'){
-							$type = 'OR';
-						}
-					}
-
-					switch($type){
-						case 'AND':
-
-							$display = true;
-				
-							foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
-
-								$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
-
-								$conditionCheck = $this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue);
-
-								if($conditionCheck === false){
-									$display = false;
-								}
-
-							}
-							
-							if($display === false){					
-								$postmeta[$key] = false;
-							} else {
-								$postmeta[$key] = true;
-							}
-						
-						break;
-						case 'OR':
-
-							$display = false;
-
-							foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
-
-								$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
-								$conditionCheck = $this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue);
-
-								if($conditionCheck === true){
-									$display = true;
-								}
-
-							}
-
-							if($display === false){					
-								$postmeta[$key] = false;
-							} else {
-								$postmeta[$key] = true;
-							}
-
-						break;
-					}
-
-				}
+			if($display === false){					
+				$postmeta[$key] = false;
+			} else {
+				$postmeta[$key] = true;
 			}
 		}
 
@@ -1178,81 +1116,63 @@ class CmsController extends Controller
     public function fieldSpecificVisibilityManager($collection, $customField, $postTypeModel, $groupKey, $key, $level = 1, $innerKey = null, $innerInnerKey = null)
     {
 		// Lets see if we have a mutator registered
-		if(array_has($customField, 'conditional')){
-
+		if(array_key_exists('conditional', $customField)){
+			
 			// Hiding values if operator is not met
-			if(array_has($customField['conditional'], 'show_when')){
+			if(array_key_exists('show_when', $customField['conditional'])){
+				
+				$display = true;
 
-				$type = 'AND';
-				if(array_key_exists('type', $customField['conditional'])){
-					if($customField['conditional']['type'] == 'AND'){
-						$type = 'AND';
-					} else if($customField['conditional']['type'] == 'OR'){
-						$type = 'OR';
+				if(array_key_exists('AND', $customField['conditional']['show_when'])){
+					
+					foreach($customField['conditional']['show_when']['AND'] as $conditionKey => $conditionValue){
+
+						$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+						$conditionCheck = $this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue);
+
+						if($conditionCheck === false){
+							$display = false;
+						}
+
 					}
+
+				}
+				
+				if($display === true){
+					
+					$displayOr = false;
+					if(array_key_exists('OR', $customField['conditional']['show_when'])){
+						
+						foreach($customField['conditional']['show_when']['OR'] as $conditionKey => $conditionValue){
+
+							$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
+							$conditionCheck = $this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue);
+							if($conditionCheck === true){
+								$displayOr = true;
+							}
+
+						}
+
+						if($displayOr === false){
+							$display = false;
+						}
+						
+					}
+
 				}
 
-				switch($type){
-					case 'AND':
-
-						$display = true;
-					
-						foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
-
-							$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
-							$conditionCheck = $this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue);
-
-							if($conditionCheck === false){
-								$display = false;
-							}
-
-						}
-
-						if($display === false){
-							switch($level){
-								case 1:
-									$collection['templates'][$groupKey]['customFields'][$key] = [];
-								break;
-								case 2:
-									$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey] = [];
-								break;
-								case 3:
-									$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey] = [];
-								break;
-							}
-						}
-
-					break;
-					case 'OR':
-
-						$display = false;
-
-						foreach($customField['conditional']['show_when'] as $conditionKey => $conditionValue){
-
-							$conditionalCustomFieldValue = $this->getCustomFieldValue($postTypeModel, $collection, $conditionValue['custom_field']);
-							$conditionCheck = $this->conditionTest($conditionValue['value'], $conditionValue['operator'], $conditionalCustomFieldValue);
-
-							if($conditionCheck === true){
-								$display = true;
-							}
-
-						}
-
-						if($display === false){
-							switch($level){
-								case 1:
-									$collection['templates'][$groupKey]['customFields'][$key] = [];
-								break;
-								case 2:
-									$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey] = [];
-								break;
-								case 3:
-									$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey] = [];
-								break;
-							}
-						}
-
-					break;
+				if($display === false){
+					switch($level){
+						case 1:
+							$collection['templates'][$groupKey]['customFields'][$key] = [];
+						break;
+						case 2:
+							$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey] = [];
+						break;
+						case 3:
+							$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey] = [];
+						break;
+					}
 				}
 
 			}
