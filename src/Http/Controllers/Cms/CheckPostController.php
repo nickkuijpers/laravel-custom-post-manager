@@ -75,7 +75,7 @@ class CheckPostController extends CmsController
 		}
 
         // Lets fire events as registered in the post type
-        $this->triggerEvent('on_check', $postTypeModel, $post->id, $postmeta);
+        $this->triggerEvent('on_check_event', $postTypeModel, $post->id, $postmeta);
 
         $successMessage = 'Post succesfully checked.';
 		if(array_has($postTypeModel->successMessage, 'post_checked')){

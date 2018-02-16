@@ -1103,6 +1103,8 @@ class CmsController extends Controller
 					if($postTypeModel->disableDefaultSettings !== true){
 						return $query->whereIn('post_type', $postTypeAliases);
 					}
+					
+				// false
 				}, function($query) use ($postType, $postTypeModel) {
 					if($postTypeModel->disableDefaultSettings !== true){
 						if(!empty($postType)){

@@ -152,7 +152,7 @@ class SpecificFieldsEditPostController extends CmsController
 		$this->savePostMetaToDatabase($whitelistedCustomFields, $postTypeModel, $post);
 
 		// Lets fire events as registered in the post type
-		$this->triggerEvent('on_edit_single_field', $postTypeModel, $post->id, $whitelistedCustomFields);
+		$this->triggerEvent('on_edit_single_field_event', $postTypeModel, $post->id, $whitelistedCustomFields);
 
 		$successMessage = 'Field succesfully updated.';
 		if(array_has($postTypeModel->successMessage, 'field_updated')){
