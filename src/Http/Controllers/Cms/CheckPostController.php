@@ -10,49 +10,89 @@ use Niku\Cms\Http\Controllers\CmsController;
 
 class CheckPostController extends CmsController
 {
-    public function init(Request $request, $postType, $id)
+    public function ini123123t(Request $request, $postType, $id)
     {
-        $postTypeModel = $this->getPostType($postType);
+		$result = $this->execute($request, $postType, $id);
+   
+		return response()->json([
+    		'code' => 'success',
+    		'message' => $result->message,
+    		'action' => 'check',
+    		'post' => [
+    			'id' => $result->post->id,
+    			'post_title' => $result->post->post_title,
+    			'post_name' => $result->post->post_name,
+				'status' => $result->post->status,
+				'post_type' => $result->post->post_type,
+				'created_at' => $result->post->created_at,
+				'updated_at' => $result->post->updated_at,
+    		],
+    	], 200);
+	}
+	
+	public function internal($request, $postType, $id)
+	{
+		$result = $this->execute($request, $postType, $id);
+
+		return [
+			'code' => 'success',
+    		'message' => $result->message,
+    		'action' => 'check',
+    		'post' => [
+    			'id' => $result->post->id,
+    			'post_title' => $result->post->post_title,
+    			'post_name' => $result->post->post_name,
+				'status' => $result->post->status,
+				'post_type' => $result->post->post_type,
+				'created_at' => $result->post->created_at,
+				'updated_at' => $result->post->updated_at,
+    		],
+		];
+	}
+
+	public function execute($request, $postType, $id)
+	{
+		$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
     		$errorMessages = 'You are not authorized to do this.';
     		return $this->abort($errorMessages);
-    	}
-
+		}
+		
+		
     	// Check if the post type has a identifier
     	if(empty($postTypeModel->identifier)){
-    		$errorMessages = 'The post type does not have a identifier.';
+			$errorMessages = 'The post type does not have a identifier.';
     		if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_exist')){
-    			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_exist'];
+				$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_exist'];
     		}
     		return $this->abort($errorMessages);
     	}
-
+		
         // Get the post instance
         $post = $this->findPostInstance($postTypeModel, $request, $postType, $id, 'check_post');
         if(!$post){
-        	$errorMessages = 'Post does not exist.';
+			$errorMessages = 'Post does not exist.';
     		if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){
-    			$errorMessages = $postTypeModel->errorMessages['post_does_not_exist'];
+				$errorMessages = $postTypeModel->errorMessages['post_does_not_exist'];
     		}
     		return $this->abort($errorMessages);
 		}
- 
+		
 		$allFieldKeys = $this->getValidationsKeys($postTypeModel);
-
-		// Unsetting all given values but keeping the request headers
-		$request = $this->resetRequestValues($request);
- 
+		
+		$secondRequest = new Request;
+		
         foreach($allFieldKeys as $toSaveKey => $toSaveValue){
-            $configValue = $this->getCustomFieldValueWithoutConfig($postTypeModel, $post, $toSaveKey);
-            $request[$toSaveKey] = $configValue;
+			$configValue = $this->getCustomFieldValueWithoutConfig($postTypeModel, $post, $toSaveKey);
+            $secondRequest[$toSaveKey] = $configValue;
 		}
 		
         // Receive the post meta values
-		$postmeta = $request->all();
-
+		$postmeta = $secondRequest->all();
+		
         // Validating the request
-		$validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
-	
+		$validationRules = $this->validatePostFields($secondRequest->all(), $secondRequest, $postTypeModel);
+		
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
 		$postmeta = $this->removeValuesByConditionalLogic($postmeta, $postTypeModel, $post);
 		$logicValidations = $this->removeValidationsByConditionalLogic($postmeta, $postTypeModel, $post);
@@ -65,7 +105,7 @@ class CheckPostController extends CmsController
 			}
 		}
 
-		$validatedFields = $this->validatePost($request, $post, $validationRules);		
+		$validatedFields = $this->validatePost($secondRequest, $post, $validationRules);		
 		if($validatedFields['status'] === false){
 			$errors = $validatedFields['errors'];
 			return response()->json($errors->messages(), 422);
@@ -90,22 +130,12 @@ class CheckPostController extends CmsController
 			$successMessage = $postTypeModel->successMessage['post_checked'];
 		}
 
-        // Lets return the response
-    	return response()->json([
-    		'code' => 'success',
-    		'message' => $successMessage,
-    		'action' => 'check',
-    		'post' => [
-    			'id' => $post->id,
-    			'post_title' => $post->post_title,
-    			'post_name' => $post->post_name,
-				'status' => $post->status,
-				'post_type' => $post->post_type,
-				'created_at' => $post->created_at,
-				'updated_at' => $post->updated_at,
-    		],
-    	], 200);
-    }
+		return (object) [
+			'post' => $post,
+			'message' => $successMessage	
+		];
+        
+	}
 
     /**
      * Validating the creation and change of a post

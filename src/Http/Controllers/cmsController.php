@@ -685,7 +685,7 @@ class CmsController extends Controller
 		}
 	}
 
-	public function validatePostTypeBefore($request, $postTypeModel, $id)
+	public function validatePostTypeBefore($postmeta, $postTypeModel, $id)
 	{
 		if($postTypeModel->validatePostTypeBefore){
 			if(count($postTypeModel->validatePostTypeBefore) > 0){
@@ -701,9 +701,8 @@ class CmsController extends Controller
 							'message' => 'Validation of post type does not exist',	
 						];
 					}
-	 
-					$validationResult = (new CheckPostController)->init($request, $key, $id);
-					$validationResult = json_decode($validationResult->getContent(), true);			
+
+					$validationResult = (new CheckPostController)->internal($postmeta, $key, $id, 'array');
 					
 					if(array_key_exists('code', $validationResult) && $validationResult['code'] == 'success'){
 						continue;
@@ -783,8 +782,9 @@ class CmsController extends Controller
 
 							}
 							
-							if($display === false){					
-								$postmeta[$key] = null;
+							if($display === false){				
+								unset($postmeta[$key]);
+								// $postmeta[$key] = null;
 							}
 						
 						break;
@@ -804,7 +804,8 @@ class CmsController extends Controller
 							}
 
 							if($display === false){
-								$postmeta[$key] = null;
+								unset($postmeta[$key]);								
+								// $postmeta[$key] = null;
 							}
 
 						break;
@@ -813,7 +814,7 @@ class CmsController extends Controller
 				}
 			}
 		}
-
+		
 		return $postmeta;
 	}
 	

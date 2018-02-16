@@ -18,8 +18,8 @@ class SpecificFieldsEditPostController extends CmsController
 		if(!$postTypeModel){
     		$errorMessages = 'You are not authorized to do this.';
     		return $this->abort($errorMessages);
-    	}
-
+		}
+		
 		// Check if the post type has a identifier
 		if(empty($postTypeModel->identifier)){
 			$errorMessages = 'The post type does not have a identifier.';
@@ -28,12 +28,12 @@ class SpecificFieldsEditPostController extends CmsController
 			}
 			return $this->abort($errorMessages);
 		}
-
+		
 		// Disable editting of form
 		if($postTypeModel->disableEdit){
-        	$errorMessages = 'The post type does not support editting.';
+			$errorMessages = 'The post type does not support editting.';
     		if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_support_edit')){
-    			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_support_edit'];
+				$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_support_edit'];
     		}
     		return $this->abort($errorMessages);
 		}
@@ -44,16 +44,16 @@ class SpecificFieldsEditPostController extends CmsController
 			$errorMessages = $validateBefore['message'];
     		return $this->abort($errorMessages, $validateBefore['config']);
 		}
-
+		
 		$sanitizedKeys = $this->getValidationsKeys($postTypeModel);
 		foreach($sanitizedKeys as $saniKey => $saniValue){
 			$sanitizedKeys[$saniKey] = '';
 		}
-
+		
 		$verifiedFields = [];
 		$reloadFields = [];
 		$reloadFieldsMethod = 'none';
-
+		
 		// For each custom field given, we need to validate the permission
 		foreach($request->all() as $key => $value){
 
@@ -130,18 +130,18 @@ class SpecificFieldsEditPostController extends CmsController
 				}
 			}
 		}
-
+		
 		$this->validatePost($request, $post, $validationRules);
-
+		
 		// Setting a full request so we can show to the front-end what values were given
 		$fullRequest = $request;
-
+		
 		// Regenerate the request to pass it thru existing code
 		$request = $this->resetRequestValues($request);
 		foreach($whitelistedCustomFields as $postmetaKey => $postmetaValue){
 			$request[$postmetaKey] = $postmetaValue;
 		}
-
+		
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
 		$whitelistedCustomFields = $this->removeValuesByConditionalLogic($whitelistedCustomFields, $postTypeModel, $post);
 
