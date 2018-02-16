@@ -703,8 +703,14 @@ class CmsController extends Controller
 					}
 
 					$validationResult = (new CheckPostController)->internal($postmeta, $key, $id, 'array');
-					if($validationResult->code && $validationResult->code == 'success'){
-						continue;
+					if(is_array($validationResult)){
+						if(array_key_exists('code', $validationResult) && $validationResult['code'] == 'success'){
+							continue;
+						}
+					} else if (is_object($validationResult)){
+						if($validationResult->code && $validationResult->code == 'success'){
+							continue;
+						}
 					}
 
 					if($validationResult->errors){
