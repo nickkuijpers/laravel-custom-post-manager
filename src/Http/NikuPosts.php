@@ -9,11 +9,6 @@ class NikuPosts extends Model
 {
     protected $table = 'cms_posts';
 
-    protected $attributes = array(
-	  	'template' => 'default'
-	);
-    
-
 	/**
 	 * Has Many connection to the post meta table
 	 */
