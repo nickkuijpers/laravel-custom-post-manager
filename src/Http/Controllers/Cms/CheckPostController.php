@@ -10,9 +10,13 @@ use Niku\Cms\Http\Controllers\CmsController;
 
 class CheckPostController extends CmsController
 {
-    public function ini123123t(Request $request, $postType, $id)
+    public function init(Request $request, $postType, $id)
     {
 		$result = $this->execute($request, $postType, $id);
+
+		if($result['code'] == 'failure'){
+			return $result;
+		}
    
 		return response()->json([
     		'code' => 'success',
@@ -33,6 +37,10 @@ class CheckPostController extends CmsController
 	public function internal($request, $postType, $id)
 	{
 		$result = $this->execute($request, $postType, $id);
+
+		if($result['code'] == 'failure'){
+			return $result;
+		}
 
 		return [
 			'code' => 'success',
@@ -55,7 +63,11 @@ class CheckPostController extends CmsController
 		$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
     		$errorMessages = 'You are not authorized to do this.';
-    		return $this->abort($errorMessages);
+    		return [
+				'code' => 'failure',
+				'validation' => false,
+				'errors' => $errorMessages,	
+			];
 		}
 		
 		
@@ -65,7 +77,11 @@ class CheckPostController extends CmsController
     		if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_exist')){
 				$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_exist'];
     		}
-    		return $this->abort($errorMessages);
+    		return [
+				'code' => 'failure',
+				'validation' => false,
+				'errors' => $errorMessages,	
+			];
     	}
 		
         // Get the post instance
@@ -74,8 +90,12 @@ class CheckPostController extends CmsController
 			$errorMessages = 'Post does not exist.';
     		if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){
 				$errorMessages = $postTypeModel->errorMessages['post_does_not_exist'];
-    		}
-    		return $this->abort($errorMessages);
+			}
+			return [
+				'code' => 'failure',
+				'validation' => false,
+				'errors' => $errorMessages,	
+			];
 		}
 		
 		$allFieldKeys = $this->getValidationsKeys($postTypeModel);
@@ -108,7 +128,11 @@ class CheckPostController extends CmsController
 		$validatedFields = $this->validatePost($secondRequest, $post, $validationRules);		
 		if($validatedFields['status'] === false){
 			$errors = $validatedFields['errors'];
-			return response()->json($errors->messages(), 422);
+			return [
+				'code' => 'failure',
+				'validation' => true,
+				'errors' => $errors->messages(),	
+			];
 		}
 
 		if(method_exists($postTypeModel, 'on_check_check')){	
@@ -118,7 +142,11 @@ class CheckPostController extends CmsController
 				if(array_key_exists('message', $onCheck)){
 					$errorMessages = $onCheck['message'];
 				}
-				return $this->abort($errorMessages);
+				return [
+					'code' => 'failure',
+					'validation' => false,
+					'errors' => $errorMessages,	
+				];
 			}
 		}
 

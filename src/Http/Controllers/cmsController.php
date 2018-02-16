@@ -703,11 +703,10 @@ class CmsController extends Controller
 					}
 
 					$validationResult = (new CheckPostController)->internal($postmeta, $key, $id, 'array');
-					
 					if(array_key_exists('code', $validationResult) && $validationResult['code'] == 'success'){
 						continue;
 					}
-					
+
 					if(count($validationResult) > 0){
 						return [
 							'status' => false,
@@ -715,7 +714,7 @@ class CmsController extends Controller
 							'config' => [
 								'return_to' => $value['return_to'],
 								'route_identifier' => $value['route_identifier'],
-								'errors' => $validationResult,
+								'errors' => $validationResult['errors'],
 							],
 						];
 					}
