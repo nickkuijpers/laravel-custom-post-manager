@@ -46,6 +46,17 @@ class DeletePostController extends CmsController
     		return $this->abort($errorMessages);
 		}
 
+		if(method_exists($postTypeModel, 'on_delete_check')){	
+			$onCheck = $postTypeModel->on_delete_check($postTypeModel, $post->id, []);			
+			if($onCheck['continue'] === false){
+				$errorMessages = 'You are not authorized to do this.';
+				if(array_key_exists('message', $onCheck)){
+					$errorMessages = $onCheck['message'];
+				}
+				return $this->abort($errorMessages);
+			}
+		}
+
     	// Delete the post
     	$post->delete();
 

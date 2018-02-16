@@ -74,6 +74,17 @@ class CheckPostController extends CmsController
 			return response()->json($errors->messages(), 422);
 		}
 
+		if(method_exists($postTypeModel, 'on_check_check')){	
+			$onCheck = $postTypeModel->on_check_check($postTypeModel, $post->id, $postmeta);			
+			if($onCheck['continue'] === false){
+				$errorMessages = 'You are not authorized to do this.';
+				if(array_key_exists('message', $onCheck)){
+					$errorMessages = $onCheck['message'];
+				}
+				return $this->abort($errorMessages);
+			}
+		}
+
         // Lets fire events as registered in the post type
         $this->triggerEvent('on_check_event', $postTypeModel, $post->id, $postmeta);
 

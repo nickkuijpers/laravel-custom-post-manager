@@ -66,9 +66,6 @@ class ShowPostController extends CmsController
 		// Retrieve all the post meta's and taxonomies
 		$postmeta = $this->retrieveConfigPostMetas($post, $postTypeModel);
 
-		// Lets fire events as registered in the post type
-        $this->triggerEvent('on_show_event', $postTypeModel, $post->id, $postmeta);
-
         $postArray = $post->toArray();
 
         $postArraySanitized = [];
@@ -120,7 +117,21 @@ class ShowPostController extends CmsController
         $collection = $this->showMutator($postTypeModel, $collection);
 
         // Cleaning up the output
-        unset($collection['postmeta']);
+		unset($collection['postmeta']);
+		
+		if(method_exists($postTypeModel, 'on_show_check')){	
+			$onShowCheck = $postTypeModel->on_show_check($postTypeModel, $post->id, $postmeta);			
+			if($onShowCheck['continue'] === false){
+				$errorMessages = 'You are not authorized to do this.';
+				if(array_key_exists('message', $onShowCheck)){
+					$errorMessages = $onShowCheck['message'];
+				}
+				return $this->abort($errorMessages);
+			}
+		}
+
+		// Lets fire events as registered in the post type
+        $this->triggerEvent('on_show_event', $postTypeModel, $post->id, $postmeta);
 
         // Returning the full collection
     	return response()->json($collection);

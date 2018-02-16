@@ -88,9 +88,32 @@ class ListPostsController extends CmsController
 			->orderBy('id', 'desc')
 			->get();
 	
+		if(method_exists($postTypeModel, 'on_list_check')){	
+			$onCheck = $postTypeModel->on_list_check($postTypeModel, $posts, []);			
+			if($onCheck['continue'] === false){
+				$errorMessages = 'You are not authorized to do this.';
+				if(array_key_exists('message', $onCheck)){
+					$errorMessages = $onCheck['message'];
+				}
+				return $this->abort($errorMessages);
+			}
+		}
+
 		// Lets fire events as registered in the post type
         $this->triggerEvent('on_browse_event', $postTypeModel, $posts, []);
 
+		$config = $this->getConfig($postTypeModel);
+
+		// Return the response
+    	return response()->json([
+			'config' => $config,
+			'label' => $postTypeModel->label,
+			'objects' => $posts,
+		]);
+	}
+	
+	public function getConfig($postTypeModel)
+	{
 		// Merge the configuration values
 		$config = [];
 		if($postTypeModel->config){
@@ -141,11 +164,6 @@ class ListPostsController extends CmsController
         	$config['get_post_by_postname'] = false;
 		}
 
-		// Return the response
-    	return response()->json([
-			'config' => $config,
-			'label' => $postTypeModel->label,
-			'objects' => $posts,
-		]);
-    }
+		return $config;
+	}
 }

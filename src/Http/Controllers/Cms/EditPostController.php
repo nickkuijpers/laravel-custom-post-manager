@@ -94,6 +94,17 @@ class EditPostController extends CmsController
 
 		$this->validatePost($request, $post, $validationRules);
 
+		if(method_exists($postTypeModel, 'on_edit_check')){	
+			$onCheck = $postTypeModel->on_edit_check($postTypeModel, $post->id, $postmeta);			
+			if($onCheck['continue'] === false){
+				$errorMessages = 'You are not authorized to do this.';
+				if(array_key_exists('message', $onCheck)){
+					$errorMessages = $onCheck['message'];
+				}
+				return $this->abort($errorMessages);
+			}
+		}
+
 		// Saving the post values to the database
     	$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $request, $postType);
 		

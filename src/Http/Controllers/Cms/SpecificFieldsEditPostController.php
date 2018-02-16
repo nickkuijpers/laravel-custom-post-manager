@@ -145,6 +145,17 @@ class SpecificFieldsEditPostController extends CmsController
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
 		$whitelistedCustomFields = $this->removeValuesByConditionalLogic($whitelistedCustomFields, $postTypeModel, $post);
 
+		if(method_exists($postTypeModel, 'on_edit_single_field_event')){	
+			$onCheck = $postTypeModel->on_edit_single_field_event($postTypeModel, $post->id, $whitelistedCustomFields);			
+			if($onCheck['continue'] === false){
+				$errorMessages = 'You are not authorized to do this.';
+				if(array_key_exists('message', $onCheck)){
+					$errorMessages = $onCheck['message'];
+				}
+				return $this->abort($errorMessages);
+			}
+		}
+
 		// Saving the post values to the database
 		$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $request, $postType, true);
 

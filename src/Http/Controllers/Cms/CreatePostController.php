@@ -86,6 +86,17 @@ class CreatePostController extends CmsController
         	$postType = $post->identifier;
         }
 
+		if(method_exists($postTypeModel, 'on_create_check')){	
+			$onCheck = $postTypeModel->on_create_check($postTypeModel, $post->id, $postmeta);			
+			if($onCheck['continue'] === false){
+				$errorMessages = 'You are not authorized to do this.';
+				if(array_key_exists('message', $onCheck)){
+					$errorMessages = $onCheck['message'];
+				}
+				return $this->abort($errorMessages);
+			}
+		}
+
         // Saving the post values to the database
     	$post = $this->savePostToDatabase('create', $post, $postTypeModel, $oldRequest);
  
