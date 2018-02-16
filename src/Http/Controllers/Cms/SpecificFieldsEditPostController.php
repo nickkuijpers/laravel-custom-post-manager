@@ -3,9 +3,10 @@
 namespace Niku\Cms\Http\Controllers\Cms;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use Niku\Cms\Http\Controllers\CmsController;
+use Niku\Cms\Http\Controllers\Cms\ShowPostController;
 
 class SpecificFieldsEditPostController extends CmsController
 {
@@ -170,9 +171,13 @@ class SpecificFieldsEditPostController extends CmsController
 			$successMessage = $postTypeModel->successMessage['field_updated'];
 		}
 
+		$show = (new ShowPostController)->init($request, $postType, $id);
+		$showResponse = json_decode($show->getContent());
+
 		// Lets return the response
 		return response()->json([
 			'code' => 'success',
+			'show_response' => $showResponse,
 			'message' => $successMessage,
 			'action' => 'edit',
 			'post' => [
