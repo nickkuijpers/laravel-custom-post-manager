@@ -423,6 +423,8 @@ class CmsController extends Controller
 
 					}
 
+					$post->taxonomies()->sync($pivotValue);
+
 				break;
 				default:
 
@@ -434,8 +436,7 @@ class CmsController extends Controller
 		}
 
 		$post->saveMetas($object);
-		$post->taxonomies()->sync($pivotValue);
-
+		
 		return $post;
 	}
 
