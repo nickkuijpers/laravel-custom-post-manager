@@ -67,6 +67,7 @@ class Cms
 			Route::post('/{post_type}/check/{identifier}', '\Niku\Cms\Http\Controllers\Cms\CheckPostController@init')->name('check');
 			Route::post('/{post_type}/delete/{identifier}', '\Niku\Cms\Http\Controllers\Cms\DeletePostController@init')->name('delete');
 			Route::post('/{post_type}/edit/{identifier}', '\Niku\Cms\Http\Controllers\Cms\EditPostController@init')->name('edit');
+			Route::post('/{post_type}/edit/{identifier}/taxonomy/{taxonomy_id}', '\Niku\Cms\Http\Controllers\Cms\EditTaxonomyController@init')->name('taxonomy');
 			Route::post('/{post_type}/create', '\Niku\Cms\Http\Controllers\Cms\CreatePostController@init')->name('create');
 
 			// Single custom field updation

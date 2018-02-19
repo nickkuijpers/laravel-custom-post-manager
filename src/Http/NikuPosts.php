@@ -22,7 +22,7 @@ class NikuPosts extends Model
      */
     public function posts()
     {
-    	return $this->belongsToMany('Niku\Cms\Http\NikuPosts', 'cms_taxonomy', 'taxonomy_post_id', 'post_id');
+    	return $this->belongsToMany('Niku\Cms\Http\NikuPosts', 'cms_taxonomy', 'taxonomy_post_id', 'post_id')->withPivot('id');
     }
 
     /**
@@ -30,7 +30,7 @@ class NikuPosts extends Model
      */
     public function taxonomies()
     {
-    	return $this->belongsToMany('Niku\Cms\Http\NikuPosts', 'cms_taxonomy', 'post_id', 'taxonomy_post_id');
+    	return $this->belongsToMany('Niku\Cms\Http\NikuPosts', 'cms_taxonomy', 'post_id', 'taxonomy_post_id')->withPivot('id');
     }
 
     /**
