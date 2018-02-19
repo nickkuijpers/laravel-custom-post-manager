@@ -281,24 +281,28 @@ class ShowPostController extends CmsController
 			if(isset($customFieldObject['type']) && $customFieldObject['type'] == 'taxonomy'){
 
 				// We need to get the values from the taxonomy table
-				$customfieldPostTypes = $this->getPostTypeIdentifiers($customFieldObject['post_type']);
+				if(array_key_exists('post_type', $customFieldObject)){
 
-				// Lets query the post to retrieve all the connected ids
-				$taxonomyIds = $post->taxonomies()->whereIn('post_type', $customfieldPostTypes)
-					->get();
-
-				// Lets foreach all the posts because we only need the id
-				$ids = [];
-				foreach($taxonomyIds as $value){
-					array_push($ids, $value->id);
+					$customfieldPostTypes = $this->getPostTypeIdentifiers($customFieldObject['post_type']);
+	
+					// Lets query the post to retrieve all the connected ids
+					$taxonomyIds = $post->taxonomies()->whereIn('post_type', $customfieldPostTypes)
+						->get();
+	
+					// Lets foreach all the posts because we only need the id
+					$ids = [];
+					foreach($taxonomyIds as $value){
+						array_push($ids, $value->id);
+					}
+	
+					$ids = json_encode($ids);
+	
+					$metaTaxonomies[$key] = [
+						'meta_key' => $key,
+						'meta_value' => $ids,
+					];
+				
 				}
-
-				$ids = json_encode($ids);
-
-				$metaTaxonomies[$key] = [
-					'meta_key' => $key,
-					'meta_value' => $ids,
-				];
 
 			// The other items are default
 			} else {
