@@ -23,7 +23,8 @@ class TaxonomyController extends CmsController
 			'action' => 'required',
             'id' => 'required',
             'taxonomy_post_id' => 'required',
-            'custom' => 'nullable',
+            'custom' => 'required',
+            'menu_order' => 'required|int',
         ]);        
         
     	// Check if the post type has a identifier
@@ -51,7 +52,15 @@ class TaxonomyController extends CmsController
     			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_support_edit'];
     		}
     		return $this->abort($errorMessages);
-        }
+		}
+		
+		if(empty($request->menu_order)){
+			$request['menu_order'] = 0;	
+		}
+
+		if(empty($request->custom)){
+			$request['custom'] = '';	
+		}
 
 		switch($request->action){
 
@@ -63,6 +72,7 @@ class TaxonomyController extends CmsController
 				$taxonomyInstance->taxonomy_post_id = $request->taxonomy_post_id;
 				$taxonomyInstance->custom = $request->custom;
 				$taxonomyInstance->taxonomy = $postType;
+				$taxonomyInstance->menu_order = $request->menu_order;
 				$taxonomyInstance->save();
 
 			break;
@@ -99,11 +109,8 @@ class TaxonomyController extends CmsController
 					return $this->abort($errorMessages);
 				}
 
-				if(is_array($request->custom)){
-					$taxonomyInstance->custom = json_encode($request->custom);
-				} else {
-					$taxonomyInstance->custom = $request->custom;
-				}
+				$taxonomyInstance->custom = $request->custom;
+				$taxonomyInstance->menu_order = $request->menu_order;
 
 				$taxonomyInstance->save();
 
