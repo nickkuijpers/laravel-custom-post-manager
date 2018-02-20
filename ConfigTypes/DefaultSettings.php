@@ -25,39 +25,48 @@ class DefaultSettings extends NikuConfig
     ];
 
 	// Setting up the template structure
-	public $templates = [
-		'default' => [
-			'customFields' => [
-				'text' => [
-					'component' => 'niku-cms-text-customfield',
-					'label' => 'Text',
-					'value' => '',
-					'validation' => 'required',
-				],
-				'periods' => [
-					'component' => 'niku-cms-repeater-customfield',
-					'label' => 'Perioden',
-					'validation' => 'required',
-					'customFields' => [
+	public $view = [];
 
-						'label' => [
-							'component' => 'niku-cms-text-customfield',
-							'label' => 'Label',
-							'value' => '',
-							'validation' => 'required',
-						],
+    public function __construct()
+    {
+        $this->view();
+    }
+		
+    public function view()
+    {                
+        $this->view = [
+			'default' => [
+				'customFields' => [
+					'text' => [
+						'component' => 'niku-cms-text-customfield',
+						'label' => 'Text',
+						'value' => '',
+						'validation' => 'required',
+					],
+					'periods' => [
+						'component' => 'niku-cms-repeater-customfield',
+						'label' => 'Perioden',
+						'validation' => 'required',
+						'customFields' => [
 
-						'boolean' => [
-							'component' => 'niku-cms-boolean-customfield',
-							'label' => 'Boolean button',
-							'value' => '',
-							'validation' => 'required',
-						],
+							'label' => [
+								'component' => 'niku-cms-text-customfield',
+								'label' => 'Label',
+								'value' => '',
+								'validation' => 'required',
+							],
 
-					]
+							'boolean' => [
+								'component' => 'niku-cms-boolean-customfield',
+								'label' => 'Boolean button',
+								'value' => '',
+								'validation' => 'required',
+							],
+
+						]
+					],
 				],
 			],
-		],
-	];
-
+		];
+	}
 }

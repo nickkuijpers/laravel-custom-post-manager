@@ -45,7 +45,7 @@ class EditConfigController extends ConfigController
 				])->delete();
 
 				// For each all groups to get the validation
-				foreach($postTypeModel->templates as $templateKey => $template){
+				foreach($postTypeModel->view as $templateKey => $template){
 					if(array_has($template, 'customFields.' . $explodedValue[0] . '.customFields.' . $explodedValue[3] . '.validation')){
 						$rule = $template['customFields'][$explodedValue[0]]['customFields'][$explodedValue[3]]['validation'];
 					}
@@ -54,7 +54,7 @@ class EditConfigController extends ConfigController
 			} else {
 
 				// For each all groups to get the validation
-				foreach($postTypeModel->templates as $templateKey => $template){
+				foreach($postTypeModel->view as $templateKey => $template){
 					if(array_has($template, 'customFields.' . $key . '.validation')){
 						$rule = $template['customFields'][$key]['validation'];
 					}

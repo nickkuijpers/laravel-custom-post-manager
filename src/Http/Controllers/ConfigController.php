@@ -2,17 +2,18 @@
 
 namespace Niku\Cms\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Niku\Cms\Http\Posts;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Niku\Cms\Http\NikuConfig;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
-use Niku\Cms\Http\NikuConfig;
-use Niku\Cms\Http\Posts;
+use Niku\Cms\Http\Controllers\cmsController;
 
-class ConfigController extends Controller
+class ConfigController extends cmsController
 {
 	/**
      * Validating if the post type exists and returning the model.
@@ -73,13 +74,5 @@ class ConfigController extends Controller
 	protected function validatePost($request, $validationRules)
 	{
 		return $this->validate($request, $validationRules);
-	}
-
-	protected function abort($message = 'Not authorized.')
-	{
-		return response()->json([
-			'code' => 'error',
-			'status' => $message,
-		]);
 	}
 }
