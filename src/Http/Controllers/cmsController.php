@@ -461,7 +461,7 @@ class CmsController extends Controller
 	}
 
 	// Lets check if there are any manipulators active for showing the post
-	protected function saveMutator($postTypeModel, $key, $value, $post, $postmeta, $request)
+	protected function saveMutator($postTypeModel, $key, $value, $post, $postmeta, $request = [])
 	{
 		$post = $post->toArray();
 		$postmeta = $postmeta;
