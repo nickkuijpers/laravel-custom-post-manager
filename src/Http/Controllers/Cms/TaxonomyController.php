@@ -23,8 +23,7 @@ class TaxonomyController extends CmsController
 			'action' => 'required',
             'id' => 'required',
             'taxonomy_post_id' => 'required',
-            'custom' => 'required',
-            'menu_order' => 'required|int',
+            'menu_order' => 'int',
         ]);        
         
     	// Check if the post type has a identifier
@@ -53,15 +52,7 @@ class TaxonomyController extends CmsController
     		}
     		return $this->abort($errorMessages);
 		}
-		
-		if(empty($request->menu_order)){
-			$request['menu_order'] = 0;	
-		}
-
-		if(empty($request->custom)){
-			$request['custom'] = '';	
-		}
-
+ 
 		switch($request->action){
 
 			// Creating a taxonomy
@@ -70,9 +61,16 @@ class TaxonomyController extends CmsController
 				$taxonomyInstance = new NikuTaxonomies;
 				$taxonomyInstance->post_id = $request->post_id;
 				$taxonomyInstance->taxonomy_post_id = $request->taxonomy_post_id;
-				$taxonomyInstance->custom = $request->custom;
 				$taxonomyInstance->taxonomy = $postType;
-				$taxonomyInstance->menu_order = $request->menu_order;
+
+				if($request->has('custom')){
+					$taxonomyInstance->custom = $request->custom;
+				}
+
+				if($request->has('menu_order')){
+					$taxonomyInstance->menu_order = $request->menu_order;
+				}
+
 				$taxonomyInstance->save();
 
 			break;
@@ -109,9 +107,14 @@ class TaxonomyController extends CmsController
 					return $this->abort($errorMessages);
 				}
 
-				$taxonomyInstance->custom = $request->custom;
-				$taxonomyInstance->menu_order = $request->menu_order;
+				if($request->has('custom')){
+					$taxonomyInstance->custom = $request->custom;
+				}
 
+				if($request->has('menu_order')){
+					$taxonomyInstance->menu_order = $request->menu_order;
+				}
+ 
 				$taxonomyInstance->save();
 
 			break;
