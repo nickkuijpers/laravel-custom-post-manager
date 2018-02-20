@@ -359,7 +359,7 @@ class CmsController extends Controller
 	}
 
 	// Saving the post meta to the database
-	protected function savePostMetaToDatabase($postmeta, $postTypeModel, $post)
+	protected function savePostMetaToDatabase($postmeta, $postTypeModel, $post, $request, $customFieldKey = '')
 	{
 		// Presetting a empty array so we can append pivot values to the sync function.
 		$pivotValue = [];
@@ -367,11 +367,16 @@ class CmsController extends Controller
  
 		$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
 
+		if(!empty($customFieldKey)){
+			if($request->hasFile('file')){
+				$postmeta[$customFieldKey] = '';
+			}
+		}
+ 
 		// Saving the meta values to the database.
 		foreach($postmeta as $key => $value){
 
 			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $key);
-
 			if($customFieldObject){
 				if(array_key_exists('saveable', $customFieldObject)){
 					if($customFieldObject['saveable'] === false){
@@ -381,7 +386,7 @@ class CmsController extends Controller
 			}
 
 			// Lets validate if there is a mutator for this value.
-			$value = $this->saveMutator($postTypeModel, $key, $value, $post, $postmeta);
+			$value = $this->saveMutator($postTypeModel, $key, $value, $post, $postmeta, $request);
 
 			// If the custom field does not exist, we may not save it.
 			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $key);
@@ -456,7 +461,7 @@ class CmsController extends Controller
 	}
 
 	// Lets check if there are any manipulators active for showing the post
-	protected function saveMutator($postTypeModel, $key, $value, $post, $postmeta)
+	protected function saveMutator($postTypeModel, $key, $value, $post, $postmeta, $request)
 	{
 		$post = $post->toArray();
 		$postmeta = $postmeta;
@@ -471,7 +476,7 @@ class CmsController extends Controller
 			if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
 
 				if(method_exists(new $customField['mutator'], 'in')){
-					$mutatorValue = (new $customField['mutator'])->in($customField, $postRequest, $value, $key, $postTypeModel);
+					$mutatorValue = (new $customField['mutator'])->in($customField, $postRequest, $value, $key, $postTypeModel, $request);
 
 					// Lets set the new value to the existing value
 					$value = $mutatorValue;

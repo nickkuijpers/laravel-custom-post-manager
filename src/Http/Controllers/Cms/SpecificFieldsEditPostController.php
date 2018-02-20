@@ -5,6 +5,7 @@ namespace Niku\Cms\Http\Controllers\Cms;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Input;
 use Niku\Cms\Http\Controllers\CmsController;
 use Niku\Cms\Http\Controllers\Cms\ShowPostController;
 
@@ -142,10 +143,9 @@ class SpecificFieldsEditPostController extends CmsController
 		foreach($whitelistedCustomFields as $postmetaKey => $postmetaValue){
 			$request[$postmetaKey] = $postmetaValue;
 		}
-		
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
 		$whitelistedCustomFields = $this->removeValuesByConditionalLogic($whitelistedCustomFields, $postTypeModel, $post);
-
+		
 		if(method_exists($postTypeModel, 'on_edit_single_field_event')){	
 			$onCheck = $postTypeModel->on_edit_single_field_event($postTypeModel, $post->id, $whitelistedCustomFields);			
 			if($onCheck['continue'] === false){
@@ -156,13 +156,13 @@ class SpecificFieldsEditPostController extends CmsController
 				return $this->abort($errorMessages);
 			}
 		}
-
+		
 		// Saving the post values to the database
 		$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $request, $postType, true);
-
+		
 		// Saving the post meta values to the database
-		$this->savePostMetaToDatabase($whitelistedCustomFields, $postTypeModel, $post);
-
+		$this->savePostMetaToDatabase($whitelistedCustomFields, $postTypeModel, $post, $fullRequest);
+		
 		// Lets fire events as registered in the post type
 		$this->triggerEvent('on_edit_single_field_event', $postTypeModel, $post->id, $whitelistedCustomFields);
 
