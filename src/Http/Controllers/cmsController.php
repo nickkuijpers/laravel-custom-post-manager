@@ -196,6 +196,10 @@ class CmsController extends Controller
 					}
 
 				break;
+				case 'post_parent':
+					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
+					$post->$key = $value;
+				break;
 				case 'menu_order':
 					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 					$post->$key = $value;
