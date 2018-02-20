@@ -163,26 +163,30 @@ class CmsController extends Controller
 		// Lets map all the items
 		foreach($request->all() as $key => $value){
 
-			// Lets validate if there is a mutator for this value
-			// $value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
-
 			switch($key){
 				case 'post_title':
+					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 					$post->$key = $value;
 				break;
 				case 'post_content':
+					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 					$post->$key = $value;
 				break;
 				case 'post_excerpt':
+					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 					$post->$key = $value;
 				break;
 				case 'template':
+					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 					$post->$key = $value;
 				break;
 				case 'post_password':
+					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 					$post->$key = $value;
 				break;
 				case 'post_name':
+
+					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 
 					// Validate if we need to sanitize the post name or not.
 					if(!$postTypeModel->disableSanitizingPostName){
@@ -193,15 +197,20 @@ class CmsController extends Controller
 
 				break;
 				case 'menu_order':
+					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 					$post->$key = $value;
 				break;
 				case 'status':
+					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 					$post->$key = $value;
 				break;
 				case 'post_author':
+					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 					$post->$key = $value;
 				break;
 				case 'updated_at':
+
+					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 
 					// We need to convert the input to a normal format based on the custom field setting
 					$createdAtCustomField = $this->getCustomFieldObject($postTypeModel, 'updated_at');
@@ -214,6 +223,8 @@ class CmsController extends Controller
 
 				break;
 				case 'created_at':
+
+					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 
 					if($action == 'create'){
 
