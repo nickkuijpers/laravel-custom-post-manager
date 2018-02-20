@@ -47,8 +47,8 @@ class ShowConfigController extends ConfigController
 	    }
 
 		$collection = collect([
-			'config' => $config,
-			'data' => $templates,
+			'config' => $postTypeModel->config,
+			'templates' => $templates,
 		]);
 
 		return response()->json($collection);
