@@ -20,6 +20,7 @@ class AddTaxonomyPivotToCms extends Migration
 
             $table->string('taxonomy')->nullable();
             $table->longText('custom')->nullable();
+            $table->bigInteger('menu_order')->nullable();
 
             $table->bigInteger('post_parent')->nullable();
 

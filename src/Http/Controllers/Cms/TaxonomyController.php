@@ -35,14 +35,14 @@ class TaxonomyController extends CmsController
     		return $this->abort($errorMessages);
 		}
 		
-		// Disable editting of form
-		if($postTypeModel->disableEditOnlyCheck){
-        	$errorMessages = 'The post type does not support editting.';
-    		if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_support_edit')){
-    			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_support_edit'];
-    		}
-    		return $this->abort($errorMessages);
-		}
+		// // Disable editting of form
+		// if($postTypeModel->disableEditOnlyCheck){
+        // 	$errorMessages = 'The post type does not support editting.';
+    	// 	if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_support_edit')){
+    	// 		$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_support_edit'];
+    	// 	}
+    	// 	return $this->abort($errorMessages);
+		// }
 
 		// Disable editting of form
 		if($postTypeModel->disableEdit){
