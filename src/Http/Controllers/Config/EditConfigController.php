@@ -91,10 +91,12 @@ class EditConfigController extends ConfigController
 			$successMessage = $postTypeModel->successMessage['config_updated'];
 		}
 
-		return response()->json([
-			'code' => 'success',
-			'message' => $successMessage
-		]);
+		// Lets return the response
+    	return response()->json([
+    		'code' => 'success',
+    		'message' => $successMessage,
+    		'action' => 'config_updated',
+		], 200);
 	}
 
 }
