@@ -735,16 +735,18 @@ class CmsController extends Controller
 					}
 
 					if($validationResult->errors){
-						if(count($validationResult->errors) > 0){
-							return [
-								'status' => false,
-								'message' => 'Validation of post type does not exist',	
-								'config' => [
-									'return_to' => $value['return_to'],
-									'route_identifier' => $value['route_identifier'],
-									'errors' => $validationResult->errors,
-								],
-							];
+						if(is_array($validationResult->errors)){
+							if(count($validationResult->errors) > 0){
+								return [
+									'status' => false,
+									'message' => 'Validation of post type does not exist',	
+									'config' => [
+										'return_to' => $value['return_to'],
+										'route_identifier' => $value['route_identifier'],
+										'errors' => $validationResult->errors,
+									],
+								];
+							}
 						}
 					}
 				}
