@@ -13,11 +13,10 @@ class CheckPostController extends CmsController
     public function init(Request $request, $postType, $id)
     {
 		$result = $this->execute($request, $postType, $id);
-
 		if($result->code == 'failure'){
-			return $result;
+			return response()->json($result);
 		}
-   
+
 		return response()->json([
     		'code' => 'success',
     		'message' => $result->message,
