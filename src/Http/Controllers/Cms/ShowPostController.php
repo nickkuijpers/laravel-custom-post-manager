@@ -28,7 +28,7 @@ class ShowPostController extends CmsController
     		if(array_has($postTypeModel->errorMessages, 'post_type_identifier_does_not_exist')){
     			$errorMessages = $postTypeModel->errorMessages['post_type_identifier_does_not_exist'];
     		}
-    		return $this->abort($errorMessages, config);
+    		return $this->abort($errorMessages, $config);
 		}
 		
 		// Validate if we need to validate a other post type before showing this post type

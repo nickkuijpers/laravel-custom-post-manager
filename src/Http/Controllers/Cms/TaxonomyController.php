@@ -23,7 +23,7 @@ class TaxonomyController extends CmsController
 			'action' => 'required',
             'id' => 'required',
             'taxonomy_post_id' => 'required',
-            'menu_order' => 'int',
+            'menu_order' => '',
         ]);        
         
     	// Check if the post type has a identifier
