@@ -118,7 +118,7 @@ class TaxonomyController extends CmsController
 				if($request->has('taxonomymeta')){
 					$toSave = [];
 					foreach($request->taxonomymeta as $key => $value){
-						$toSave['key'] = $value;
+						$toSave[$key] = $value;
 					}
 
 					$taxonomyInstance->saveMetas($toSave);
