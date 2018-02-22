@@ -114,6 +114,15 @@ class TaxonomyController extends CmsController
 				if($request->has('menu_order')){
 					$taxonomyInstance->menu_order = $request->menu_order;
 				}
+
+				if($request->has('taxonomymeta')){
+					$toSave = [];
+					foreach($request->taxonomymeta as $key => $value){
+						$toSave['key'] = $value;
+					}
+
+					$taxonomyInstance->saveMetas($toSave);
+				}
  
 				$taxonomyInstance->save();
 

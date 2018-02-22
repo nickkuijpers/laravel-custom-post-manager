@@ -17,6 +17,7 @@ class AddConfigToCms extends Migration
 			$table->string('option_name')->nullable();
 			$table->longText('option_value')->nullable();
 			$table->string('group')->nullable()->default('default');
+			$table->longText('custom')->nullable();
 
 			$table->string('type')->nullable();
 			$table->timestamps();
