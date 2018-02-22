@@ -1349,5 +1349,50 @@ class CmsController extends Controller
 		
 		return $collection;
 	}
+	
+	// public function getValidationRulesById($templates, $key)
+	// {
+	// 	$validationRules = [];
+		
+	// 	foreach($templates as $groupKey => $groupValue){
+
+    //         foreach($groupValue['customFields'] as $customFieldKey => $customFieldValue){
+            
+    //             if(array_key_exists($customFieldKey, $toMerge)){
+    //                 foreach($toMerge[$customFieldKey] as $toMergeKey => $toMergeValue){
+    //                     $collection['templates'][$groupKey]['customFields'][$customFieldKey][$toMergeKey] = $toMergeValue;
+    //                 }
+    //             }
+
+    //             if(array_key_exists('customFields', $customFieldValue)){
+    //                 foreach($customFieldValue['customFields'] as $innerKey => $innerValue){
+                    
+    //                     if(array_key_exists($innerKey, $toMerge)){
+    //                         foreach($toMerge[$innerKey] as $toMergeKey => $toMergeValue){
+    //                             $collection['templates'][$groupKey]['customFields'][$customFieldKey]['customFields'][$innerKey][$toMergeKey] = $toMergeValue;
+	// 						}
+	// 					}       
+						
+	// 					 if(array_key_exists('customFields', $innerValue)){
+	// 						foreach($innerValue['customFields'] as $innerInnerKey => $innerInnerValue){
+							
+	// 							if(array_key_exists($innerInnerKey, $toMerge)){
+	// 								foreach($toMerge[$innerInnerKey] as $toMergeKey => $toMergeValue){
+	// 									$collection['templates'][$groupKey]['customFields'][$customFieldKey]['customFields'][$innerKey]['customFields'][$innerInnerKey][$toMergeKey] = $toMergeValue;
+	// 								}
+	// 							}       
+
+	// 						}
+	// 					}
+
+    //                 }
+    //             }
+
+    //         }
+	// 	}
+		
+	// 	dd($validationRules);
+		// return $validationRules;
+	// }
 
 }
