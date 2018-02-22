@@ -26,6 +26,27 @@ class ListPostsController extends CmsController
     		return $this->abort($errorMessages);
     	}
 
+		if($postTypeModel->overrideDefaultListing === true){
+
+			if(method_exists($postTypeModel, 'override_listing_show_method')){	
+				return $postTypeModel->override_listing_show_method($request, $postType);						
+			} else {
+				$errorMessages = 'The post type does not have the custom method';
+				if(array_has($postTypeModel->errorMessages, 'post_type_does_not_have_the_support_custom_method')){
+					$errorMessages = $postTypeModel->errorMessages['post_type_does_not_have_the_support_custom_method'];
+				}
+				return $this->abort($errorMessages);
+			}
+
+			// Return the response
+			return response()->json([
+				'config' => $config,
+				'label' => $postTypeModel->label,
+				'objects' => $posts,
+			]);
+
+		}
+
 		$where = [];
 
         // If the user can only see his own posts
