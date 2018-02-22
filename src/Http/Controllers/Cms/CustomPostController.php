@@ -100,7 +100,7 @@ class CustomPostController extends CmsController
 
 		if(method_exists($postTypeModel, 'show_custom_post')){	
 			$methodToEdit = 'show_custom_post';
-			return $postTypeModel->show_custom_post($collection);						
+			return $postTypeModel->show_custom_post($collection, $request);						
 		} else {
 			$errorMessages = 'The post type does not have the show method';
 			if(array_has($postTypeModel->errorMessages, 'post_type_does_not_have_the_show_method')){
