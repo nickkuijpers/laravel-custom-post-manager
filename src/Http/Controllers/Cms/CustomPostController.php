@@ -61,49 +61,12 @@ class CustomPostController extends CmsController
 		// Retrieve all the post meta's and taxonomies
 		$postmeta = $this->retrieveConfigPostMetas($post, $postTypeModel);
 
-        $postArray = $post->toArray();
-
-        $postArraySanitized = [];
-
-        if(array_has($postArray, 'id')){
-        	$postArraySanitized['id'] = $postArray['id'];
-		}
-
-		if(array_has($postArray, 'post_title')){
-        	$postArraySanitized['post_title'] = $postArray['post_title'];
-		}
-
-		if(array_has($postArray, 'post_name')){
-        	$postArraySanitized['post_name'] = $postArray['post_name'];
-		}
-
-		if(array_has($postArray, 'status')){
-        	$postArraySanitized['status'] = $postArray['status'];
-		}
-
-		if(array_has($postArray, 'post_type')){
-        	$postArraySanitized['post_type'] = $postArray['post_type'];
-		}
-
-		if(array_has($postArray, 'created_at')){
-        	$postArraySanitized['created_at'] = $postArray['created_at'];
-		}
-
-		if(array_has($postArray, 'updated_at')){
-        	$postArraySanitized['updated_at'] = $postArray['updated_at'];
-		}
-
-		// Format the collection
-        $collection = [
-            'post' => $postArraySanitized,
-            'postmeta' => $postmeta,
-		];
-
+		$collection = [];
+		$collection['post'] = [];
+		$collection['postmeta'] = [];
+ 
         // Mergin the collection with the data and custom fields
         $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->view, $collection, $postTypeModel);
-
-		// Setting the config
-		$collection['config'] = $config;
 		
         // Lets check if there are any manipulators active
         $collection = $this->showConditional($postTypeModel, $collection);
@@ -131,6 +94,20 @@ class CustomPostController extends CmsController
 
 		// Lets fire events as registered in the post type
         $this->triggerEvent('on_show_event', $postTypeModel, $post->id, $postmeta);
+
+		unset($collection['post']);
+		unset($collection['postmeta']);
+
+		if(method_exists($postTypeModel, 'show_custom_post')){	
+			$methodToEdit = 'show_custom_post';
+			return $postTypeModel->show_custom_post($collection);						
+		} else {
+			$errorMessages = 'The post type does not have the show method';
+			if(array_has($postTypeModel->errorMessages, 'post_type_does_not_have_the_show_method')){
+				$errorMessages = $postTypeModel->errorMessages['post_type_does_not_have_the_show_method'];
+			}
+			return $this->abort($errorMessages);
+		}
 
         // Returning the full collection
     	return response()->json($collection);

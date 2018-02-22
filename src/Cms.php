@@ -71,6 +71,7 @@ class Cms
 			
 			Route::post('/{post_type}/custom', '\Niku\Cms\Http\Controllers\Cms\CustomPostController@init')->name('create');
 			Route::post('/{post_type}/custom/edit', '\Niku\Cms\Http\Controllers\Cms\EditCustomPostController@init')->name('create');
+			Route::post('/{post_type}/custom/edit/{method}', '\Niku\Cms\Http\Controllers\Cms\EditCustomPostController@init')->name('create');
 			
 			Route::post('/{post_type}/edit/{identifier}/taxonomy', '\Niku\Cms\Http\Controllers\Cms\TaxonomyController@init')->name('taxonomy');
 
