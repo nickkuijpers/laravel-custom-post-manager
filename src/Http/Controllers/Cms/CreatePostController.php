@@ -113,21 +113,27 @@ class CreatePostController extends CmsController
 
 		$config = $this->getConfig($postTypeModel);
 
+		$post = [
+			'id' => $post->id,
+			'post_title' => $post->post_title,
+			'post_name' => $post->post_name,
+			'status' => $post->status,
+			'post_type' => $post->post_type,
+			'created_at' => $post->created_at,
+			'updated_at' => $post->updated_at,
+		];
+
+		if($postTypeModel->skipCreation){
+			$post['post_name'] = $post['id'];
+		}
+
         // Return the response
     	return response()->json([
 			'config' => $config,
     		'code' => 'success',
     		'message' => $successMessage,
     		'action' => 'create',
-    		'post' => [
-    			'id' => $post->id,
-    			'post_title' => $post->post_title,
-    			'post_name' => $post->post_name,
-				'status' => $post->status,
-				'post_type' => $post->post_type,
-				'created_at' => $post->created_at,
-				'updated_at' => $post->updated_at,
-    		],
+    		'post' => $post,
     	], 200);
     }
 
