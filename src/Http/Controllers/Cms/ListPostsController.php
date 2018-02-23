@@ -109,6 +109,14 @@ class ListPostsController extends CmsController
 			->orderBy('id', 'desc')
 			->get();
 	
+		if($postTypeModel->getPostByPostName === false){
+			$posts->map(function($item, $key){
+				$item->post_name = $item->id;
+				return $item;
+			});
+		}
+
+
 		if(method_exists($postTypeModel, 'on_list_check')){	
 			$onCheck = $postTypeModel->on_list_check($postTypeModel, $posts, []);			
 			if($onCheck['continue'] === false){
