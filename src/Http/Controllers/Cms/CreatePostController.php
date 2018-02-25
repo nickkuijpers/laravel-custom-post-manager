@@ -123,10 +123,6 @@ class CreatePostController extends CmsController
 			'updated_at' => $post->updated_at,
 		];
 
-		if($postTypeModel->skipCreation){
-			$post['post_name'] = $post['id'];
-		}
-
         // Return the response
     	return response()->json([
 			'config' => $config,
