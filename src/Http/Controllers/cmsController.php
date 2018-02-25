@@ -262,10 +262,12 @@ class CmsController extends Controller
 		$post->post_type = $postTypeModel->identifier;
 
 		// Check if user is logged in to set the author id
-		if(Auth::check()){
-			$post->post_author = Auth::user()->id;
-		} else {
-			$post->post_author = 0;
+		if($postTypeModel->userCanOnlySeeHisOwnPosts){
+			if(Auth::check()){
+				$post->post_author = Auth::user()->id;
+			} else {
+				$post->post_author = 0;
+			}
 		}
 
 		$post->save();
