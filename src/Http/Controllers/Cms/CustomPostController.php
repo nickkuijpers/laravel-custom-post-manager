@@ -11,7 +11,7 @@ class CustomPostController extends CmsController
 	/**
      * Display a single post
      */
-    public function init(Request $request, $postType)
+    public function init(Request $request, $postType, $method = '')
     {
 		$id = 0;
 
@@ -22,6 +22,21 @@ class CustomPostController extends CmsController
     		return $this->abort($errorMessages);
 		}
 		
+		if(!empty($method)){
+ 
+			if(method_exists($postTypeModel, 'show_custom_post_' . $method)){	
+				$methodToEdit = 'show_custom_post_' . $method;
+				return $postTypeModel->$methodToEdit($request);						
+			} else {
+				$errorMessages = 'The post type does not have the custom method ' . $method . '.';
+				if(array_has($postTypeModel->errorMessages, 'post_type_does_not_have_the_support_custom_method')){
+					$errorMessages = $postTypeModel->errorMessages['post_type_does_not_have_the_support_custom_method'];
+				}
+				return $this->abort($errorMessages);
+			}
+ 
+		}
+
 		$config = $this->getConfig($postTypeModel);
  
 		// Validate if we need to validate a other post type before showing this post type
