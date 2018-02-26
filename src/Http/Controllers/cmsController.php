@@ -984,7 +984,7 @@ class CmsController extends Controller
 			}
 
 			// Adding a custom query functionality so we can manipulate the find by the config
-			if(!$postTypeModel->appendCustomWhereQueryToCmsPosts){
+			if($postTypeModel->appendCustomWhereQueryToCmsPosts){
 				foreach($postTypeModel->appendCustomWhereQueryToCmsPosts as $key => $value){
 					$where[] = [$value[0], $value[1], $value[2]];
 				}
