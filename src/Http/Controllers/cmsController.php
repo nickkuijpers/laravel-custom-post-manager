@@ -779,7 +779,7 @@ class CmsController extends Controller
 				],
 			],
 			'config' => $config,
-		], 422);
+		], 430);
 	}
 
 	protected function removeValuesByConditionalLogic($postmeta, $postTypeModel, $collection)
