@@ -17,6 +17,7 @@ class AddPostMetaToCms extends Migration
             $table->bigInteger('post_id', false, true);
             $table->string('meta_key');
             $table->longText('meta_value')->nullable();
+            $table->longText('custom')->nullable();
             $table->string('group')->nullable();
             $table->timestamps();
 

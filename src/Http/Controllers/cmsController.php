@@ -212,6 +212,10 @@ class CmsController extends Controller
 					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
 					$post->$key = $value;
 				break;
+				case 'custom':
+					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());
+					$post->$key = $value;
+				break;
 				case 'updated_at':
 
 					$value = $this->saveMutator($postTypeModel, $key, $value, $post, $request->toArray());

@@ -18,6 +18,7 @@ class AddPostsForCms extends Migration
             $table->text('post_title')->nullable();
             $table->bigInteger('post_author')->nullable();
             $table->longText('post_content')->nullable();
+            $table->longText('custom')->nullable();
             $table->text('post_excerpt')->nullable();
             $table->string('post_password')->nullable();
             $table->string('post_name')->nullable();
