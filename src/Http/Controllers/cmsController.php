@@ -339,6 +339,7 @@ class CmsController extends Controller
 			'_id',
 			'post_title',
 			'post_name',
+			'custom',
 			'post_content',
 			'template',
 			'status',
