@@ -180,10 +180,6 @@ class CheckPostController extends CmsController
 			];
 		}
 
-		if(method_exists($postTypeModel, 'override_check_config_response')){
-			$config = $postTypeModel->override_check_config_response($postTypeModel, $post->id, $config, $request);
-		}
-
 		$allFieldKeys = $this->getValidationsKeys($postTypeModel);
 
 		$secondRequest = new Request;
