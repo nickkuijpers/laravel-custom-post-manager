@@ -122,7 +122,7 @@ class EditPostController extends CmsController
 		$config = $this->getConfig($postTypeModel);
 
 		if(method_exists($postTypeModel, 'override_edit_config_response')){
-			$config = $postTypeModel->override_edit_config_response($postTypeModel, $post->id, $postmeta, $config, $request);
+			$config = $postTypeModel->override_edit_config_response($postTypeModel, $post->id, $config, $request);
 		}
 
         // Lets return the response

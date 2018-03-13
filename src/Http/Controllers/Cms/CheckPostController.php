@@ -24,6 +24,10 @@ class CheckPostController extends CmsController
 			return response()->json($result);
 		}
 
+		if(method_exists($postTypeModel, 'override_check_config_response')){
+			$config = $postTypeModel->override_check_config_response($postTypeModel, $id, $config, $request);
+		}
+
 		return response()->json([
     		'code' => 'success',
     		'message' => $result->message,
@@ -61,7 +65,7 @@ class CheckPostController extends CmsController
 			$config['skip_creation'] = false;
 			$config['skip_to_route_name'] = '';
 		}
-		
+
 		// Adding public config
         if($postTypeModel->disableEditOnlyCheck){
         	$config['disable_edit_only_check'] = $postTypeModel->disableEditOnlyCheck;
@@ -86,7 +90,7 @@ class CheckPostController extends CmsController
         } else {
         	$config['disable_create'] = false;
 		}
-		
+
 		if($postTypeModel->getPostByPostName){
         	$config['get_post_by_postname'] = $postTypeModel->getPostByPostName;
         } else {
@@ -98,17 +102,17 @@ class CheckPostController extends CmsController
 		// Adding public config
         if($postTypeModel->enableAllSpecificFieldsUpdate){
         	$config['specific_fields']['enable_all'] = $postTypeModel->enableAllSpecificFieldsUpdate;
-			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;			
+			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;
 			$config['specific_fields']['enabled_fields'] = $allKeys->keys();
         } else {
         	$config['specific_fields']['enable_all'] = $postTypeModel->enableAllSpecificFieldsUpdate;
-			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;			
+			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;
 			$config['specific_fields']['enabled_fields'] = $allKeys->where('single_field_updateable.active', 'true')->keys();
 		}
 
 		return $config;
 	}
-	
+
 	public function internal($request, $postType, $id)
 	{
 		$result = $this->execute($request, $postType, $id);
@@ -141,10 +145,10 @@ class CheckPostController extends CmsController
     		return (object) [
 				'code' => 'failure',
 				'validation' => false,
-				'errors' => $errorMessages,	
+				'errors' => $errorMessages,
 			];
 		}
-		
+
     	// Check if the post type has a identifier
     	if(empty($postTypeModel->identifier)){
 			$errorMessages = 'The post type does not have a identifier.';
@@ -154,10 +158,10 @@ class CheckPostController extends CmsController
     		return (object) [
 				'code' => 'failure',
 				'validation' => false,
-				'errors' => $errorMessages,	
+				'errors' => $errorMessages,
 			];
     	}
-		
+
         // Get the post instance
         $post = $this->findPostInstance($postTypeModel, $request, $postType, $id, 'check_post');
         if(!$post){
@@ -168,29 +172,29 @@ class CheckPostController extends CmsController
 			return (object) [
 				'code' => 'failure',
 				'validation' => false,
-				'errors' => $errorMessages,	
+				'errors' => $errorMessages,
 			];
 		}
-		
+
 		$allFieldKeys = $this->getValidationsKeys($postTypeModel);
-		
+
 		$secondRequest = new Request;
-		
+
         foreach($allFieldKeys as $toSaveKey => $toSaveValue){
 			$configValue = $this->getCustomFieldValueWithoutConfig($postTypeModel, $post, $toSaveKey);
             $secondRequest[$toSaveKey] = $configValue;
 		}
-		
+
         // Receive the post meta values
 		$postmeta = $secondRequest->all();
-		
+
         // Validating the request
 		$validationRules = $this->validatePostFields($secondRequest->all(), $secondRequest, $postTypeModel);
-		
+
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
 		$postmeta = $this->removeValuesByConditionalLogic($postmeta, $postTypeModel, $post);
 		$logicValidations = $this->removeValidationsByConditionalLogic($postmeta, $postTypeModel, $post);
-		
+
 		foreach($logicValidations as $postmetaKey => $postmetaValue){
 			if($postmetaValue === false){
 				if(array_key_exists($postmetaKey, $validationRules)){
@@ -199,18 +203,18 @@ class CheckPostController extends CmsController
 			}
 		}
 
-		$validatedFields = $this->validatePost($secondRequest, $post, $validationRules);		
+		$validatedFields = $this->validatePost($secondRequest, $post, $validationRules);
 		if($validatedFields['status'] === false){
 			$errors = $validatedFields['errors'];
 			return (object) [
 				'code' => 'failure',
 				'validation' => true,
-				'errors' => $errors->messages(),	
+				'errors' => $errors->messages(),
 			];
 		}
 
-		if(method_exists($postTypeModel, 'on_check_check')){	
-			$onCheck = $postTypeModel->on_check_check($postTypeModel, $post->id, $postmeta);			
+		if(method_exists($postTypeModel, 'on_check_check')){
+			$onCheck = $postTypeModel->on_check_check($postTypeModel, $post->id, $postmeta);
 			if($onCheck['continue'] === false){
 				$errorMessages = 'You are not authorized to do this.';
 				if(array_key_exists('message', $onCheck)){
@@ -219,7 +223,7 @@ class CheckPostController extends CmsController
 				return [
 					'code' => 'failure',
 					'validation' => false,
-					'errors' => $errorMessages,	
+					'errors' => $errorMessages,
 				];
 			}
 		}
@@ -235,9 +239,9 @@ class CheckPostController extends CmsController
 		return (object) [
 			'code' => 'success',
 			'post' => $post,
-			'message' => $successMessage	
+			'message' => $successMessage
 		];
-        
+
 	}
 
     /**
@@ -279,11 +283,11 @@ class CheckPostController extends CmsController
 		    }
 
 		}
-		 
+
 		$validator = Validator::make($request->all(), $validationRules);
         if ($validator->fails()) {
 			return [
-				'status' => false,	
+				'status' => false,
 				'errors' => $validator->errors()
 			];
         } else {
