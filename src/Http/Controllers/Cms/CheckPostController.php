@@ -27,7 +27,7 @@ class CheckPostController extends CmsController
 		$config = $this->getConfig($postTypeModel);
 
 		if(method_exists($postTypeModel, 'override_check_config_response')){
-			$config = $postTypeModel->override_check_config_response($postTypeModel, $id, $config, $request);
+			$config = $postTypeModel->override_check_config_response($postTypeModel, $result->post->id, $config, $request);
 		}
 
 		return response()->json([
