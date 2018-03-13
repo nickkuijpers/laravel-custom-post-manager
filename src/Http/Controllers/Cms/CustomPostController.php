@@ -87,7 +87,7 @@ class CustomPostController extends CmsController
         $collection = $this->showConditional($postTypeModel, $collection);
 
         // Lets check if there are any manipulators active
-		$collection = $this->showMutator($postTypeModel, $collection);
+		$collection = $this->showMutator($postTypeModel, $collection, $request);
 
 		if(method_exists($postTypeModel, 'on_show_mutator')){
 			$collection = $postTypeModel->on_show_mutator($postTypeModel, $post->id, $postmeta, $collection);
