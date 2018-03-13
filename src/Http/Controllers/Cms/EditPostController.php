@@ -32,7 +32,7 @@ class EditPostController extends CmsController
 			$errorMessages = $validateBefore['message'];
     		return $this->abort($errorMessages, $validateBefore['config']);
 		}
-		
+
 		// Disable editting of form
 		if($postTypeModel->disableEditOnlyCheck){
         	$errorMessages = 'The post type does not support editting.';
@@ -50,26 +50,26 @@ class EditPostController extends CmsController
     		}
     		return $this->abort($errorMessages);
 		}
-		
+
 		$allFieldKeys = collect($this->getValidationsKeys($postTypeModel))->map(function($value, $key){
 			return '';
 		})->toArray();
 
     	// Receive the post meta values
 		$postmeta = $request->all();
-		
+
 		foreach($postmeta as $postmetaKey => $postmetaValue){
 			$allFieldKeys[$postmetaKey] = $postmeta[$postmetaKey];
 		}
-		
+
 		$postmeta = $allFieldKeys;
 
         // Validating the request
         $validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
-		
+
 		// Unset unrequired post meta keys
 		$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
-		
+
         // Get the post instance
         $post = $this->findPostInstance($postTypeModel, $request, $postType, $id, 'edit_post');
         if(!$post){
@@ -79,7 +79,7 @@ class EditPostController extends CmsController
     		}
     		return $this->abort($errorMessages);
 		}
-		
+
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
 		$postmeta = $this->removeValuesByConditionalLogic($postmeta, $postTypeModel, $post);
 		$logicValidations = $this->removeValidationsByConditionalLogic($postmeta, $postTypeModel, $post);
@@ -94,8 +94,8 @@ class EditPostController extends CmsController
 
 		$this->validatePost($request, $post, $validationRules);
 
-		if(method_exists($postTypeModel, 'on_edit_check')){	
-			$onCheck = $postTypeModel->on_edit_check($postTypeModel, $post->id, $postmeta);			
+		if(method_exists($postTypeModel, 'on_edit_check')){
+			$onCheck = $postTypeModel->on_edit_check($postTypeModel, $post->id, $postmeta);
 			if($onCheck['continue'] === false){
 				$errorMessages = 'You are not authorized to do this.';
 				if(array_key_exists('message', $onCheck)){
@@ -107,7 +107,7 @@ class EditPostController extends CmsController
 
 		// Saving the post values to the database
     	$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $request, $postType);
-		
+
         // Saving the post meta values to the database
         $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
 
@@ -120,6 +120,10 @@ class EditPostController extends CmsController
 		}
 
 		$config = $this->getConfig($postTypeModel);
+
+		if(method_exists($postTypeModel, 'override_edit_config_response')){
+			$config = $postTypeModel->override_edit_config_response($postTypeModel, $post->id, $postmeta, $config, $request);
+		}
 
         // Lets return the response
     	return response()->json([
@@ -138,7 +142,7 @@ class EditPostController extends CmsController
     		],
     	], 200);
 	}
-	
+
 	public function getConfig($postTypeModel)
 	{
 		// Merge the configuration values
@@ -159,7 +163,7 @@ class EditPostController extends CmsController
 			$config['skip_creation'] = false;
 			$config['skip_to_route_name'] = '';
 		}
-		
+
 		// Adding public config
         if($postTypeModel->disableEditOnlyCheck){
         	$config['disable_edit_only_check'] = $postTypeModel->disableEditOnlyCheck;
@@ -184,7 +188,7 @@ class EditPostController extends CmsController
         } else {
         	$config['disable_create'] = false;
 		}
-		
+
 		if($postTypeModel->getPostByPostName){
         	$config['get_post_by_postname'] = $postTypeModel->getPostByPostName;
         } else {
@@ -196,11 +200,11 @@ class EditPostController extends CmsController
 		// Adding public config
         if($postTypeModel->enableAllSpecificFieldsUpdate){
         	$config['specific_fields']['enable_all'] = $postTypeModel->enableAllSpecificFieldsUpdate;
-			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;			
+			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;
 			$config['specific_fields']['enabled_fields'] = $allKeys->keys();
         } else {
         	$config['specific_fields']['enable_all'] = $postTypeModel->enableAllSpecificFieldsUpdate;
-			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;			
+			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;
 			$config['specific_fields']['enabled_fields'] = $allKeys->where('single_field_updateable.active', 'true')->keys();
 		}
 
