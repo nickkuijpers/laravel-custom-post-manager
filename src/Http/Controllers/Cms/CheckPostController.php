@@ -151,6 +151,8 @@ class CheckPostController extends CmsController
 			];
 		}
 
+		$config = $this->getConfig($postTypeModel);
+
     	// Check if the post type has a identifier
     	if(empty($postTypeModel->identifier)){
 			$errorMessages = 'The post type does not have a identifier.';
@@ -176,6 +178,10 @@ class CheckPostController extends CmsController
 				'validation' => false,
 				'errors' => $errorMessages,
 			];
+		}
+
+		if(method_exists($postTypeModel, 'override_check_config_response')){
+			$config = $postTypeModel->override_check_config_response($postTypeModel, $post->id, $config, $request);
 		}
 
 		$allFieldKeys = $this->getValidationsKeys($postTypeModel);
@@ -212,6 +218,7 @@ class CheckPostController extends CmsController
 				'code' => 'failure',
 				'validation' => true,
 				'errors' => $errors->messages(),
+				'config' => $config,
 			];
 		}
 
@@ -226,6 +233,7 @@ class CheckPostController extends CmsController
 					'code' => 'failure',
 					'validation' => false,
 					'errors' => $errorMessages,
+					'config' => $config,
 				];
 			}
 		}
@@ -241,7 +249,8 @@ class CheckPostController extends CmsController
 		return (object) [
 			'code' => 'success',
 			'post' => $post,
-			'message' => $successMessage
+			'message' => $successMessage,
+			'config' => $config,
 		];
 
 	}
