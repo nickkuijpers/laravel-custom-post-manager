@@ -196,64 +196,6 @@ class CustomPostController extends CmsController
 		return $config;
 	}
 
-    // Lets check if there are any manipulators active for showing the post
-	protected function showMutator($postTypeModel, $collection)
-	{
-		foreach($collection['templates'] as $groupKey => $groupValue){
-
-			foreach($groupValue['customFields'] as $key => $value){
-
-				$customField = $this->getCustomFieldObject($postTypeModel, $key);
-
-				if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
-					if(method_exists(new $customField['mutator'], 'out')){
-						if(array_key_exists('value', $collection['templates'][$groupKey]['customFields'][$key])){
-							$holdValue = $collection['templates'][$groupKey]['customFields'][$key]['value'];
-							$customField = (new $customField['mutator'])->out($customField, $collection, $key, $postTypeModel, $holdValue);
-							$collection['templates'][$groupKey]['customFields'][$key] = $customField;
-						}
-					}
-				}
-
-				if(array_key_exists('customFields', $value)){
-					foreach($value['customFields'] as $innerKey => $innerValue){
-
-						$customField = $this->getCustomFieldObject($postTypeModel, $innerKey);
-
-						if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
-							if(method_exists(new $customField['mutator'], 'out')){
-								$holdValue = $collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['value'];
-								$customField = (new $customField['mutator'])->out($customField, $collection, $innerKey, $postTypeModel, $holdValue);
-								$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey] = $customField;
-							}
-						}
-
-						if(array_key_exists('customFields', $innerValue)){
-							foreach($innerValue['customFields'] as $innerInnerKey => $innerInnerValue){
-
-								$customField = $this->getCustomFieldObject($postTypeModel, $innerInnerKey);
-
-								if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
-									if(method_exists(new $customField['mutator'], 'out')){
-										$holdValue = $collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey]['value'];
-										$customField = (new $customField['mutator'])->out($customField, $collection, $innerInnerKey, $postTypeModel, $holdValue);
-										$collection['templates'][$groupKey]['customFields'][$key]['customFields'][$innerKey]['customFields'][$innerInnerKey] = $customField;
-									}
-								}
-
-							}
-						}
-
-					}
-				}
-
-			}
-
-		}
-
-		return $collection;
-	}
-
 	/**
 	 * Get all the post meta keys of the post
 	 */
