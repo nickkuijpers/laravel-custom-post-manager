@@ -21,12 +21,12 @@ class CustomPostController extends CmsController
     		$errorMessages = 'You are not authorized to do this.';
     		return $this->abort($errorMessages);
 		}
-		
+
 		if(!empty($method)){
- 
-			if(method_exists($postTypeModel, 'show_custom_post_' . $method)){	
+
+			if(method_exists($postTypeModel, 'show_custom_post_' . $method)){
 				$methodToEdit = 'show_custom_post_' . $method;
-				return $postTypeModel->$methodToEdit($request);						
+				return $postTypeModel->$methodToEdit($request);
 			} else {
 				$errorMessages = 'The post type does not have the custom method ' . $method . '.';
 				if(array_has($postTypeModel->errorMessages, 'post_type_does_not_have_the_support_custom_method')){
@@ -34,11 +34,11 @@ class CustomPostController extends CmsController
 				}
 				return $this->abort($errorMessages);
 			}
- 
+
 		}
 
 		$config = $this->getConfig($postTypeModel);
- 
+
 		// Validate if we need to validate a other post type before showing this post type
 		$validateBefore = $this->validatePostTypeBefore($request, $postTypeModel, $id);
 		if($validateBefore['status'] === false){
@@ -79,25 +79,25 @@ class CustomPostController extends CmsController
 		$collection = [];
 		$collection['post'] = [];
 		$collection['postmeta'] = [];
- 
+
         // Mergin the collection with the data and custom fields
         $collection['templates'] = $this->mergeCollectionWithView($postTypeModel->view, $collection, $postTypeModel);
-		
+
         // Lets check if there are any manipulators active
         $collection = $this->showConditional($postTypeModel, $collection);
 
         // Lets check if there are any manipulators active
 		$collection = $this->showMutator($postTypeModel, $collection);
-		
-		if(method_exists($postTypeModel, 'on_show_mutator')){	
-			$collection = $postTypeModel->on_show_mutator($postTypeModel, $post->id, $postmeta, $collection);						
+
+		if(method_exists($postTypeModel, 'on_show_mutator')){
+			$collection = $postTypeModel->on_show_mutator($postTypeModel, $post->id, $postmeta, $collection);
 		}
 
         // Cleaning up the output
 		unset($collection['postmeta']);
-		
-		if(method_exists($postTypeModel, 'on_show_check')){	
-			$onShowCheck = $postTypeModel->on_show_check($postTypeModel, $post->id, $postmeta);			
+
+		if(method_exists($postTypeModel, 'on_show_check')){
+			$onShowCheck = $postTypeModel->on_show_check($postTypeModel, $post->id, $postmeta);
 			if($onShowCheck['continue'] === false){
 				$errorMessages = 'You are not authorized to do this.';
 				if(array_key_exists('message', $onShowCheck)){
@@ -113,9 +113,9 @@ class CustomPostController extends CmsController
 		unset($collection['post']);
 		unset($collection['postmeta']);
 
-		if(method_exists($postTypeModel, 'show_custom_post')){	
+		if(method_exists($postTypeModel, 'show_custom_post')){
 			$methodToEdit = 'show_custom_post';
-			return $postTypeModel->show_custom_post($collection, $request);						
+			return $postTypeModel->show_custom_post($collection, $request);
 		} else {
 			$errorMessages = 'The post type does not have the show method';
 			if(array_has($postTypeModel->errorMessages, 'post_type_does_not_have_the_show_method')){
@@ -127,7 +127,7 @@ class CustomPostController extends CmsController
         // Returning the full collection
     	return response()->json($collection);
 	}
-	
+
 	public function getConfig($postTypeModel)
 	{
 		// Merge the configuration values
@@ -148,7 +148,7 @@ class CustomPostController extends CmsController
 			$config['skip_creation'] = false;
 			$config['skip_to_route_name'] = '';
 		}
-		
+
 		// Adding public config
         if($postTypeModel->disableEditOnlyCheck){
         	$config['disable_edit_only_check'] = $postTypeModel->disableEditOnlyCheck;
@@ -173,7 +173,7 @@ class CustomPostController extends CmsController
         } else {
         	$config['disable_create'] = false;
 		}
-		
+
 		if($postTypeModel->getPostByPostName){
         	$config['get_post_by_postname'] = $postTypeModel->getPostByPostName;
         } else {
@@ -185,11 +185,11 @@ class CustomPostController extends CmsController
 		// Adding public config
         if($postTypeModel->enableAllSpecificFieldsUpdate){
         	$config['specific_fields']['enable_all'] = $postTypeModel->enableAllSpecificFieldsUpdate;
-			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;			
+			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;
 			$config['specific_fields']['enabled_fields'] = $allKeys->keys();
         } else {
         	$config['specific_fields']['enable_all'] = $postTypeModel->enableAllSpecificFieldsUpdate;
-			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;			
+			$config['specific_fields']['exclude_fields'] = $postTypeModel->excludeSpecificFieldsFromUpdate;
 			$config['specific_fields']['enabled_fields'] = $allKeys->where('single_field_updateable.active', 'true')->keys();
 		}
 
@@ -273,24 +273,24 @@ class CustomPostController extends CmsController
 				if(array_key_exists('post_type', $customFieldObject)){
 
 					$customfieldPostTypes = $this->getPostTypeIdentifiers($customFieldObject['post_type']);
-	
+
 					// Lets query the post to retrieve all the connected ids
 					$taxonomyIds = $post->taxonomies()->whereIn('post_type', $customfieldPostTypes)
 						->get();
-	
+
 					// Lets foreach all the posts because we only need the id
 					$ids = [];
 					foreach($taxonomyIds as $value){
 						array_push($ids, $value->id);
 					}
-	
+
 					$ids = json_encode($ids);
-	
+
 					$metaTaxonomies[$key] = [
 						'meta_key' => $key,
 						'meta_value' => $ids,
 					];
-				
+
 				}
 
 			// The other items are default
@@ -302,7 +302,7 @@ class CustomPostController extends CmsController
 			}
 
 		}
- 
+
 		// Lets query the database to get only the values where we have registered the meta keys
 		$postmetaSimple = $post->postmeta()
 			->whereIn('meta_key', $metaKeys)
@@ -310,7 +310,7 @@ class CustomPostController extends CmsController
 			->get()
 			->keyBy('meta_key')
 			->toArray();
- 
+
 		// Lets attach the default post columns
 		$defaultPostData = [];
 
@@ -326,7 +326,7 @@ class CustomPostController extends CmsController
 
 		// Lets merge all the types of configs
 		$postmeta = array_merge($postmetaSimple, $metaTaxonomies, $defaultPostData);
-		
+
 		// Return the post meta's
 		return $postmeta;
 	}
@@ -373,7 +373,7 @@ class CustomPostController extends CmsController
 							}
 
 						break;
-						
+
 						// If we find the customFieldKey updated_at, we know it is in the config file
 	            		case 'status':
 
@@ -388,7 +388,7 @@ class CustomPostController extends CmsController
 
 	            	// Lets set the key to the array
 	                $view[$templateKey]['customFields'][$customFieldKey]['id'] = $customFieldKey;
-			  
+
 					if(array_key_exists($customFieldKey, $postmeta)){
 						$view[$templateKey]['customFields'][$customFieldKey]['value'] = $postmeta[$customFieldKey]['meta_value'];
 					}
@@ -397,16 +397,16 @@ class CustomPostController extends CmsController
 	                if(array_key_exists('output', $customField) && !$customField['output']){
 	                	unset($view[$templateKey]['customFields'][$customFieldKey]);
 					}
-					
+
 					// If the array custom fields is not empty
 					if(!empty($customField['customFields'])){
 
 						// We foreach all custom fields in this template section
 						foreach($customField['customFields'] as $innerCustomFieldKey => $innerCustomField){
-					
+
 							// Lets set the key to the array
 							$view[$templateKey]['customFields'][$customFieldKey]['customFields'][$innerCustomFieldKey]['id'] = $innerCustomFieldKey;
-					
+
 							if(array_key_exists($innerCustomFieldKey, $postmeta)){
 								$view[$templateKey]['customFields'][$customFieldKey]['customFields'][$innerCustomFieldKey]['value'] = $postmeta[$innerCustomFieldKey]['meta_value'];
 							}
@@ -415,7 +415,7 @@ class CustomPostController extends CmsController
 							if(array_key_exists('output', $innerCustomField) && !$innerCustomField['output']){
 								unset($view[$templateKey]['customFields'][$customFieldKey]['customFields'][$innerCustomFieldKey]);
 							}
-					
+
 						}
 
 						// If the array custom fields is not empty
@@ -423,10 +423,10 @@ class CustomPostController extends CmsController
 
 							// We foreach all custom fields in this template section
 							foreach($innerCustomField['customFields'] as $innerInnerCustomFieldKey => $innerInnerCustomField){
-						
+
 								// Lets set the key to the array
 								$view[$templateKey]['customFields'][$customFieldKey]['customFields'][$innerCustomFieldKey]['customFields'][$innerInnerCustomFieldKey]['id'] = $innerInnerCustomFieldKey;
-						
+
 								if(array_key_exists($innerInnerCustomFieldKey, $postmeta)){
 									$view[$templateKey]['customFields'][$customFieldKey]['customFields'][$innerCustomFieldKey]['customFields'][$innerInnerCustomFieldKey]['value'] = $postmeta[$innerInnerCustomFieldKey]['meta_value'];
 								}
@@ -435,14 +435,14 @@ class CustomPostController extends CmsController
 								if(array_key_exists('output', $innerInnerCustomField) && !$innerInnerCustomField['output']){
 									unset($view[$templateKey]['customFields'][$customFieldKey]['customFields'][$innerCustomFieldKey]['customFields'][$innerInnerCustomFieldKey]);
 								}
-						
+
 							}
 						}
 					}
 	            }
 	        }
 		}
- 
+
         return $view;
     }
 }
