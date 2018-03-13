@@ -40,7 +40,7 @@ class ShowCustomGetPostController extends CmsController
 
         if(method_exists($postTypeModel, 'show_custom_get_' . $method)){
             $methodToEdit = 'show_custom_get_' . $method;
-            return $postTypeModel->$methodToEdit($request);
+            return $postTypeModel->$methodToEdit($request, $id, $customId);
         } else {
             $errorMessages = 'The post type does not have the custom show get method ' . $method . '.';
             if(array_has($postTypeModel->errorMessages, 'post_type_does_not_have_the_support_custom_show_getmethod')){
