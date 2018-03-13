@@ -101,7 +101,9 @@ class EditPostController extends CmsController
 				if(array_key_exists('message', $onCheck)){
 					$errorMessages = $onCheck['message'];
 				}
-				return $this->abort($errorMessages);
+				return response()->json([
+					$errorMessages
+				], 422);
 			}
 		}
 
