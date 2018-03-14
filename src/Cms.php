@@ -58,7 +58,8 @@ class Cms
 			// Crud listing all posts by post type
 			Route::post('/{post_type}', '\Niku\Cms\Http\Controllers\Cms\ListPostsController@init')->name('list');
 			Route::post('/{post_type}/show/{identifier}', '\Niku\Cms\Http\Controllers\Cms\ShowPostController@init')->name('show');
-			Route::get('/{post_type}/show/{identifier}/{method}/{customid}', '\Niku\Cms\Http\Controllers\Cms\ShowCustomGetPostController@init')->name('show');
+			Route::get('/{post_type}/show/{identifier}/{method}/{customid?}', '\Niku\Cms\Http\Controllers\Cms\ShowCustomGetPostController@init')->name('show');
+			Route::post('/{post_type}/show/{identifier}/{method}/{customid?}', '\Niku\Cms\Http\Controllers\Cms\ShowCustomGetPostController@init')->name('show');
 
 			// Taxonomy
 			Route::post('/{post_type}/show/{identifier}/taxonomies/{sub_post_type}', '\Niku\Cms\Http\Controllers\Cms\ShowPostTaxonomies@init')->name('show');

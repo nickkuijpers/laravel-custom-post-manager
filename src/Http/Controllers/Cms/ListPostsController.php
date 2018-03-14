@@ -17,6 +17,10 @@ class ListPostsController extends CmsController
     		return $this->abort($errorMessages);
     	}
 
+    	if(method_exists($postTypeModel, 'override_list_post')){
+			return $postTypeModel->override_list_post($id, $request);
+		}
+
     	// Check if the post type has a identifier
     	if(empty($postTypeModel->identifier)){
     		$errorMessages = 'The post type does not have a identifier.';
@@ -28,8 +32,8 @@ class ListPostsController extends CmsController
 
 		if($postTypeModel->overrideDefaultListing === true){
 
-			if(method_exists($postTypeModel, 'override_listing_show_method')){	
-				return $postTypeModel->override_listing_show_method($request, $postType);						
+			if(method_exists($postTypeModel, 'override_listing_show_method')){
+				return $postTypeModel->override_listing_show_method($request, $postType);
 			} else {
 				$errorMessages = 'The post type does not have the custom method';
 				if(array_has($postTypeModel->errorMessages, 'post_type_does_not_have_the_support_custom_method')){
@@ -58,7 +62,7 @@ class ListPostsController extends CmsController
         if(!empty($postTypeModel->identifier)){
         	$postType = $postTypeModel->identifier;
         }
-		
+
 		$postTypeAliases = [];
 		$postTypeIsArray = false;
 		if(!empty($postTypeModel->postTypeAliases)){
@@ -82,7 +86,7 @@ class ListPostsController extends CmsController
 		if(method_exists($postTypeModel, 'append_list_query')){
 			$appendQuery = true;
 		}
-		
+
 		// Query the database
 		$posts = $postTypeModel::where($where)
 			->when($appendQuery, function ($query) use ($postTypeModel, $request){
@@ -95,7 +99,7 @@ class ListPostsController extends CmsController
 			}, function($query) use ($postType) {
 				return $query->where('post_type', $postType);
 			})
-			
+
 			->select([
 				'id',
 				'post_title',
@@ -108,7 +112,7 @@ class ListPostsController extends CmsController
 			->with('postmeta')
 			->orderBy('id', 'desc')
 			->get();
-	
+
 		if($postTypeModel->getPostByPostName === false){
 			$posts->map(function($item, $key){
 				$item->post_name = $item->id;
@@ -117,8 +121,8 @@ class ListPostsController extends CmsController
 		}
 
 
-		if(method_exists($postTypeModel, 'on_list_check')){	
-			$onCheck = $postTypeModel->on_list_check($postTypeModel, $posts, []);			
+		if(method_exists($postTypeModel, 'on_list_check')){
+			$onCheck = $postTypeModel->on_list_check($postTypeModel, $posts, []);
 			if($onCheck['continue'] === false){
 				$errorMessages = 'You are not authorized to do this.';
 				if(array_key_exists('message', $onCheck)){
@@ -140,7 +144,7 @@ class ListPostsController extends CmsController
 			'objects' => $posts,
 		]);
 	}
-	
+
 	public function getConfig($postTypeModel)
 	{
 		// Merge the configuration values
@@ -161,14 +165,14 @@ class ListPostsController extends CmsController
 			$config['skip_creation'] = false;
 			$config['skip_to_route_name'] = '';
 		}
-		
+
 		// Adding public config
         if($postTypeModel->disableEditOnlyCheck){
         	$config['disable_edit_only_check'] = $postTypeModel->disableEditOnlyCheck;
         } else {
         	$config['disable_edit_only_check'] = false;
 		}
-  
+
 		if($postTypeModel->disableEdit){
         	$config['disable_edit'] = $postTypeModel->disableEdit;
         } else {

@@ -17,6 +17,10 @@ class EditPostController extends CmsController
     		return $this->abort($errorMessages);
     	}
 
+    	if(method_exists($postTypeModel, 'override_edit_post')){
+			return $postTypeModel->override_edit_post($id, $request);
+		}
+
     	// Check if the post type has a identifier
     	if(empty($postTypeModel->identifier)){
     		$errorMessages = 'The post type does not have a identifier.';

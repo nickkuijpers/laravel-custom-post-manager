@@ -19,6 +19,10 @@ class CheckPostController extends CmsController
     		return $this->abort($errorMessages);
 		}
 
+		if(method_exists($postTypeModel, 'override_check_post')){
+			return $postTypeModel->override_check_post($id, $request);
+		}
+
 		$result = $this->execute($request, $postType, $id);
 		if($result->code == 'failure'){
 			return response()->json($result, 422);

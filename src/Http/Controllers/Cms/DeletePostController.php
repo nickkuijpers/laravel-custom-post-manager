@@ -20,6 +20,10 @@ class DeletePostController extends CmsController
     		return $this->abort($errorMessages);
     	}
 
+    	if(method_exists($postTypeModel, 'override_delete_post')){
+			return $postTypeModel->override_delete_post($id, $request);
+		}
+
     	// Check if the post type has a identifier
     	if(empty($postTypeModel->identifier)){
     		$errorMessages = 'The post type does not have a identifier.';
@@ -46,8 +50,8 @@ class DeletePostController extends CmsController
     		return $this->abort($errorMessages);
 		}
 
-		if(method_exists($postTypeModel, 'on_delete_check')){	
-			$onCheck = $postTypeModel->on_delete_check($postTypeModel, $post->id, []);			
+		if(method_exists($postTypeModel, 'on_delete_check')){
+			$onCheck = $postTypeModel->on_delete_check($postTypeModel, $post->id, []);
 			if($onCheck['continue'] === false){
 				$errorMessages = 'You are not authorized to do this.';
 				if(array_key_exists('message', $onCheck)){
