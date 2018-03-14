@@ -23,9 +23,8 @@ class TaxonomyController extends CmsController
 			'action' => 'required',
             'id' => 'required',
             'taxonomy_post_id' => 'required',
-            'menu_order' => '',
-        ]);        
-        
+        ]);
+
     	// Check if the post type has a identifier
     	if(empty($postTypeModel->identifier)){
     		$errorMessages = 'The post type does not have a identifier.';
@@ -34,7 +33,7 @@ class TaxonomyController extends CmsController
     		}
     		return $this->abort($errorMessages);
 		}
-		
+
 		// // Disable editting of form
 		// if($postTypeModel->disableEditOnlyCheck){
         // 	$errorMessages = 'The post type does not support editting.';
@@ -52,7 +51,7 @@ class TaxonomyController extends CmsController
     		}
     		return $this->abort($errorMessages);
 		}
- 
+
 		switch($request->action){
 
 			// Creating a taxonomy
@@ -123,7 +122,7 @@ class TaxonomyController extends CmsController
 
 					$taxonomyInstance->saveMetas($toSave);
 				}
- 
+
 				$taxonomyInstance->save();
 
 			break;
