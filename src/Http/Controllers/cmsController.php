@@ -1402,17 +1402,20 @@ class CmsController extends Controller
 	{
 		foreach($collection['templates'] as $groupKey => $groupValue){
 
+			
 			foreach($groupValue['customFields'] as $key => $value){
-
+				
 				$customField = $this->getCustomFieldObject($postTypeModel, $key);
-
+				
 				if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
 					if(method_exists(new $customField['mutator'], 'out')){
 						if(array_key_exists('value', $collection['templates'][$groupKey]['customFields'][$key])){
 							$holdValue = $collection['templates'][$groupKey]['customFields'][$key]['value'];
-							$customField = (new $customField['mutator'])->out($customField, $collection, $key, $postTypeModel, $holdValue, $request);
-							$collection['templates'][$groupKey]['customFields'][$key] = $customField;
+						} else {
+							$holdValue = '';
 						}
+						$customField = (new $customField['mutator'])->out($customField, $collection, $key, $postTypeModel, $holdValue, $request);
+						$collection['templates'][$groupKey]['customFields'][$key] = $customField;
 					}
 				}
 

@@ -8,15 +8,28 @@ use Niku\Cms\Http\Controllers\CmsController;
 
 class ListPostsController extends CmsController
 {
-	public function init(Request $request, $postType)
+	public function init(Request $request, $postType, $method = '', $customId = '')
     {
     	// Lets validate if the post type exists and if so, continue.
     	$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
     		$errorMessages = 'You are not authorized to do this.';
     		return $this->abort($errorMessages);
-    	}
-
+		}
+		
+		if(!empty($method)){
+			if(method_exists($postTypeModel, 'get_custom_list_' . $method)){
+				$methodToEdit = 'get_custom_list_' . $method;
+				return $postTypeModel->$methodToEdit($request, $customId);
+			} else {
+				$errorMessages = 'The post type does not have the custom list get method ' . $method . '.';
+				if(array_has($postTypeModel->errorMessages, 'post_type_does_not_have_the_support_custom_list_get_method')){
+					$errorMessages = $postTypeModel->errorMessages['post_type_does_not_have_the_support_custom_list_get_method'];
+				}
+				return $this->abort($errorMessages);
+			}
+		}
+		
     	if(method_exists($postTypeModel, 'override_list_post')){
 			return $postTypeModel->override_list_post($id, $request);
 		}
