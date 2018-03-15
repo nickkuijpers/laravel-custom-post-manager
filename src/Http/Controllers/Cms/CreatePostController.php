@@ -68,11 +68,11 @@ class CreatePostController extends CmsController
 				return '';
 			})->toArray();
 
-			$request = $this->resetRequestValues($request);
-			foreach($allFieldKeys as $toSaveKey => $toSaveValue){
-				$configValue = $this->getCustomFieldValue($postTypeModel, $postTypeModel, $toSaveKey);
-				$request[$toSaveKey] = $configValue;
-			}
+			// $request = $this->resetRequestValues($request);
+			// foreach($allFieldKeys as $toSaveKey => $toSaveValue){
+			// 	$configValue = $this->getCustomFieldValue($postTypeModel, $postTypeModel, $toSaveKey);
+			// 	$request[$toSaveKey] = $configValue;
+			// }
 
 			$postmeta = $request->all();
 
