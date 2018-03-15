@@ -1454,4 +1454,33 @@ class CmsController extends Controller
 
 		return $collection;
 	}
+
+	// Lets check if there are any manipulators active for showing the post
+	protected function saveSingleMutator($postTypeModel, $key, $value, $post, $postmeta, $request = [])
+	{
+		$post = $post->toArray();
+		$postmeta = $postmeta;
+		$postRequest = array_merge($post, $postmeta);
+
+		// Receiving the custom field
+		$customField = $this->getCustomFieldObject($postTypeModel, $key);
+
+		if(!empty($customField)){
+
+			// Lets see if we have a mutator registered
+			if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
+
+				if(method_exists(new $customField['mutator'], 'in')){
+					$mutatorValue = (new $customField['mutator'])->in($customField, $postRequest, $value, $key, $postTypeModel, $request);
+
+					// Lets set the new value to the existing value
+					$value = $mutatorValue;
+				}
+
+			}
+
+		}
+
+		return $value;
+	}
 }
