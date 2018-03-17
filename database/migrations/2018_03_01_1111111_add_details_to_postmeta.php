@@ -13,7 +13,7 @@ class AddDetailsToPostmeta extends Migration
 	public function up()
 	{
 		Schema::table('cms_postmeta', function (Blueprint $table) {
-		    $table->bigInteger('menu_order');
+		    $table->bigInteger('menu_order')->nullable();
 		});
 	}
 
