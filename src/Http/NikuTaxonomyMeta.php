@@ -10,13 +10,6 @@ class NikuTaxonomyMeta extends Model
     protected $table = 'cms_taxonomymeta';
     protected $fillable = ['meta_key', 'meta_value'];
 
-    public $helpers;
-
-    public function __construct()
-    {
-        $this->helpers = new cmsController;
-    }
-
     public function taxonomy()
     {
     	return $this->hasOne('Niku\Cms\Http\Taxonomymeta', 'id', 'taxonomy_id');

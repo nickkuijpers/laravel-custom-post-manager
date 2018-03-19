@@ -10,13 +10,6 @@ class NikuPosts extends Model
 {
     protected $table = 'cms_posts';
 
-    public $helpers;
-
-    public function __construct()
-    {
-        $this->helpers = new cmsController;
-    }
-
 	/**
 	 * Has Many connection to the post meta table
 	 */

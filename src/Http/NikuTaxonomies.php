@@ -10,13 +10,6 @@ class NikuTaxonomies extends Model
 {
     protected $table = 'cms_taxonomy';
 
-    public $helpers;
-
-    public function __construct()
-    {
-        $this->helpers = new cmsController;
-    }
-
     /**
 	 * Has Many connection to the post meta table
 	 */

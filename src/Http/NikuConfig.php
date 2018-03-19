@@ -13,11 +13,4 @@ class NikuConfig extends Model
     protected $fillable = ['option_name', 'option_value', 'group'];
 
     protected $hidden = ['created_at', 'updated_at'];
-
-    public $helpers;
-
-    public function __construct()
-    {
-        $this->helpers = new cmsController;
-    }
 }
