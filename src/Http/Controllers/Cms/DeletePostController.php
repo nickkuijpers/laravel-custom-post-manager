@@ -72,6 +72,10 @@ class DeletePostController extends CmsController
 			$successMessage = $postTypeModel->successMessage['post_deleted'];
 		}
 
+		if(method_exists($postTypeModel, 'override_delete_response')){
+			return $postTypeModel->override_delete_response($id, $request);
+		}
+
         // Return the response
     	return response()->json([
     		'code' => 'success',
