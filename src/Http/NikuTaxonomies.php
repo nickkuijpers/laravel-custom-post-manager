@@ -4,10 +4,18 @@ namespace Niku\Cms\Http;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Niku\Cms\Http\Controllers\cmsController;
 
 class NikuTaxonomies extends Model
 {
     protected $table = 'cms_taxonomy';
+
+    public $helpers;
+
+    public function __construct()
+    {
+        $this->helpers = new cmsController;
+    }
 
     /**
 	 * Has Many connection to the post meta table
@@ -29,11 +37,11 @@ class NikuTaxonomies extends Model
 			return $returnValue;
 		}
     }
-    
+
     public function saveMetas($metas)
     {
         foreach($metas as $key => $value){
-         
+
             if(is_array($value)){
             	$value = json_encode($value);
             }
@@ -48,6 +56,6 @@ class NikuTaxonomies extends Model
             $this->taxonomymeta()->updateOrCreate([
                 'meta_key' => $key
             ], $object);
-        }        
+        }
     }
 }

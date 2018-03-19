@@ -4,10 +4,18 @@ namespace Niku\Cms\Http;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Niku\Cms\Http\Controllers\cmsController;
 
 class NikuPosts extends Model
 {
     protected $table = 'cms_posts';
+
+    public $helpers;
+
+    public function __construct()
+    {
+        $this->helpers = new cmsController;
+    }
 
 	/**
 	 * Has Many connection to the post meta table
@@ -45,11 +53,11 @@ class NikuPosts extends Model
 			return $returnValue;
 		}
     }
-    
+
     public function saveMetas($metas)
     {
         foreach($metas as $key => $value){
-         
+
             if(is_array($value)){
             	$value = json_encode($value);
             }
@@ -64,6 +72,6 @@ class NikuPosts extends Model
             $this->postmeta()->updateOrCreate([
                 'meta_key' => $key
             ], $object);
-        }        
+        }
     }
 }
