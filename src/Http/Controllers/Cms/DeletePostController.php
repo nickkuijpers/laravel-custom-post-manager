@@ -73,7 +73,7 @@ class DeletePostController extends CmsController
 		}
 
 		if(method_exists($postTypeModel, 'override_delete_response')){
-			return $postTypeModel->override_delete_response($id, $request);
+			return $postTypeModel->override_delete_response($post, $request);
 		}
 
         // Return the response
