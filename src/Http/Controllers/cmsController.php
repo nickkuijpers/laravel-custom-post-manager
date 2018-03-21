@@ -91,7 +91,6 @@ class CmsController extends Controller
 		if(empty($request->template)){
 			$request->template = 'default';
 		}
-		$template = $postTypeModel->view[$request->template];
 
 		// Possibility to update a single field if whitelabeled
 		if($singleFieldUpdate){
@@ -1402,11 +1401,11 @@ class CmsController extends Controller
 	{
 		foreach($collection['templates'] as $groupKey => $groupValue){
 
-			
+
 			foreach($groupValue['customFields'] as $key => $value){
-				
+
 				$customField = $this->getCustomFieldObject($postTypeModel, $key);
-				
+
 				if(array_has($customField, 'mutator') && !empty($customField['mutator'])){
 					if(method_exists(new $customField['mutator'], 'out')){
 						if(array_key_exists('value', $collection['templates'][$groupKey]['customFields'][$key])){
