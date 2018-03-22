@@ -74,6 +74,12 @@ class EditPostController extends CmsController
 		// Unset unrequired post meta keys
 		$postmeta = $this->removeUnrequiredMetas($postmeta, $postTypeModel);
 
+		$config = $this->getConfig($postTypeModel);
+
+		if(method_exists($postTypeModel, 'override_edit_config_response')){
+			$config = $postTypeModel->override_edit_config_response($postTypeModel, $post->id, $config, $request);
+		}
+
         // Get the post instance
         $post = $this->findPostInstance($postTypeModel, $request, $postType, $id, 'edit_post');
         if(!$post){
@@ -81,7 +87,7 @@ class EditPostController extends CmsController
     		if(array_has($postTypeModel->errorMessages, 'post_does_not_exist')){
     			$errorMessages = $postTypeModel->errorMessages['post_does_not_exist'];
     		}
-    		return $this->abort($errorMessages);
+    		return $this->abort($errorMessages, $config);
 		}
 
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
@@ -121,12 +127,6 @@ class EditPostController extends CmsController
         $successMessage = 'Post succesfully updated.';
 		if(array_has($postTypeModel->successMessage, 'post_updated')){
 			$successMessage = $postTypeModel->successMessage['post_updated'];
-		}
-
-		$config = $this->getConfig($postTypeModel);
-
-		if(method_exists($postTypeModel, 'override_edit_config_response')){
-			$config = $postTypeModel->override_edit_config_response($postTypeModel, $post->id, $config, $request);
 		}
 
         // Lets return the response
