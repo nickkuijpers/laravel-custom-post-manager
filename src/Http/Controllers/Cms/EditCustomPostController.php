@@ -17,15 +17,6 @@ class EditCustomPostController extends CmsController
     		return $this->abort($errorMessages);
     	}
 
-		// Disable editting of form
-		if($postTypeModel->enableCustomPostMethod !== true){
-        	$errorMessages = 'The post type does not support the custom method.';
-    		if(array_has($postTypeModel->errorMessages, 'post_type_does_not_support_custom_method')){
-    			$errorMessages = $postTypeModel->errorMessages['post_type_does_not_support_custom_method'];
-    		}
-    		return $this->abort($errorMessages);
-		}
-
 		if($postTypeModel->enableCustomValidations === true){
 			$validationRules = $this->validatePostFields($request->all(), $request, $postTypeModel);
 			$this->validate($request, $validationRules);
