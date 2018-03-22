@@ -129,8 +129,7 @@ class EditPostController extends CmsController
 			$successMessage = $postTypeModel->successMessage['post_updated'];
 		}
 
-        // Lets return the response
-    	return response()->json([
+        $response = [
 			'config' => $config,
     		'code' => 'success',
     		'message' => $successMessage,
@@ -144,7 +143,14 @@ class EditPostController extends CmsController
 				'created_at' => $post->created_at,
 				'updated_at' => $post->updated_at,
     		],
-    	], 200);
+    	];
+
+		if(method_exists($postTypeModel, 'override_edit_response')){
+			return $postTypeModel->override_edit_response($post->id, $request, $response);
+		}
+
+        // Lets return the response
+    	return response()->json($response, 200);
 	}
 
 	public function getConfig($postTypeModel)
