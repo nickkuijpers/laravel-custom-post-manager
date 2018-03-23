@@ -38,7 +38,25 @@ class CreatePostController extends CmsController
 		}
 
 		// Override post meta when we need to skip creation
-		if($postTypeModel->skipCreation === false){
+		if($postTypeModel->skipCreation === true){
+
+			$allFieldKeys = collect($this->getValidationsKeys($postTypeModel))->map(function($value, $key){
+				return '';
+			})->toArray();
+
+			// $request = $this->resetRequestValues($request);
+			// foreach($allFieldKeys as $toSaveKey => $toSaveValue){
+			// 	$configValue = $this->getCustomFieldValue($postTypeModel, $postTypeModel, $toSaveKey);
+			// 	$request[$toSaveKey] = $configValue;
+			// }
+
+			$postmeta = $request->all();
+
+			// Getting the post instance where we can add upon
+			$post = $postTypeModel;
+			$post->status = 'concept';
+
+		} else {
 
 			$allFieldKeys = collect($this->getValidationsKeys($postTypeModel))->map(function($value, $key){
 				return '';
@@ -61,24 +79,6 @@ class CreatePostController extends CmsController
 
 			 // Getting the post instance where we can add upon
 			$post = $postTypeModel;
-
-		} else {
-
-			$allFieldKeys = collect($this->getValidationsKeys($postTypeModel))->map(function($value, $key){
-				return '';
-			})->toArray();
-
-			// $request = $this->resetRequestValues($request);
-			// foreach($allFieldKeys as $toSaveKey => $toSaveValue){
-			// 	$configValue = $this->getCustomFieldValue($postTypeModel, $postTypeModel, $toSaveKey);
-			// 	$request[$toSaveKey] = $configValue;
-			// }
-
-			$postmeta = $request->all();
-
-			// Getting the post instance where we can add upon
-			$post = $postTypeModel;
-			$post->status = 'concept';
 		}
 
         // Lets check if we have configured a custom post type identifer
