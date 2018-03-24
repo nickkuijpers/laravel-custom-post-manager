@@ -364,7 +364,7 @@ class CmsController extends Controller
 	}
 
 	// Saving the post meta to the database
-	protected function savePostMetaToDatabase($postmeta, $postTypeModel, $post, $request = [], $customFieldKey = '')
+	public function savePostMetaToDatabase($postmeta, $postTypeModel, $post, $request = [], $customFieldKey = '')
 	{
 		// Presetting a empty array so we can append pivot values to the sync function.
 		$pivotValue = [];
