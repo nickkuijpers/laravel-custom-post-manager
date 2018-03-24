@@ -37,6 +37,10 @@ class CreatePostController extends CmsController
     		return $this->abort($errorMessages);
 		}
 
+		if(method_exists($postTypeModel, 'override_create_post')){
+			return $postTypeModel->override_create_post($id, $request);
+		}
+
 		// Override post meta when we need to skip creation
 		if($postTypeModel->skipCreation === true){
 
