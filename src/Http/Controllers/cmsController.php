@@ -82,7 +82,7 @@ class CmsController extends Controller
 		return $url;
 	}
 
-	protected function validatePostFields($postmeta, $request, $postTypeModel, $singleFieldUpdate = false)
+	public function validatePostFields($postmeta, $request, $postTypeModel, $singleFieldUpdate = false)
 	{
 		// Receive the default validations required for the post
 		$validationRules = [];
