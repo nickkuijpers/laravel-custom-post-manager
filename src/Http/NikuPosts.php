@@ -10,6 +10,23 @@ class NikuPosts extends Model
 {
     protected $table = 'cms_posts';
 
+    protected $fillable = [
+        'post_title',
+        'post_author',
+        'post_content',
+        'custom',
+        'post_excerpt',
+        'post_password',
+        'post_name',
+        'post_parent',
+        'post_type',
+        'menu_order',
+        'post_mime_type',
+        'status',
+        'taxonomy',
+        'template',
+    ];
+
 	/**
 	 * Has Many connection to the post meta table
 	 */
