@@ -76,10 +76,6 @@ class EditPostController extends CmsController
 
 		$config = $this->getConfig($postTypeModel);
 
-		if(method_exists($postTypeModel, 'override_edit_config_response')){
-			$config = $postTypeModel->override_edit_config_response($postTypeModel, $post->id, $config, $request);
-		}
-
         // Get the post instance
         $post = $this->findPostInstance($postTypeModel, $request, $postType, $id, 'edit_post');
         if(!$post){
@@ -88,6 +84,10 @@ class EditPostController extends CmsController
     			$errorMessages = $postTypeModel->errorMessages['post_does_not_exist'];
     		}
     		return $this->abort($errorMessages, $config);
+		}
+
+		if(method_exists($postTypeModel, 'override_edit_config_response')){
+			$config = $postTypeModel->override_edit_config_response($postTypeModel, $post->id, $config, $request);
 		}
 
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
