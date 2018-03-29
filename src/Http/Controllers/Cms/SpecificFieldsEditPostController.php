@@ -21,7 +21,7 @@ class SpecificFieldsEditPostController extends CmsController
     		$errorMessages = 'You are not authorized to do this.';
     		return $this->abort($errorMessages);
 		}
-		
+
 		// Check if the post type has a identifier
 		if(empty($postTypeModel->identifier)){
 			$errorMessages = 'The post type does not have a identifier.';
@@ -30,7 +30,7 @@ class SpecificFieldsEditPostController extends CmsController
 			}
 			return $this->abort($errorMessages);
 		}
-		
+
 		// Disable editting of form
 		if($postTypeModel->disableEdit){
 			$errorMessages = 'The post type does not support editting.';
@@ -46,16 +46,16 @@ class SpecificFieldsEditPostController extends CmsController
 			$errorMessages = $validateBefore['message'];
     		return $this->abort($errorMessages, $validateBefore['config']);
 		}
-		
+
 		$sanitizedKeys = $this->getValidationsKeys($postTypeModel);
 		foreach($sanitizedKeys as $saniKey => $saniValue){
 			$sanitizedKeys[$saniKey] = '';
 		}
-		
+
 		$verifiedFields = [];
 		$reloadFields = [];
 		$reloadFieldsMethod = 'none';
-		
+
 		// For each custom field given, we need to validate the permission
 		foreach($request->all() as $key => $value){
 
@@ -70,7 +70,7 @@ class SpecificFieldsEditPostController extends CmsController
 							$reloadFieldsMethod = 'specific';
 							$reloadFields[] = $customFieldObject['single_field_updateable']['reload_fields'];
 						} else if ($customFieldObject['single_field_updateable']['reload_fields'] == '*'){
-							$reloadFieldsMethod = 'all';							
+							$reloadFieldsMethod = 'all';
 							$reloadFields[] = $sanitizedKeys;
 						}
 					}
@@ -82,7 +82,7 @@ class SpecificFieldsEditPostController extends CmsController
 		// If updating all specific fields is enabled, we override the verified fields
 		if($postTypeModel->enableAllSpecificFieldsUpdate){
 			$whitelistedCustomFields = $this->getWhitelistedCustomFields($postTypeModel, $request->all());
-	
+
 			$reloadFields = $sanitizedKeys;
 
 			// If there is a exlusion active, lets progress that
@@ -96,13 +96,13 @@ class SpecificFieldsEditPostController extends CmsController
 		} else {
 			$whitelistedCustomFields = $this->getWhitelistedCustomFields($postTypeModel, $request->only($verifiedFields));
 		}
-		
+
 		$toValidateKeys = [];
 		foreach($whitelistedCustomFields as $whiteKey => $whiteValue){
 			$customFieldObject = $this->getCustomFieldObject($postTypeModel, $whiteKey);
 			if(is_array($customFieldObject)){
 				if(array_key_exists('saveable', $customFieldObject) && $customFieldObject['saveable'] == false){
-				
+
 				} else {
 					$toValidateKeys[$whiteKey] = $customFieldObject;
 				}
@@ -132,12 +132,12 @@ class SpecificFieldsEditPostController extends CmsController
 				}
 			}
 		}
-		
+
 		$this->validatePost($request, $post, $validationRules);
-		
+
 		// Setting a full request so we can show to the front-end what values were given
 		$fullRequest = $request;
-		
+
 		// Regenerate the request to pass it thru existing code
 		$request = $this->resetRequestValues($request);
 		foreach($whitelistedCustomFields as $postmetaKey => $postmetaValue){
@@ -145,9 +145,9 @@ class SpecificFieldsEditPostController extends CmsController
 		}
 		// Manipulate the request so we can empty out the values where the conditional field is not shown
 		$whitelistedCustomFields = $this->removeValuesByConditionalLogic($whitelistedCustomFields, $postTypeModel, $post);
-		
-		if(method_exists($postTypeModel, 'on_edit_single_field_event')){	
-			$onCheck = $postTypeModel->on_edit_single_field_event($postTypeModel, $post->id, $whitelistedCustomFields);			
+
+		if(method_exists($postTypeModel, 'on_edit_single_field_event')){
+			$onCheck = $postTypeModel->on_edit_single_field_event($postTypeModel, $post->id, $whitelistedCustomFields);
 			if($onCheck['continue'] === false){
 				$errorMessages = 'You are not authorized to do this.';
 				if(array_key_exists('message', $onCheck)){
@@ -156,13 +156,13 @@ class SpecificFieldsEditPostController extends CmsController
 				return $this->abort($errorMessages);
 			}
 		}
-		
+
 		// Saving the post values to the database
 		$post = $this->savePostToDatabase('edit', $post, $postTypeModel, $request, $postType, true);
-		
+
 		// Saving the post meta values to the database
 		$this->savePostMetaToDatabase($whitelistedCustomFields, $postTypeModel, $post, $fullRequest);
-		
+
 		// Lets fire events as registered in the post type
 		$this->triggerEvent('on_edit_single_field_event', $postTypeModel, $post->id, $whitelistedCustomFields);
 
@@ -171,7 +171,7 @@ class SpecificFieldsEditPostController extends CmsController
 			$successMessage = $postTypeModel->successMessage['field_updated'];
 		}
 
-		$show = (new ShowPostController)->init($request, $postType, $id);
+		$show = (new ShowPostController)->init($fullRequest, $postType, $id);
 		$showResponse = json_decode($show->getContent());
 
 		// Lets return the response
