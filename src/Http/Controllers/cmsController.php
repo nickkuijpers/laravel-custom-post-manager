@@ -299,6 +299,7 @@ class CmsController extends Controller
 
 	public function resetRequestValues($request)
 	{
+		$request = new Request;
 		foreach($request->all() as $key => $value){
 			unset($request[$key]);
 		}
