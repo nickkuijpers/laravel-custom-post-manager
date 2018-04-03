@@ -133,8 +133,6 @@ class SpecificFieldsEditPostController extends CmsController
 			}
 		}
 
-		$this->validatePost($request, $post, $validationRules);
-
 		// Setting a full request so we can show to the front-end what values were given
 		$fullRequest = $request;
 
@@ -162,6 +160,14 @@ class SpecificFieldsEditPostController extends CmsController
 
 		// Saving the post meta values to the database
 		$this->savePostMetaToDatabase($whitelistedCustomFields, $postTypeModel, $post, $fullRequest);
+
+		// We need to trigger this after saving the changes to the database, its a test for now
+		// but if we dont do this, the values wont update in the database but will not be
+		// visible in the frontend unless we do a hard refresh. The risk now is that
+		// people are allowed to inset everything into the database without
+		// validation but if you use the check or edit function in the
+		// end, we will validate the post and all the custo fields.
+		$this->validatePost($request, $post, $validationRules);
 
 		// Lets fire events as registered in the post type
 		$this->triggerEvent('on_edit_single_field_event', $postTypeModel, $post->id, $whitelistedCustomFields);
