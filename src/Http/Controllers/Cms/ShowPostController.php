@@ -21,7 +21,7 @@ class ShowPostController extends CmsController
 		}
 
 		if(method_exists($postTypeModel, 'override_show_post')){
-			return $postTypeModel->override_show_post($id, $request);
+			return $postTypeModel->override_show_post($id, $request, $postType);
 		}
 
 		$config = $this->getConfig($postTypeModel);
