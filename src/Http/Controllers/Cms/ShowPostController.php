@@ -143,6 +143,11 @@ class ShowPostController extends CmsController
 		// Lets fire events as registered in the post type
         $this->triggerEvent('on_show_event', $postTypeModel, $post->id, $postmeta);
 
+        $collection['instance'] = [
+			'post_type' => $postType,
+			'post_identifier' => $id,
+		];
+
         // Returning the full collection
     	return response()->json($collection);
 	}
