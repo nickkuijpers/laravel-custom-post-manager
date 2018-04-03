@@ -129,11 +129,16 @@ class CmsController extends Controller
 
 						$validationsKeys[$innerKey] = $innerValue;
 
-						if(array_key_exists('customFields', $innerValue)){
+						$hasCustomFields = true;
+						while($hasCustomFields === true){
 
-							foreach($innerValue['customFields'] as $innerKey => $innerValue){
+							if(!array_key_exists('customFields', $innerValue)){
+								$hasCustomFields = false;
+							} else {
 
-								$validationsKeys[$innerKey] = $innerValue;
+								foreach($innerValue['customFields'] as $innerKey => $innerValue){
+									$validationsKeys[$innerKey] = $innerValue;
+								}
 
 							}
 
