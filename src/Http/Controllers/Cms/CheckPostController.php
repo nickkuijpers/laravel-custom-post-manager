@@ -34,7 +34,7 @@ class CheckPostController extends CmsController
 			$config = $postTypeModel->override_check_config_response($postTypeModel, $result->post->id, $config, $request);
 		}
 
-		return response()->json([
+		$response = [
     		'code' => 'success',
     		'message' => $result->message,
 			'action' => 'check',
@@ -48,7 +48,13 @@ class CheckPostController extends CmsController
 				'created_at' => $result->post->created_at,
 				'updated_at' => $result->post->updated_at,
     		],
-    	], 200);
+    	];
+
+		if(method_exists($postTypeModel, 'override_check_response')){
+			return $postTypeModel->override_check_response($result->post->id, $request, $response);
+		}
+
+		return response()->json($response, 200);
 	}
 
 	public function getConfig($postTypeModel)
