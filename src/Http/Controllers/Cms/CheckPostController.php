@@ -229,7 +229,7 @@ class CheckPostController extends CmsController
 				if(array_key_exists('message', $onCheck)){
 					$errorMessages = $onCheck['message'];
 				}
-				return [
+				return (object) [
 					'code' => 'failure',
 					'validation' => false,
 					'errors' => $errorMessages,
