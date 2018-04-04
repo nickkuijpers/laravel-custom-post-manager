@@ -25,7 +25,7 @@ class CheckPostController extends CmsController
 
 		$result = $this->execute($request, $postType, $id);
 		if($result->code == 'failure'){
-			return response()->json($result->errors, 422);
+			return response()->json($result, 422);
 		}
 
 		$config = $this->getConfig($postTypeModel);
