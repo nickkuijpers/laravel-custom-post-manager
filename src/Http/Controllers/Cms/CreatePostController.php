@@ -128,7 +128,7 @@ class CreatePostController extends CmsController
 		];
 
 		if(method_exists($postTypeModel, 'override_create_config_response')){
-			$config = $postTypeModel->override_create_config_response($postTypeModel, $post->id, $config, $request);
+			$config = $postTypeModel->override_create_config_response($postTypeModel, $post['id'], $config, $request);
 		}
 
         // Return the response
