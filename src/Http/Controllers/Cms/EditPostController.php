@@ -105,7 +105,7 @@ class EditPostController extends CmsController
 		$this->validatePost($request, $post, $validationRules);
 
 		if(method_exists($postTypeModel, 'on_edit_check')){
-			$onCheck = $postTypeModel->on_edit_check($postTypeModel, $post->id, $postmeta);
+			$onCheck = $postTypeModel->on_edit_check($postTypeModel, $post->id, $postmeta, $request);
 			if($onCheck['continue'] === false){
 				$errorMessages = 'You are not authorized to do this.';
 				if(array_key_exists('message', $onCheck)){
@@ -122,7 +122,7 @@ class EditPostController extends CmsController
         $this->savePostMetaToDatabase($postmeta, $postTypeModel, $post);
 
         // Lets fire events as registered in the post type
-        $this->triggerEvent('on_edit_event', $postTypeModel, $post->id, $postmeta);
+        $this->triggerEvent('on_edit_event', $postTypeModel, $post->id, $postmeta, $request);
 
         $successMessage = 'Post succesfully updated.';
 		if(array_has($postTypeModel->successMessage, 'post_updated')){
