@@ -111,7 +111,7 @@ class CmsController extends Controller
 		return $validationRules;
 	}
 
-	protected function getValidationsKeys($postTypeModel)
+	public function getValidationsKeys($postTypeModel)
 	{
 		$validationsKeys = [];
 
