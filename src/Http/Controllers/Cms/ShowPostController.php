@@ -80,6 +80,7 @@ class ShowPostController extends CmsController
         	$postArraySanitized['id'] = $postArray['id'];
 		}
 
+
 		if(array_has($postArray, 'post_title')){
         	$postArraySanitized['post_title'] = $postArray['post_title'];
 		}
@@ -102,6 +103,10 @@ class ShowPostController extends CmsController
 
 		if(array_has($postArray, 'updated_at')){
         	$postArraySanitized['updated_at'] = $postArray['updated_at'];
+		}
+
+		if(array_has($postArray, 'template')){
+        	$postArraySanitized['template'] = $postArray['template'];
 		}
 
 		// Format the collection
@@ -349,7 +354,18 @@ class ShowPostController extends CmsController
 								$view[$templateKey]['customFields'][$customFieldKey]['value'] = $post['status'];
 							}
 
-	            		break;
+						break;
+
+						// If we find the customFieldKey updated_at, we know it is in the config file
+	            		case 'template':
+
+							// Because of that we will add the post template value to the custom field
+							if(!empty($post['template'])){
+								$view[$templateKey]['customFields'][$customFieldKey]['id'] = $customFieldKey;
+								$view[$templateKey]['customFields'][$customFieldKey]['value'] = $post['template'];
+							}
+
+						break;
 	            	}
 
 	            	// Lets set the key to the array
