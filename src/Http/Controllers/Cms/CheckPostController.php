@@ -15,7 +15,7 @@ class CheckPostController extends CmsController
 		// Lets validate if the post type exists and if so, continue.
 		$postTypeModel = $this->getPostType($postType);
     	if(!$postTypeModel){
-    		$errorMessages = 'You are not authorized to do this.';
+    		$errorMessages = ['You are not authorized to do this.'];
     		return $this->abort($errorMessages);
 		}
 
